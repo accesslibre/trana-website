@@ -1,18 +1,18 @@
 ---
-// Newsletter sign-up. Design only: the submit handler validates and shows the confirmation state,
-// it does not send data. Codex replaces `action` and the fake success with the real service.
-interface Props { id?: string }
-const { id = 'nl' } = Astro.props;
+// No subscription backend is connected. Real routes offer contact; demos validate locally only.
+interface Props { id?: string; demo?: boolean }
+const { id = 'nl', demo = false } = Astro.props;
 ---
-<section class="nl" aria-labelledby={`${id}-title`} data-nl>
+<section class="nl" aria-labelledby={`${id}-title`} data-nl={demo ? '' : undefined}>
  <div class="nl-intro">
   <svg width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true"><rect x="6" y="13" width="44" height="30" rx="5" fill="#fff" stroke="#172736" stroke-width="2.5"/><path d="m8 16 20 15 20-15" stroke="#172736" stroke-width="2.5" stroke-linejoin="round"/><circle cx="46" cy="14" r="8" fill="#ef4337"/></svg>
   <div>
-   <h2 id={`${id}-title`}>Rep les notícies de TRANA</h2>
-   <p>Activitats, tallers i convocatòries, al teu correu. Et pots donar de baixa quan vulguis.</p>
+   <h2 id={`${id}-title`}>{demo ? 'Rep les notícies de TRANA' : 'Vols rebre les novetats de TRANA?'}</h2>
+   <p>{demo ? 'Activitats, tallers i convocatòries, al teu correu.' : 'De moment no et pots subscriure des del web. Escriu-nos i t’expliquem com rebre les novetats.'}</p>
+   {demo && <p>Demostració: no s’envien dades ni correus i no es crea cap subscripció.</p>}
   </div>
  </div>
- <form class="nl-form fm" novalidate data-nl-form>
+ {demo ? <><form class="nl-form fm" novalidate data-nl-form>
   <div class="fm-field" data-field>
    <label for={`${id}-email`}>Correu electrònic</label>
    <p class="fm-error" id={`${id}-email-error`} hidden></p>
@@ -21,14 +21,18 @@ const { id = 'nl' } = Astro.props;
   <div class="fm-check" data-field>
    <p class="fm-error" id={`${id}-ok-error`} hidden></p>
    <input id={`${id}-ok`} name="consent" type="checkbox" required aria-describedby={`${id}-ok-error`} />
-   <label for={`${id}-ok`}>Accepto rebre el butlletí i la <a href="https://www.tranandorra.org/avis-legal-i-politica-de-privacitat/">política de privacitat</a>.</label>
+   <label for={`${id}-ok`}>Accepto rebre el butlletí i he llegit la <a href="/avis-legal-i-politica-de-privacitat/">política de privacitat</a>.</label>
   </div>
-  <button class="pill pill-ink" type="submit">Subscriu-me</button>
+  <button class="pill pill-ink" type="submit" disabled data-nl-submit>Prova la subscripció</button>
+  <noscript><p>Aquesta demostració necessita JavaScript. No s’ha enviat cap dada.</p></noscript>
  </form>
  <div class="nl-done" tabindex="-1" hidden data-nl-done>
-  <h3>Gairebé fet</h3>
-  <p>T’hem enviat un correu a <strong data-nl-email></strong>. Obre’l i confirma la subscripció.</p>
- </div>
+  <h3>Demostració completada</h3>
+  <p>No s’ha enviat cap dada ni cap correu i no s’ha creat cap subscripció. El correu introduït, <strong data-nl-email></strong>, només s’ha fet servir en aquesta demostració local.</p>
+ </div></> : <div class="nl-done">
+  <p><a class="pill pill-ink" href="mailto:info@tranandorra.org?subject=Butllet%C3%AD%20de%20TRANA">Escriu-nos sobre el butlletí</a></p>
+  <p>info@tranandorra.org</p>
+ </div>}
 </section>
 
 <script>
@@ -40,7 +44,7 @@ const { id = 'nl' } = Astro.props;
   const setError = (input: HTMLInputElement, message: string) => {
    const p = document.getElementById(input.getAttribute('aria-describedby')!.split(' ').find((x) => x.endsWith('-error'))!)!;
    p.hidden = !message; p.textContent = message;
-   input.toggleAttribute('aria-invalid', !!message);
+   if (message) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid');
    input.closest('[data-field]')?.classList.toggle('is-invalid', !!message);
   };
   const check = () => {
@@ -59,5 +63,6 @@ const { id = 'nl' } = Astro.props;
    form.hidden = true; done.hidden = false; done.focus();
   });
   form.addEventListener('input', () => { if (tried) check(); });
+  form.querySelector<HTMLButtonElement>('[data-nl-submit]')!.disabled = false;
  }
 </script>

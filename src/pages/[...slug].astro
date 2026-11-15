@@ -1,31 +1,16 @@
 ---
 import type { WordPressPost } from '../lib/wordpress/index';
-import { getAllPosts } from '../lib/wordpress/index';
-import { formatDate, postRouteEntries } from '../lib/routes';
+import { getAllPosts, getAllPages } from '../lib/wordpress/index';
+import { contentRoutes, type PageMigration } from './_migration';
 import BaseLayout from '../layouts/BaseLayout.astro';
-export async function getStaticPaths() { return postRouteEntries(await getAllPosts()); }
-interface Props { post: WordPressPost }
-const { post } = Astro.props;
+import ArticlePage from '../components/pages/ArticlePage.astro';
+export async function getStaticPaths() {
+  const [posts, pages] = await Promise.all([getAllPosts(), getAllPages()]);
+  return contentRoutes(posts, pages);
+}
+interface Props { post: WordPressPost; related: WordPressPost[]; kind: 'article' | 'page'; migration?: PageMigration }
+const { post, related, kind, migration } = Astro.props;
 ---
-<BaseLayout title={`${post.title} · TRANA`} description={post.excerpt}>
-  <article class="reading-page">
-    <a href="/noticies/">← Totes les notícies</a>
-    <header>
-      <p><time datetime={post.date}>{formatDate(post.date)}</time></p>
-      <h1>{post.title}</h1>
-    </header>
-    <div class="wordpress-content" set:html={post.html} />
-    <p class="source-link"><a href={post.url}>Consulta l’article al web original de TRANA</a></p>
-  </article>
+<BaseLayout title={`${post.title} · TRANA`} description={post.excerpt || undefined} seo={post.seo}>
+  <ArticlePage post={post} related={related} kind={kind} pendingReason={migration?.reason} resources={migration?.resources} />
 </BaseLayout>
-<style>
-  .reading-page { max-width: 52rem; margin-inline: auto; padding: 64px 24px; overflow-wrap: anywhere; }
-  header { margin-block: 32px; }
-  h1 { font-size: clamp(2.25rem, 5vw, 3rem); line-height: 1; text-wrap: balance; }
-  .source-link { margin-top: 48px; }
-  .wordpress-content :global(img), .wordpress-content :global(video), .wordpress-content :global(iframe) { max-width: 100%; height: auto; }
-  .wordpress-content { overflow-x: auto; }
-  .wordpress-content :global(p), .wordpress-content :global(ul), .wordpress-content :global(ol) { margin-block: 24px; line-height: 1.75; }
-  .wordpress-content :global(h2), .wordpress-content :global(h3), .wordpress-content :global(h4) { margin-block: 32px 16px; text-wrap: balance; }
-  @media (max-width: 40rem) { .reading-page { padding: 40px 16px; } }
-</style>

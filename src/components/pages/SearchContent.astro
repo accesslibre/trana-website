@@ -6,10 +6,10 @@ import Arrow from './Arrow.astro';
 import { contact } from './samples';
 const topics = ['EM-LINE', 'Tallers', 'Dia Mundial', 'Drets', 'Assemblea', 'Ioga'];
 const shortcuts = [
- { label: 'Què és l’esclerosi múltiple?', href: '/disseny/esclerosi-multiple/' },
- { label: 'Tallers neurocognitius', href: '/disseny/tallers-neurocognitius/' },
- { label: 'Vivències', href: '/disseny/vivencies/' },
- { label: 'Documents', href: '/disseny/documents/' },
+ { label: 'Què és l’esclerosi múltiple?', href: '/que-es-lem/' },
+ { label: 'Activitats i tallers', href: '/activitats-2/' },
+ { label: 'Vivències', href: '/opinio/' },
+ { label: 'Memòries de l’associació', href: '/memories-assemblea-general/' },
 ];
 ---
 <div class="pg">
@@ -24,7 +24,7 @@ const shortcuts = [
      <input id="sr-q" type="search" name="q" maxlength="200" placeholder="Què vols trobar?" autocomplete="off" aria-describedby="sr-help" />
      <button class="pill pill-ink" type="submit">Cerca</button>
     </div>
-    <p id="sr-help">Cerquem al títol i al text de les notícies publicades des del 2016.</p>
+    <p id="sr-help">Cerquem al títol i al text de les notícies i les pàgines informatives publicades.</p>
    </form>
   </div>
  </header>
@@ -47,7 +47,7 @@ const shortcuts = [
     <ul class="sr-tips">
      <li>Revisa com està escrita la paraula.</li>
      <li>Prova amb menys paraules o amb una de més general, com «tallers».</li>
-     <li>Busques una pàgina i no una notícia? Mira aquestes:</li>
+     <li>També pots consultar aquestes pàgines:</li>
     </ul>
     <ul class="sr-short">{shortcuts.map((s) => <li><a class="pg-arrow" href={s.href}><span>{s.label}</span><Arrow /></a></li>)}</ul>
     <p class="sr-ask">També pots preguntar-nos-ho: <a href={contact.phoneHref}>{contact.phone}</a> o <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
@@ -58,6 +58,7 @@ const shortcuts = [
    <div>
     <h2 id="sr-error-title">La cerca no funciona ara mateix</h2>
     <p>Torna-ho a provar d’aquí a una estona, o consulta <a href="/noticies/">totes les notícies</a> per data.</p>
+    <button class="pill pill-ink" type="button" data-search-retry>Torna-ho a provar</button>
    </div>
   </section>
  </div>
@@ -70,7 +71,11 @@ const shortcuts = [
  const status = document.querySelector<HTMLElement>('#sr-status')!;
  const list = document.querySelector<HTMLOListElement>('#sr-results')!;
  const states = [...document.querySelectorAll<HTMLElement>('[data-state]')];
- const show = (name: string) => states.forEach((el) => { el.hidden = el.dataset.state !== name; });
+ const show = (name: string) => {
+  states.forEach((el) => { el.hidden = el.dataset.state !== name; });
+  // Keep the empty-state announcement available to screen readers without repeating its visible heading.
+  status.classList.toggle('vh', name === 'empty');
+ };
  const months = ['de gener', 'de febrer', 'de març', 'd’abril', 'de maig', 'de juny', 'de juliol', 'd’agost', 'de setembre', 'd’octubre', 'de novembre', 'de desembre'];
  const fmt = (iso: string) => { const [y, m, d] = iso.slice(0, 10).split('-').map(Number); return `${d} ${months[m - 1]} de ${y}`; };
 
@@ -104,8 +109,11 @@ const shortcuts = [
   const q = input.value.trim().slice(0, 200); const mine = ++req;
   const url = new URL(location.href); if (q) url.searchParams.set('q', q); else url.searchParams.delete('q'); history.replaceState(null, '', url);
   list.replaceChildren();
-  if (!q) { status.textContent = ''; show('start'); return; }
-  status.textContent = 'Cercant…'; form.setAttribute('aria-busy', 'true');
+  if (!q) {
+   form.removeAttribute('aria-busy'); status.textContent = 'Escriu una paraula per cercar.';
+   show('start'); input.focus(); return;
+  }
+  status.textContent = 'Cercant…'; form.setAttribute('aria-busy', 'true'); show('loading');
   try {
    index ??= fetch('/cerca/search-index.json').then((r) => { if (!r.ok) throw new Error(); return r.json(); });
    const found = searchPosts(await index, q); if (mine !== req) return;
@@ -116,17 +124,18 @@ const shortcuts = [
    }
    list.replaceChildren(...found.slice(0, 50).map((e) => {
     const li = document.createElement('li');
-    const meta = document.createElement('p'); meta.className = 'sr-meta'; meta.textContent = `Notícia · ${fmt(e.date)}`;
+    const meta = document.createElement('p'); meta.className = 'sr-meta'; meta.textContent = e.type === 'page' ? 'Pàgina' : `Notícia · ${fmt(e.date)}`;
     const h = document.createElement('h2'); const a = document.createElement('a'); a.href = e.path; a.append(marked(e.title, words)); h.append(a);
     const p = document.createElement('p'); p.append(marked(snippet(e, words), words));
     li.append(meta, h, p); return li;
    }));
-   status.textContent = found.length === 1 ? `1 resultat per «${q}»` : `${found.length} resultats per «${q}»${found.length > 50 ? '. Es mostren els 50 primers' : ''}`;
+   status.textContent = found.length === 1 ? `1 resultat per «${q}»` : `${found.length} resultats per «${q}»${found.length > 50 ? '. Es mostren els 50 primers. Afina la cerca amb una paraula més concreta.' : ''}`;
    show('results');
   } catch { if (mine !== req) return; index = undefined; status.textContent = ''; show('error'); }
   finally { if (mine === req) form.removeAttribute('aria-busy'); }
  }
  form.addEventListener('submit', (e) => { e.preventDefault(); void run(); });
+ document.querySelector('[data-search-retry]')?.addEventListener('click', () => { input.focus(); void run(); });
  input.value = new URLSearchParams(location.search).get('q')?.slice(0, 200) ?? '';
  if (input.value.trim()) void run();
 </script>

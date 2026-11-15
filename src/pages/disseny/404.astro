@@ -2,4 +2,9 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import NotFoundContent from '../../components/pages/NotFoundContent.astro';
 ---
-<BaseLayout title="Pàgina no trobada · TRANA (disseny)"><NotFoundContent searchAction="/disseny/cerca/" /></BaseLayout>
+<BaseLayout title="Pàgina no trobada · TRANA (disseny)"><NotFoundContent searchAction="/disseny/cerca/" links={[
+ { label: 'Què és l’esclerosi múltiple?', href: '/disseny/esclerosi-multiple/' },
+ { label: 'Tallers neurocognitius', href: '/disseny/tallers-neurocognitius/' },
+ { label: 'Notícies', href: '/disseny/noticies/' },
+ { label: 'Contacte', href: '/disseny/contacte/' },
+]} /></BaseLayout>

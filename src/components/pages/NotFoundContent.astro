@@ -2,14 +2,13 @@
 import '../../styles/pages.css';
 import Arrow from './Arrow.astro';
 import { contact } from './samples';
-interface Props { searchAction?: string }
-const { searchAction = '/cerca/' } = Astro.props;
-const links = [
- { label: 'Què és l’esclerosi múltiple?', href: '/disseny/esclerosi-multiple/' },
- { label: 'Tallers neurocognitius', href: '/disseny/tallers-neurocognitius/' },
+interface Props { searchAction?: string; links?: { label: string; href: string }[] }
+const { searchAction = '/cerca/', links = [
+ { label: 'Què és l’esclerosi múltiple?', href: '/que-es-lem/' },
+ { label: 'Tallers neurocognitius', href: '/2024/05/els-tallers-neurocognitius-de-tranaem/' },
  { label: 'Notícies', href: '/noticies/' },
- { label: 'Contacte', href: '/disseny/contacte/' },
-];
+ { label: 'Contacte', href: '/contactans/' },
+] } = Astro.props;
 ---
 <div class="pg">
  <section class="pg-wrap nf" aria-labelledby="nf-title">
@@ -17,7 +16,7 @@ const links = [
   <div class="nf-text">
    <p class="pg-eyebrow" style="--dot:var(--red)">Error 404</p>
    <h1 id="nf-title">No trobem aquesta pàgina</h1>
-   <p class="pg-lede">Potser l’adreça ha canviat o té una lletra de més. Si venies d’un enllaç del web antic de TRANA, el contingut segurament encara existeix amb una altra adreça.</p>
+   <p class="pg-lede">És possible que el contingut tingui una adreça nova. Busca’l aquí sota.</p>
    <form class="sr-form nf-search" action={searchAction} method="get" role="search">
     <label for="nf-q">Busca-ho aquí</label>
     <div class="sr-field">

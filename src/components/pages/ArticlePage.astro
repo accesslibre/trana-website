@@ -7,8 +7,8 @@ import Breadcrumbs from './Breadcrumbs.astro';
 import Arrow from './Arrow.astro';
 import NewsThumb from './NewsThumb.astro';
 
-interface Props { post: WordPressPost; related?: WordPressPost[]; siteOrigin?: string }
-const { post, related = [], siteOrigin = 'https://www.tranandorra.org' } = Astro.props;
+interface Props { post: WordPressPost; related?: WordPressPost[]; siteOrigin?: string; archivePath?: string; kind?: 'article' | 'page'; pendingReason?: string; resources?: { label: string; url: string }[] }
+const { post, related = [], siteOrigin = 'https://www.tranandorra.org', archivePath = '/noticies/', kind = 'article', pendingReason, resources = [] } = Astro.props;
 
 const words = post.html.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length;
 const minutes = Math.max(1, Math.round(words / 200));
@@ -22,15 +22,19 @@ const crumbTitle = post.title.length > 48 ? `${post.title.slice(0, 46).trimEnd()
 <div class="pg">
  <article class="ar">
   <header class="pg-narrow ar-head">
-   <Breadcrumbs inline items={[{ label: 'Notícies', href: '/disseny/noticies/' }, { label: crumbTitle }]} />
-   <p class="ar-meta"><span class="chip">Notícia</span><time datetime={post.date}>{formatDate(post.date)}</time><span>Lectura de {minutes} {minutes === 1 ? 'minut' : 'minuts'}</span></p>
+   <Breadcrumbs inline items={[...(kind === 'article' ? [{ label: 'Notícies', href: archivePath }] : []), { label: crumbTitle }]} />
+   <p class="ar-meta"><span class="chip">{kind === 'article' ? 'Notícia' : 'Informació'}</span>{kind === 'article' && <><time datetime={post.date}>{formatDate(post.date)}</time><span>Lectura de {minutes} {minutes === 1 ? 'minut' : 'minuts'}</span></>}</p>
    <h1>{post.title}</h1>
   </header>
   {showHero && <figure class="ar-hero"><NewsThumb post={post} eager /></figure>}
+  {pendingReason && <aside class="pg-narrow wp-prose" aria-label="Contingut pendent de revisió">
+   <p>{pendingReason} Pots <a href={post.url}>consultar la versió original al web de TRANA</a>.</p>
+   {resources.length > 0 && <ul>{resources.map((resource) => <li><a href={resource.url}>{resource.label}</a></li>)}</ul>}
+  </aside>}
   <div class="pg-narrow wp-prose" set:html={post.html} />
   <footer class="pg-narrow ar-foot">
    <div class="ar-share" data-share>
-    <h2>Comparteix aquesta notícia</h2>
+    <h2>{kind === 'article' ? 'Comparteix aquesta notícia' : 'Comparteix aquesta pàgina'}</h2>
     <ul>
      <li><button type="button" class="pill" data-copy={shareUrl}><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M13 4H5a2 2 0 0 0-2 2v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Copia l’enllaç</button></li>
      <li><a class="pill" href={`https://wa.me/?text=${encodeURIComponent(`${post.title} ${shareUrl}`)}`}>WhatsApp</a></li>
@@ -38,13 +42,13 @@ const crumbTitle = post.title.length > 48 ? `${post.title.slice(0, 46).trimEnd()
     </ul>
     <p role="status" class="ar-copied" data-copied></p>
    </div>
-   <p class="ar-source"><a href={post.url}>Consulta l’article al web original de TRANA</a></p>
+   <p class="ar-source"><a href={post.url}>{kind === 'article' ? 'Consulta l’article al web original de TRANA' : 'Consulta la pàgina al web original de TRANA'}</a></p>
   </footer>
  </article>
 
  {related.length > 0 && (
   <section class="pg-wrap ar-more" aria-labelledby="more-title">
-   <div class="ar-more-head"><h2 class="pg-h2" id="more-title">Més notícies</h2><a class="pg-arrow" href="/disseny/noticies/"><span>Totes les notícies</span><Arrow /></a></div>
+   <div class="ar-more-head"><h2 class="pg-h2" id="more-title">Més notícies</h2><a class="pg-arrow" href={archivePath}><span>Totes les notícies</span><Arrow /></a></div>
    <ul>
     {related.map((p) => (
      <li><article>

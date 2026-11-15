@@ -1,9 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HomeContent from '../components/HomeContent.astro';
-import { getAllPosts } from '../lib/wordpress/index';
-const posts = await getAllPosts();
+import { getAllPosts, getAllPages } from '../lib/wordpress/index';
+const [posts, pages] = await Promise.all([getAllPosts(), getAllPages()]);
+const home = pages.find((page) => page.path === '/');
+if (!home) throw new Error('Expected published WordPress home page');
 ---
-<BaseLayout title="TRANA · Esclerosi múltiple a Andorra" description="Associació d’Esclerosi Múltiple d’Andorra. Informació, tallers i defensa de drets.">
+<BaseLayout title="TRANA · Esclerosi múltiple a Andorra" description="Associació d’Esclerosi Múltiple d’Andorra. Informació, tallers i defensa de drets." seo={home.seo}>
   <HomeContent posts={posts} />
 </BaseLayout>

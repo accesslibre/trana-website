@@ -5,4 +5,4 @@ import { getAllPosts } from '../../../lib/wordpress/index';
 import { paginatePosts } from '../../../lib/routes';
 const first = paginatePosts(await getAllPosts())[0];
 ---
-<BaseLayout title="Notícies · TRANA (disseny)"><NewsList {...first} searchAction="/disseny/cerca/" /></BaseLayout>
+<BaseLayout title="Notícies · TRANA (disseny)"><NewsList {...first} searchAction="/disseny/cerca/" newsletterDemo /></BaseLayout>

@@ -1,0 +1,11 @@
+---
+import type { SeoModel } from '../lib/seo';
+interface Props { model: SeoModel }
+const { model } = Astro.props;
+---
+<title>{model.title}</title>
+<meta name="description" content={model.description} />
+<meta name="robots" content={model.robots} />
+{model.canonical && <link rel="canonical" href={model.canonical} />}
+{model.meta.map((entry) => <meta name={entry.name} property={entry.property} content={entry.content} />)}
+{model.jsonLd && <script type="application/ld+json" is:inline set:html={model.jsonLd} />}

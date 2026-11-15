@@ -7,8 +7,8 @@ import Breadcrumbs from './Breadcrumbs.astro';
 import NewsletterForm from './NewsletterForm.astro';
 import NewsThumb from './NewsThumb.astro';
 
-interface Props { page: number; total: number; posts: WordPressPost[]; previous?: string; next?: string; searchAction?: string }
-const { page, total, posts, previous, next, searchAction = '/cerca/' } = Astro.props;
+interface Props { page: number; total: number; posts: WordPressPost[]; previous?: string; next?: string; searchAction?: string; newsletterDemo?: boolean }
+const { page, total, posts, previous, next, searchAction = '/cerca/', newsletterDemo = false } = Astro.props;
 
 const months = ['gen.', 'febr.', 'març', 'abr.', 'maig', 'juny', 'jul.', 'ag.', 'set.', 'oct.', 'nov.', 'des.'];
 const parts = (iso: string) => { const [y, m, d] = iso.slice(0, 10).split('-').map(Number); return { y, m: months[m - 1], d }; };
@@ -93,5 +93,5 @@ const pageNums = [...new Set([1, page - 1, page, page + 1, total])].filter((n) =
   </nav>
  </div>
 
- <div class="pg-wrap"><NewsletterForm /></div>
+ <div class="pg-wrap"><NewsletterForm demo={newsletterDemo} /></div>
 </div>

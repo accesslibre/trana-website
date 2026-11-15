@@ -1,47 +1,17 @@
 ---
 import type { WordPressPost } from '../../lib/wordpress/index';
 import { getAllPosts } from '../../lib/wordpress/index';
-import { formatDate, paginatePosts } from '../../lib/routes';
+import { paginatePosts } from '../../lib/routes';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import NewsList from '../../components/pages/NewsList.astro';
 export async function getStaticPaths() {
   return paginatePosts(await getAllPosts()).map((pagination) => ({
     params: { page: pagination.page === 1 ? undefined : String(pagination.page) }, props: pagination,
   }));
 }
 interface Props { page: number; total: number; posts: WordPressPost[]; previous?: string; next?: string }
-const { page, total, posts, previous, next } = Astro.props;
+const { page } = Astro.props;
 ---
 <BaseLayout title={`Notícies${page > 1 ? ` · Pàgina ${page}` : ''} · TRANA`} description="Actualitat i activitats de TRANA a Andorra.">
-  <section class="news-page" aria-labelledby="news-title">
-    <p><a href="/">← Inici</a></p>
-    <h1 id="news-title">Notícies</h1>
-    <p>Actualitat i activitats de TRANA.</p>
-    {posts.length ? <ul class="news-grid">{posts.map((post) => <li>
-      <article>
-        {post.image && <a href={post.path} tabindex="-1" aria-hidden="true"><img src={post.image.src} alt="" loading="lazy" width={post.image.width} height={post.image.height} /></a>}
-        <p class="date"><time datetime={post.date}>{formatDate(post.date)}</time></p>
-        <h2><a href={post.path}>{post.title}</a></h2>
-        <p>{post.excerpt}</p>
-      </article>
-    </li>)}</ul> : <p>Encara no hi ha notícies publicades.</p>}
-    <nav class="pagination" aria-label="Paginació de notícies">
-      {previous && <a href={previous} rel="prev">← Anterior</a>}
-      <span aria-current="page">Pàgina {page} de {total}</span>
-      {next && <a href={next} rel="next">Següent →</a>}
-    </nav>
-  </section>
+  <NewsList {...Astro.props} />
 </BaseLayout>
-<style>
-  .news-page { max-width: 76rem; margin-inline: auto; padding: 64px 24px; }
-  h1 { font-size: clamp(2.25rem, 5vw, 3rem); line-height: 1; margin-block: 32px 16px; }
-  .news-grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px 32px; margin-block: 48px; }
-  .news-grid li { min-width: 0; overflow-wrap: anywhere; }
-  img { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 16px; }
-  h2 { font-size: 1.5rem; line-height: 2rem; margin-block: 16px; text-wrap: balance; }
-  p { text-wrap: pretty; }
-  .date { font-size: .875rem; line-height: 1.25rem; margin-top: 24px; }
-  .pagination { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 24px; }
-  .pagination a { padding: 8px 12px; }
-  @media (max-width: 60rem) { .news-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 40rem) { .news-page { padding: 40px 16px; } .news-grid { grid-template-columns: minmax(0, 1fr); } }
-</style>
