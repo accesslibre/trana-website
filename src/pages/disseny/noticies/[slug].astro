@@ -1,0 +1,16 @@
+---
+// Two real articles to test the template: a short event post and a long press release with legacy markup.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArticlePage from '../../../components/pages/ArticlePage.astro';
+import { getAllPosts } from '../../../lib/wordpress/index';
+export async function getStaticPaths() {
+ const posts = await getAllPosts();
+ const pick = (slug: string) => posts.find((p) => p.slug === slug)!;
+ const related = (slug: string) => posts.filter((p) => p.slug !== slug).slice(0, 3);
+ return ['mes-enlla-del-dolor', 'comunicat-de-premsa-dia-mundial-em', 'em-line-ajudeu-nos-a-la-seva-implantancio']
+  .filter((s) => posts.some((p) => p.slug === s))
+  .map((slug) => ({ params: { slug }, props: { post: pick(slug), related: related(slug) } }));
+}
+const { post, related } = Astro.props;
+---
+<BaseLayout title={`${post.title} · TRANA (disseny)`}><ArticlePage post={post} related={related} /></BaseLayout>

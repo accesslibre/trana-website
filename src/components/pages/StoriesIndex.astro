@@ -1,0 +1,81 @@
+---
+import '../../styles/pages.css';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Arrow from './Arrow.astro';
+import { voices, story, contact } from './samples';
+const shown = 4;
+const mailto = `mailto:${contact.email}?subject=${encodeURIComponent('Vull compartir la meva vivència')}`;
+---
+<div class="pg">
+ <header class="vv-top">
+  <Breadcrumbs items={[{ label: 'Vivències' }]} />
+  <div class="pg-wrap vv-top-inner">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--red)">En primera persona</p>
+    <h1>Vivències</h1>
+    <p class="pg-lede">Persones amb esclerosi múltiple i del seu entorn ens expliquen com la viuen. Sense filtres, amb les seves paraules.</p>
+   </div>
+   <figure class="vv-feature">
+    <blockquote><p>{story.quote}</p></blockquote>
+    <figcaption>
+     <footer>
+      <span class={`vv-mono ${story.author.colour}`} aria-hidden="true">{story.author.initials}</span>
+      <div><strong>{story.author.name}</strong><span>{story.author.note}</span></div>
+     </footer>
+    </figcaption>
+    <a class="pg-arrow" href="/disseny/vivencies/el-meu-darrer-brot/"><span>Llegeix «{story.title}»</span><Arrow /></a>
+   </figure>
+  </div>
+ </header>
+
+ <section class="pg-wrap vv-voices" aria-labelledby="voices-title">
+  <header>
+   <h2 class="pg-h2" id="voices-title">Les veus</h2>
+   <p>Cada persona escriu al seu ritme. Alguns textos són capítols d’una mateixa història.</p>
+  </header>
+  {voices.map((v) => {
+   const first = v.stories.slice(0, shown);
+   const rest = v.stories.slice(shown);
+   const id = v.initials.toLowerCase();
+   return (
+    <article class="vv-voice" aria-labelledby={`voice-${id}`}>
+     <div class="vv-who">
+      <span class={`vv-mono ${v.colour}`} aria-hidden="true">{v.initials}</span>
+      <div>
+       <h3 id={`voice-${id}`}>{v.name}</h3>
+       <p>{[v.note, v.series && `Sèrie «${v.series}»`, `${v.stories.length} ${v.stories.length === 1 ? 'text' : 'textos'}`].filter(Boolean).join(' · ')}</p>
+      </div>
+     </div>
+     <div>
+      <ol class="vv-list">
+       {first.map((s) => <li><a href={s.href ?? v.page}><span>{s.title}</span>{s.current && <span class="here">Destacat</span>}</a></li>)}
+      </ol>
+      {rest.length > 0 && (
+       <details class="vv-more">
+        <summary><span>Mostra {rest.length === 1 ? 'un text més' : `${rest.length} textos més`}</span></summary>
+        <ol class="vv-list" start={shown + 1} style={`counter-reset:t ${shown}`}>
+         {rest.map((s) => <li><a href={s.href ?? v.page}><span>{s.title}</span>{s.current && <span class="here">Destacat</span>}</a></li>)}
+        </ol>
+       </details>
+      )}
+     </div>
+    </article>
+   );
+  })}
+ </section>
+
+ <section class="pg-wrap vv-share" aria-labelledby="share-title">
+  <div class="vv-share-inner">
+   <div>
+    <h2 id="share-title">Vols compartir la teva vivència?</h2>
+    <p>Explicar-ho pot ajudar qui acaba de rebre el diagnòstic, o qui conviu amb algú que té EM. Escriu-nos i en parlem.</p>
+    <p>Pots signar amb el teu nom o amb un pseudònim.</p>
+    <div class="act-actions">
+     <a class="pill pill-ink" href={mailto} style="min-height:52px">Escriu-nos</a>
+     <a class="pg-arrow" href={contact.phoneHref}><span>O truca al {contact.phone}</span><Arrow /></a>
+    </div>
+   </div>
+   <img src="/images/pages/wp-2681.jpg" width="1420" height="640" loading="lazy" alt="Un grup de persones de TRANA, una d’elles en cadira de rodes, posen juntes a l’aire lliure" />
+  </div>
+ </section>
+</div>

@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Cerca notícies · TRANA" description="Cerca notícies i activitats de TRANA.">
+  <section class="search-page" aria-labelledby="search-title">
+    <p><a href="/">← Inici</a></p>
+    <h1 id="search-title">Cerca notícies</h1>
+    <form action="/cerca/" method="get" role="search" id="news-search">
+      <label for="search-query">Què vols trobar?</label>
+      <div class="search-controls">
+        <input type="search" id="search-query" name="q" maxlength="200" placeholder="Escriu una paraula o un tema" autocomplete="off" aria-describedby="search-help" />
+        <button type="submit" class="button">Cerca</button>
+      </div>
+      <p id="search-help">Cerca al títol i al text de les notícies publicades.</p>
+    </form>
+    <noscript><p>Activa JavaScript per fer servir la cerca local. També pots <a href="/noticies/">consultar totes les notícies</a>.</p></noscript>
+    <p id="search-status" role="status" aria-live="polite" aria-atomic="true">Escriu què vols cercar.</p>
+    <ul id="search-results" aria-label="Resultats de cerca"></ul>
+  </section>
+</BaseLayout>
+<script>
+  import { searchPosts, type SearchEntry } from '../../lib/search';
+  const form = document.querySelector<HTMLFormElement>('#news-search');
+  const input = document.querySelector<HTMLInputElement>('#search-query');
+  const results = document.querySelector<HTMLUListElement>('#search-results');
+  const status = document.querySelector<HTMLParagraphElement>('#search-status');
+  if (form && input && results && status) {
+    const searchForm = form, searchInput = input, searchResults = results, searchStatus = status;
+    let indexPromise: Promise<SearchEntry[]> | undefined;
+    let request = 0;
+    async function runSearch() {
+      const current = ++request;
+      const query = searchInput.value.trim().slice(0, 200);
+      const url = new URL(window.location.href);
+      if (query) url.searchParams.set('q', query); else url.searchParams.delete('q');
+      window.history.replaceState(null, '', url);
+      searchResults.replaceChildren();
+      if (!query) {
+        searchForm.removeAttribute('aria-busy');
+        searchStatus.textContent = 'Escriu què vols cercar.';
+        return;
+      }
+      searchForm.setAttribute('aria-busy', 'true');
+      searchStatus.textContent = 'S’estan cercant les notícies…';
+      try {
+        indexPromise ??= fetch('/cerca/search-index.json').then(async (response) => {
+          if (!response.ok) throw new Error('Search index unavailable');
+          return await response.json() as SearchEntry[];
+        });
+        const matches = searchPosts(await indexPromise, query);
+        if (current !== request) return;
+        const items = matches.map((entry) => {
+          const li = document.createElement('li');
+          const article = document.createElement('article');
+          const heading = document.createElement('h2');
+          const link = document.createElement('a');
+          link.href = entry.path;
+          link.textContent = entry.title;
+          heading.append(link);
+          const excerpt = document.createElement('p');
+          excerpt.textContent = entry.excerpt;
+          article.append(heading, excerpt);
+          li.append(article);
+          return li;
+        });
+        searchResults.replaceChildren(...items);
+        searchStatus.textContent = matches.length === 0
+          ? 'No hem trobat cap notícia. Prova una altra paraula.'
+          : matches.length === 1 ? 'Hem trobat una notícia.' : `Hem trobat ${matches.length} notícies.`;
+      } catch {
+        if (current !== request) return;
+        indexPromise = undefined;
+        searchStatus.textContent = 'No s’ha pogut carregar la cerca. Torna a prémer Cerca o consulta les notícies.';
+      } finally {
+        if (current === request) searchForm.removeAttribute('aria-busy');
+      }
+    }
+    form.addEventListener('submit', (event) => { event.preventDefault(); void runSearch(); });
+    window.addEventListener('popstate', () => {
+      searchInput.value = new URLSearchParams(window.location.search).get('q')?.slice(0, 200) ?? '';
+      void runSearch();
+    });
+    input.value = new URLSearchParams(window.location.search).get('q')?.slice(0, 200) ?? '';
+    if (input.value.trim()) void runSearch();
+  }
+</script>
+<style>
+  .search-page { max-width: 52rem; margin-inline: auto; padding: 64px 24px; }
+  h1 { font-size: clamp(2.25rem, 5vw, 3rem); line-height: 1; margin-block: 32px; text-wrap: balance; }
+  label { display: block; font-weight: 600; margin-bottom: 12px; }
+  .search-controls { display: flex; gap: 12px; }
+  input { min-width: 0; flex: 1; font: inherit; color: inherit; background: white; border: 1px solid currentColor; border-radius: 8px; padding: 12px 16px; }
+  button { cursor: pointer; font: inherit; }
+  #search-help { font-size: .875rem; line-height: 1.25rem; margin-top: 12px; }
+  #search-status { margin-top: 32px; }
+  #search-results { list-style: none; padding: 0; display: grid; gap: 32px; margin-top: 32px; }
+  #search-results :global(li) { min-width: 0; overflow-wrap: anywhere; }
+  #search-results :global(h2) { font-size: 1.5rem; line-height: 2rem; margin-bottom: 12px; text-wrap: balance; }
+  @media (max-width: 40rem) { .search-page { padding: 40px 16px; } .search-controls { flex-direction: column; } }
+</style>

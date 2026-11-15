@@ -1,0 +1,167 @@
+---
+import '../../styles/pages.css';
+import Breadcrumbs from './Breadcrumbs.astro';
+import HelpStrip from './HelpStrip.astro';
+import Arrow from './Arrow.astro';
+
+const toc = [
+ { id: 'autoimmune', label: 'Una malaltia autoimmune' },
+ { id: 'mil-cares', label: 'La malaltia de les mil cares' },
+ { id: 'tipus', label: 'Els tipus d’EM' },
+ { id: 'paraules', label: 'Paraules que sentiràs' },
+];
+const types = [
+ { name: 'Remitent-recurrent', tag: 'La més freqüent', d: 'M6 62H34L42 30L52 60H86L94 24L106 58H140L148 34L158 60H194', label: 'Brots seguits de recuperació, total o parcial.',
+   text: 'Després d’un brot, els símptomes disminueixen o desapareixen en un període que pot durar de dies a mesos. Varien d’un episodi a l’altre segons la zona del sistema nerviós afectada. És més freqüent en dones i en les primeres etapes; moltes persones s’hi mantenen tota la vida.' },
+ { name: 'Primària progressiva', d: 'M6 62C60 60 120 44 194 16', label: 'Empitjorament gradual des del principi, sense brots.',
+   text: 'Els símptomes apareixen de manera progressiva, sobretot els relacionats amb caminar i amb la força. Afecta igual homes i dones.' },
+ { name: 'Secundària progressiva', d: 'M6 62H24L32 34L42 60H62L70 30L82 56C118 52 150 36 194 14', label: 'Primer brots i, amb els anys, empitjorament progressiu.',
+   text: 'Un 25% de les persones amb la forma remitent-recurrent evolucionen, amb els anys, cap a un empitjorament neurològic progressiu.' },
+ { name: 'Progressiva recurrent', tag: 'La menys freqüent', d: 'M6 62L44 52L50 34L58 46L100 36L106 20L114 30L154 22L160 8L168 16L194 10', label: 'Progressió constant amb brots afegits, sense remissions.',
+   text: 'Només un 3% de les persones amb EM la tenen. Es caracteritza per una progressió constant de la malaltia, sense remissions.' },
+];
+const words = [
+ { term: 'Brot', def: 'Aparició de símptomes nous durant 24 hores o més, que després remeten parcialment o del tot. Es desenvolupa durant hores o dies. És important anar al neuròleg per tractar-lo i recuperar-se millor.' },
+ { term: 'Desmielinització', def: 'Pèrdua de la capa de mielina que envolta les fibres nervioses.' },
+ { term: 'Malaltia autoimmunitària', def: 'Malaltia en què el sistema immunitari, a més de defensar-nos de virus i bacteris, ataca el propi organisme.' },
+ { term: 'Espasticitat', def: 'Tensió i rigidesa dels músculs, que pot dificultar el moviment.' },
+];
+const next = [
+ { title: 'Deteriorament cognitiu', text: 'Atenció, memòria i fatiga mental.', href: 'https://www.tranandorra.org/deteriorament-cognitiu-en-la-em/' },
+ { title: 'Benestar emocional', text: 'El pla integral de TRANA.', href: 'https://www.tranandorra.org/pla-integral-de-benestar-emocional-2/' },
+ { title: 'Activitat física i EM', text: 'Decàleg per moure’s amb seguretat.', href: 'https://www.tranandorra.org/decaleg-exercici-fisic-em/' },
+ { title: 'Glossari de l’EM', text: 'Totes les paraules, de la A a la Z.', href: 'https://www.tranandorra.org/glossari-em/' },
+];
+const tocList = toc.map((t) => ({ ...t, href: `#${t.id}` }));
+---
+<div class="pg">
+ <header class="em-top">
+  <Breadcrumbs items={[{ label: 'L’esclerosi múltiple', href: '/disseny/esclerosi-multiple/' }, { label: 'Què és l’EM?' }]} />
+  <div class="pg-wrap em-top-inner">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--blue)">Entendre l’EM</p>
+    <h1>Què és l’esclerosi múltiple?</h1>
+    <p class="pg-lede">És una malaltia crònica del sistema nerviós central. De moment no té cura, però sí tractament, i cada persona la viu d’una manera diferent.</p>
+    <ul class="pg-meta">
+     <li><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="2"/><path d="M10 6v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Lectura de 5 minuts</li>
+     <li>Font: FEM Catalunya, maig de 2021</li>
+    </ul>
+   </div>
+   <aside class="em-gist" aria-labelledby="gist-title">
+    <h2 id="gist-title">En poques paraules</h2>
+    <ul>
+     <li>Afecta el cervell i la medul·la espinal.</li>
+     <li>És una de les malalties neurològiques més comunes entre els 20 i els 40 anys.</li>
+     <li>No hi ha dues persones amb els mateixos símptomes ni la mateixa evolució.</li>
+    </ul>
+   </aside>
+  </div>
+ </header>
+
+ <div class="pg-wrap em-body">
+  <div>
+   <nav class="em-toc em-toc-desk" aria-labelledby="toc-d">
+    <p class="em-toc-title" id="toc-d">En aquesta pàgina</p>
+    <ol>{tocList.map((t) => <li><a href={t.href} data-toc>{t.label}</a></li>)}</ol>
+   </nav>
+   <details class="em-toc em-toc-mob">
+    <summary>En aquesta pàgina</summary>
+    <ol>{tocList.map((t) => <li><a href={t.href}>{t.label}</a></li>)}</ol>
+   </details>
+  </div>
+
+  <article class="em-prose">
+   <section aria-labelledby="autoimmune">
+    <h2 id="autoimmune">Una malaltia autoimmune</h2>
+    <p>Quan una malaltia és autoimmune, vol dir que el sistema immunitari ataca estructures del propi cos. En l’esclerosi múltiple ataca la <dfn>mielina</dfn>, la capa que protegeix les fibres nervioses i ajuda que els senyals hi circulin bé.</p>
+    <p>Quan la mielina es danya, la transmissió dels impulsos nerviosos s’interromp. Llavors apareixen els símptomes. Aquests atacs es coneixen com a <dfn>brots</dfn>.</p>
+    <figure class="em-figure">
+     <svg viewBox="0 0 520 120" role="img" aria-labelledby="fig-myelin">
+      <title id="fig-myelin">Esquema d’una fibra nerviosa: el senyal avança per les zones amb mielina i s’interromp on la mielina està danyada.</title>
+      <circle cx="40" cy="60" r="26" fill="#cfe0f6" stroke="#176ba3" stroke-width="3"/>
+      <circle cx="40" cy="60" r="9" fill="#176ba3"/>
+      <path d="M66 60H488" stroke="#172736" stroke-width="3"/>
+      <path d="M488 60l20-18M488 60l22 0M488 60l20 18" stroke="#172736" stroke-width="3" stroke-linecap="round"/>
+      <rect x="78" y="46" width="78" height="28" rx="14" fill="#176ba3"/>
+      <rect x="166" y="46" width="78" height="28" rx="14" fill="#176ba3"/>
+      <g fill="none" stroke="#ef4337" stroke-width="3" stroke-dasharray="8 6"><rect x="254" y="46" width="78" height="28" rx="14"/></g>
+      <path d="M266 52l10 6-6 8M300 50l8 10-10 6" stroke="#ef4337" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <rect x="342" y="46" width="78" height="28" rx="14" fill="#176ba3"/>
+      <rect x="430" y="46" width="48" height="28" rx="14" fill="#176ba3"/>
+      <g fill="#f7941d"><circle cx="117" cy="26" r="6"/><circle cx="160" cy="26" r="6"/><circle cx="205" cy="26" r="6"/><circle cx="244" cy="26" r="6" opacity=".55"/><circle cx="270" cy="26" r="6" opacity=".25"/></g>
+     </svg>
+     <ul class="em-legend" aria-hidden="true">
+      <li><i></i>Mielina sana</li>
+      <li><i class="hurt"></i>Mielina danyada</li>
+      <li><i style="background:#f7941d;width:12px;border-radius:50%"></i>Senyal nerviós</li>
+     </ul>
+    </figure>
+   </section>
+
+   <section aria-labelledby="mil-cares">
+    <h2 id="mil-cares">La malaltia de les mil cares</h2>
+    <p>L’esclerosi múltiple també es coneix com <em>la malaltia de les mil cares</em>, perquè es manifesta amb símptomes diferents en cada persona. Aquesta diversitat fa que el diagnòstic no sigui senzill: cal fer diverses proves per descartar altres malalties abans d’arribar-hi.</p>
+    <p>La seva evolució també és diferent en cada cas. Per això és tan important no comparar-se i tenir un equip mèdic de confiança.</p>
+    <div class="em-note" role="note">
+     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#172736" stroke-width="2"/><path d="M12 11v6" stroke="#172736" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="7.5" r="1.4" fill="#172736"/></svg>
+     <p>Aquesta informació és general. Qui pot valorar el teu cas és el teu equip de neurologia. A TRANA t’escoltem i t’orientem.</p>
+    </div>
+   </section>
+
+   <section aria-labelledby="tipus">
+    <h2 id="tipus">Els tipus d’esclerosi múltiple</h2>
+    <p>Es parla de quatre formes principals. Els dibuixos mostren, de manera molt simplificada, com pot evolucionar cadascuna amb el temps.</p>
+    <ul class="em-types">
+     {types.map((t) => (
+      <li>
+       <svg viewBox="0 0 200 76" role="img" aria-label={`Esquema: ${t.label}`}>
+        <path d="M6 68H194" stroke="#c4cddb" stroke-width="2"/>
+        <path d={t.d} fill="none" stroke="#176ba3" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+       </svg>
+       <div>
+        {t.tag && <span class="tag">{t.tag}</span>}
+        <h3>{t.name}</h3>
+        <p>{t.text}</p>
+       </div>
+      </li>
+     ))}
+    </ul>
+    <p class="em-small">Esquemes orientatius, no a escala. La línia que puja indica més afectació.</p>
+   </section>
+
+   <section aria-labelledby="paraules">
+    <h2 id="paraules">Paraules que sentiràs</h2>
+    <p>A la consulta apareixen paraules noves. Aquestes són de les més habituals.</p>
+    <dl class="em-words">
+     {words.map((w) => <div><dt>{w.term}</dt><dd>{w.def}</dd></div>)}
+    </dl>
+    <p style="margin-top:20px"><a class="pg-arrow" href="https://www.tranandorra.org/glossari-em/"><span>Consulta el glossari complet</span><Arrow /></a></p>
+   </section>
+  </article>
+ </div>
+
+ <section class="em-next" aria-labelledby="next-title">
+  <div class="pg-wrap">
+   <h2 class="pg-h2" id="next-title">Continua llegint</h2>
+   <ol>
+    {next.map((n) => <li><a href={n.href}><span><strong>{n.title}</strong><span>{n.text}</span></span><Arrow /></a></li>)}
+   </ol>
+  </div>
+ </section>
+
+ <HelpStrip title="Tens preguntes sobre l’EM?" text="Si acabes de rebre el diagnòstic o convius amb l’EM des de fa temps, pots trucar-nos o escriure’ns. Ho parlem amb tu." />
+</div>
+
+<script>
+ // Highlight the section currently in view in the desktop table of contents.
+ const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc]')];
+ const sections = links.map((a) => document.querySelector<HTMLElement>(a.hash)).filter(Boolean) as HTMLElement[];
+ if ('IntersectionObserver' in window && sections.length) {
+  const io = new IntersectionObserver((entries) => {
+   for (const e of entries) if (e.isIntersecting) {
+    links.forEach((a) => a.setAttribute('aria-current', String(a.hash === `#${e.target.id}`)));
+   }
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  sections.forEach((s) => io.observe(s));
+ }
+</script>

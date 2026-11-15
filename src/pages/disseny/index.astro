@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/pages.css';
+const pages = [
+ { href: '/disseny/esclerosi-multiple/', title: 'Què és l’esclerosi múltiple?', text: 'Pàgina de lectura llarga: índex, esquemes i vocabulari.' },
+ { href: '/disseny/tallers-neurocognitius/', title: 'Tallers neurocognitius', text: 'Presentació d’una activitat i com participar-hi.' },
+ { href: '/disseny/vivencies/', title: 'Vivències', text: 'Llistat per autors i sèries.' },
+ { href: '/disseny/vivencies/el-meu-darrer-brot/', title: 'Una vivència', text: '«El meu darrer brot», d’El nen del Solà d’Andorra.' },
+ { href: '/disseny/associacio/', title: 'L’associació', text: 'Qui som, història i junta directiva.' },
+ { href: '/disseny/documents/', title: 'Documents', text: 'Memòries, estatuts i recursos, amb cercador.' },
+ { href: '/disseny/contacte/', title: 'Contacte', text: 'Telèfon, correu, horari i motius de contacte.' },
+ { href: '/disseny/noticies/', title: 'Notícies', text: 'Llistat per any, destacat, paginació i butlletí.' },
+ { href: '/disseny/noticies/mes-enlla-del-dolor/', title: 'Una notícia (curta)', text: 'Article real de WordPress, amb compartir i més notícies.' },
+ { href: '/disseny/noticies/comunicat-de-premsa-dia-mundial-em/', title: 'Una notícia (llarga)', text: 'HTML antic de WordPress: taules d’imatges, títols, cites.' },
+ { href: '/disseny/cerca/', title: 'Cerca', text: 'Inici, resultats amb paraules marcades i «cap resultat». Prova amb ?q=tallers.' },
+ { href: '/disseny/404/', title: 'Pàgina no trobada (404)', text: 'Amb cerca i camins de sortida.' },
+ { href: '/disseny/donatiu/', title: 'Fes un donatiu', text: 'Bizum, transferència, quota de soci i empreses.' },
+ { href: '/disseny/fes-te-soci/', title: 'Fes-te soci o voluntari', text: 'Formulari amb errors i confirmació (no envia dades).' },
+ { href: '/disseny/guia/', title: 'Guia d’estil i accessibilitat', text: 'Colors, tipografia, components, escriptura i comprovacions.' },
+];
+---
+<BaseLayout title="Disseny de pàgines · TRANA">
+ <div class="pg"><div class="pg-wrap dz">
+  <h1>Disseny de les pàgines interiors</h1>
+  <p class="pg-lede">Propostes locals per revisar. El contingut és de mostra, extret del web actual de TRANA.</p>
+  <ol>{pages.map((p) => <li><a href={p.href}><span><strong>{p.title}</strong><span>{p.text}</span></span></a></li>)}</ol>
+ </div></div>
+</BaseLayout>

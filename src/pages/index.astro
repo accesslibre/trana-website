@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HomeContent from '../components/HomeContent.astro';
+import { getAllPosts } from '../lib/wordpress/index';
+const posts = await getAllPosts();
+---
+<BaseLayout title="TRANA · Esclerosi múltiple a Andorra" description="Associació d’Esclerosi Múltiple d’Andorra. Informació, tallers i defensa de drets.">
+  <HomeContent posts={posts} />
+</BaseLayout>

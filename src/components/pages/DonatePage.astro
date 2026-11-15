@@ -1,0 +1,117 @@
+---
+// Donation page. Bank details come from the public EM-LINE post (15 June 2026): TRANA must confirm
+// they are the general donation accounts before publishing.
+import '../../styles/pages.css';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Arrow from './Arrow.astro';
+import { contact } from './samples';
+const accounts = [
+ { bank: 'Creand', iban: 'AD36 0003 1101 1042 4871 0102' },
+ { bank: 'MoraBanc', iban: 'AD65 0007 0028 0002 1986 7017' },
+];
+const uses = [
+ { title: 'Tallers neurocognitius', text: 'Cada dimecres, per entrenar l’atenció i la memòria en grup.', href: '/disseny/tallers-neurocognitius/' },
+ { title: 'EM-LINE', text: 'Portar els tallers a casa de qui no es pot desplaçar.', href: '/2026/06/em-line-ajudeu-nos-a-la-seva-implantancio/' },
+ { title: 'Defensa de drets', text: 'Amb la FAAD, perquè les lleis i els serveis públics respectin la Convenció de l’ONU.', href: '/disseny/associacio/#qui-som' },
+];
+const logos = [
+ { src: '/images/41f4bfdaab3527d4c6f84072da827b11.jpg', alt: 'Govern d’Andorra' },
+ { src: '/images/168af39cf17823d68a2be10c6ddf07ba.png', alt: 'Comú d’Andorra la Vella' },
+ { src: '/images/836849c16565286a9d7d867b13fad0e6.png', alt: 'Creand Fundació' },
+ { src: '/images/3990c6734396a31f3a0c62ed39226ee4.jpg', alt: 'Andorra Telecom' },
+ { src: '/images/4b3cd8bfb1129ab26424361716796b73.jpg', alt: 'Universitat d’Andorra' },
+ { src: '/images/7c1d7103d80ccd0b66bcb562dc665ad8.png', alt: 'Creu Roja Andorrana' },
+ { src: '/images/e605b3aa6f612338f9c7e2c2546b6a1d.png', alt: 'Mediand Group' },
+ { src: '/images/08dd0b01dc571b4271776b7693cf3459.png', alt: 'Loyal Business Consulting' },
+];
+const copyIcon = '<svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M13 4H5a2 2 0 0 0-2 2v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+---
+<div class="pg">
+ <header class="dn-top">
+  <Breadcrumbs items={[{ label: 'Col·labora' }, { label: 'Fes un donatiu' }]} />
+  <div class="pg-wrap dn-top-inner">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--red)">Col·labora</p>
+    <h1>Fes un donatiu</h1>
+    <p class="pg-lede">TRANA es manté amb quotes, donatius i el suport d’entitats. El que aportis va als tallers, a EM-LINE i a la defensa dels drets de les persones amb esclerosi múltiple.</p>
+    <p class="dn-jump"><a class="pg-arrow" href="#transferencia"><span>Prefereixo una transferència</span><Arrow /></a><a class="pg-arrow" href="#soci"><span>Vull ajudar cada mes</span><Arrow /></a></p>
+   </div>
+   <section class="dn-bizum" aria-labelledby="bizum-title" data-copy-box>
+    <h2 id="bizum-title">Amb Bizum, en un minut</h2>
+    <p class="dn-code-label" id="bizum-code-label">Codi de donació de TRANA</p>
+    <p class="dn-code" aria-labelledby="bizum-code-label"><span>14112</span></p>
+    <button type="button" class="pill pill-ink" data-copy-value="14112" data-copy-done="Codi copiat: 14112"><Fragment set:html={copyIcon} />Copia el codi</button>
+    <p class="dn-copied" role="status" data-copy-status></p>
+    <ol class="dn-steps">
+     <li>Obre l’app del teu banc i entra a <strong>Bizum</strong>.</li>
+     <li>Tria <strong>Donar a una ONG</strong>.</li>
+     <li>Escriu el codi <strong>14112</strong> i l’import.</li>
+    </ol>
+   </section>
+  </div>
+ </header>
+
+ <section class="pg-wrap dn-uses" aria-labelledby="uses-title">
+  <h2 class="pg-h2" id="uses-title">On va el teu donatiu</h2>
+  <ul>
+   {uses.map((u) => <li><h3>{u.title}</h3><p>{u.text}</p><a class="pg-arrow" href={u.href}><span>Més informació<span class="vh">: {u.title}</span></span><Arrow /></a></li>)}
+  </ul>
+  <p class="dn-trust"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.300 8 9 4.600-.7 8-4.500 8-9V6l-8-3Z" stroke="#2a675c" stroke-width="2" stroke-linejoin="round"/><path d="m8.500 12 2.500 2.500 4.500-5" stroke="#2a675c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Cada any expliquem en què hem fet servir els diners a la <a href="/disseny/documents/">memòria anual</a>, que presentem a l’assemblea.</span></p>
+ </section>
+
+ <section class="dn-bank" id="transferencia" aria-labelledby="bank-title">
+  <div class="pg-wrap dn-bank-inner">
+   <div>
+    <h2 class="pg-h2" id="bank-title">Per transferència</h2>
+    <p>Fes l’ingrés a qualsevol d’aquests comptes, a nom de l’<strong>Associació T.R.A.N.A. Andorra</strong>. Al concepte, escriu «Donatiu» i, si vols que te’l puguem agrair, el teu nom.</p>
+   </div>
+   <ul class="dn-ibans">
+    {accounts.map((a) => (
+     <li data-copy-box>
+      <span class="dn-bankname">{a.bank}</span>
+      <code class="dn-iban">{a.iban}</code>
+      <button type="button" class="pill" data-copy-value={a.iban.replace(/\s/g, '')} data-copy-done={`IBAN de ${a.bank} copiat`}><Fragment set:html={copyIcon} />Copia l’IBAN<span class="vh"> de {a.bank}</span></button>
+      <p class="dn-copied" role="status" data-copy-status></p>
+     </li>
+    ))}
+   </ul>
+  </div>
+ </section>
+
+ <section class="pg-wrap dn-more" aria-labelledby="more-title">
+  <h2 class="pg-h2 vh" id="more-title">Altres maneres d’ajudar</h2>
+  <div class="dn-split">
+   <article id="soci" class="dn-member" aria-labelledby="soci-title">
+    <span class="dn-ico" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 44 44" fill="none"><path d="M22 34s-11-6.5-11-14.5A6 6 0 0 1 22 16a6 6 0 0 1 11 3.5C33 27.5 22 34 22 34Z" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg></span>
+    <h3 id="soci-title">Fes-te soci o sòcia</h3>
+    <p>Una quota estable ens ajuda a planificar els tallers tot l’any. Et contactem per explicar-te com funciona.</p>
+    <a class="pill pill-ink" href="/disseny/fes-te-soci/" style="min-height:52px">Vull fer-me soci</a>
+   </article>
+   <article class="dn-companies" aria-labelledby="ent-title">
+    <h3 id="ent-title">Empreses i entitats</h3>
+    <p>Patrocinis, recaptacions solidàries o donacions de material. Parlem-ne i ho adaptem a la vostra entitat.</p>
+    <a class="pg-arrow" href={`mailto:${contact.email}?subject=${encodeURIComponent('Col·laboració d’empresa o entitat')}`}><span>Escriu-nos</span><Arrow /></a>
+    <figure>
+     <img src="/images/pages/wp-1433.jpg" width="1172" height="831" loading="lazy" alt="Tres persones somrients amb mascareta; una d’elles sosté un xec simbòlic de 533,25 euros" />
+     <figcaption>Lliurament de la recaptació de la Campanya Nacional de promoció de l’activitat física, octubre de 2021.</figcaption>
+    </figure>
+   </article>
+  </div>
+ </section>
+
+ <section class="pg-wrap dn-logos" aria-labelledby="logos-title">
+  <h2 id="logos-title">Ens donen suport</h2>
+  <ul>{logos.map((l) => <li><img src={l.src} alt={l.alt} loading="lazy" /></li>)}</ul>
+ </section>
+
+</div>
+
+<script>
+ document.querySelectorAll<HTMLButtonElement>('[data-copy-value]').forEach((button) => {
+  button.addEventListener('click', async () => {
+   const status = button.closest('[data-copy-box]')?.querySelector<HTMLElement>('[data-copy-status]');
+   try { await navigator.clipboard.writeText(button.dataset.copyValue!); if (status) status.textContent = button.dataset.copyDone ?? 'Copiat'; }
+   catch { if (status) status.textContent = 'No s’ha pogut copiar. Selecciona el text i copia’l.'; }
+  });
+ });
+</script>

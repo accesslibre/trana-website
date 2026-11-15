@@ -1,0 +1,299 @@
+---
+// Living style and accessibility guide. Uses the same CSS and components as the pages it describes.
+import '../../styles/pages.css';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Arrow from './Arrow.astro';
+
+// WCAG relative luminance and contrast, computed at build time so the numbers never drift from the hex values.
+const lum = (hex: string) => {
+ const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+ return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+const ratio = (a: string, b: string) => { const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
+const fmt = (n: number) => n.toFixed(1).replace('.', ',');
+const ink = '#172736';
+const verdict = (n: number) => (n >= 7 ? 'AAA' : n >= 4.5 ? 'AA' : n >= 3 ? 'Només gran' : 'Decoratiu');
+
+const core = [
+ { name: 'Tinta', token: '--ink', hex: '#172736', use: 'Text, títols, botó principal, peu.' },
+ { name: 'Groc TRANA', token: '--sun', hex: '#ffd23f', use: 'Barra de menú, botó de donatiu, cites destacades. Mai per a text.' },
+ { name: 'Blau', token: '--blue', hex: '#176ba3', use: 'Icones, números de llista, accents de text gran o en negreta.' },
+ { name: 'Verd', token: '--green', hex: '#2a675c', use: 'Confirmacions, passos, accents. Apte per a text.' },
+ { name: 'Taronja', token: '--orange', hex: '#f7941d', use: 'Decoratiu: filet de colors, punts, línies de temps.' },
+ { name: 'Vermell', token: '--red', hex: '#ef4337', use: 'Decoratiu: cor del donatiu, cometes. Per a errors, #b3261e.' },
+ { name: 'Text secundari', token: '--muted', hex: '#3f4b63', use: 'Dates, peus de foto, ajudes de formulari.' },
+ { name: 'Error', token: '—', hex: '#b3261e', use: 'Missatges d’error, sempre amb icona i text.' },
+ { name: 'Focus', token: '—', hex: '#2f7ddd', use: 'Contorn de focus de 4 px. Sobre fons fosc, groc.' },
+];
+const tints = [
+ { name: 'Cel', token: '--sky', hex: '#e2eefc', where: 'Entendre l’EM, cerca' },
+ { name: 'Lila', token: '--lilac', hex: '#eee6f8', where: 'Suport i activitats' },
+ { name: 'Rosa', token: '--rose', hex: '#fce4df', where: 'Vivències' },
+ { name: 'Menta', token: '--mint', hex: '#ddf2ec', where: 'Documents, formularis' },
+ { name: 'Crema', token: '--sun-soft', hex: '#fff2ce', where: 'Notícies, avisos' },
+ { name: 'Préssec', token: '--peach', hex: '#ffe3c2', where: 'Inici, franja d’ajuda' },
+];
+const type = [
+ { el: 'Títol de pàgina (h1)', font: 'Poppins 700', size: '56 / 36 px', lh: '1,05–1,1', sample: 'Tallers neurocognitius', css: 'font:700 clamp(36px,4.4vw,56px)/1.08 Poppins' },
+ { el: 'Secció (h2)', font: 'Poppins 700', size: '38 / 28 px', lh: '1,15', sample: 'Com participar-hi', css: 'font:700 clamp(28px,3vw,38px)/1.15 Poppins' },
+ { el: 'Subsecció (h3)', font: 'Poppins 700', size: '21–24 px', lh: '1,2–1,3', sample: 'Trobem el teu grup', css: 'font:700 22px/1.25 Poppins' },
+ { el: 'Entradeta', font: 'Atkinson 400', size: '21 / 19 px', lh: '1,55', sample: 'Entrenem l’atenció i la memòria en grup, cada setmana.', css: 'font:400 21px/1.55 Atkinson Hyperlegible' },
+ { el: 'Text de lectura', font: 'Atkinson 400', size: '19–20 px', lh: '1,7', sample: 'L’esclerosi múltiple també es coneix com la malaltia de les mil cares.', css: 'font:400 19px/1.7 Atkinson Hyperlegible' },
+ { el: 'Text base', font: 'Atkinson 400', size: '17–18 px', lh: '1,55', sample: 'Truca’ns, escriu-nos o vine al local d’Andorra la Vella.', css: 'font:400 17.5px/1.55 Atkinson Hyperlegible' },
+ { el: 'Etiqueta, data', font: 'Poppins 600', size: '14,5–15 px', lh: '1,3', sample: '30 de maig de 2024 · Lectura de 4 minuts', css: 'font:600 15px/1.3 Poppins' },
+];
+const toc = [
+ ['principis', 'Principis'], ['color', 'Color'], ['tipografia', 'Tipografia'], ['espai', 'Espai i retícula'],
+ ['components', 'Components'], ['formularis', 'Formularis'], ['fotografia', 'Fotografia'], ['escriptura', 'Escriptura'],
+ ['accessibilitat', 'Accessibilitat'], ['pendent', 'Decisions pendents'],
+];
+---
+<div class="pg">
+ <header class="em-top gd-top">
+  <Breadcrumbs items={[{ label: 'Disseny', href: '/disseny/' }, { label: 'Guia d’estil i accessibilitat' }]} />
+  <div class="pg-wrap em-top-inner">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--blue)">Per a qui fa el web</p>
+    <h1>Guia d’estil i accessibilitat</h1>
+    <p class="pg-lede">Com es veu, com s’escriu i com ha de funcionar el web de TRANA. Aquesta pàgina fa servir els mateixos estils que el web: si canvia el codi, canvia la guia.</p>
+    <ul class="pg-meta"><li>Versió de treball · 15 de novembre de 2026</li><li>Objectiu: WCAG 2.2 AA</li></ul>
+   </div>
+   <aside class="em-gist" aria-labelledby="gd-rules">
+    <h2 id="gd-rules">Les cinc regles</h2>
+    <ul>
+     <li>Text mínim de 17 px, i 19 px per llegir.</li>
+     <li>Contrast de 4,5:1 per al text. Els colors del logo, només decoratius.</li>
+     <li>Tot es pot fer amb teclat i el focus sempre es veu.</li>
+     <li>Fotos reals de TRANA, amb peu i data.</li>
+     <li>Frases curtes, en català planer, i tracte de tu.</li>
+    </ul>
+   </aside>
+  </div>
+ </header>
+
+ <div class="pg-wrap em-body">
+  <div>
+   <nav class="em-toc em-toc-desk" aria-labelledby="gd-toc"><p class="em-toc-title" id="gd-toc">En aquesta guia</p><ol>{toc.map(([id, l]) => <li><a href={`#${id}`} data-toc>{l}</a></li>)}</ol></nav>
+   <details class="em-toc em-toc-mob"><summary>En aquesta guia</summary><ol>{toc.map(([id, l]) => <li><a href={`#${id}`}>{l}</a></li>)}</ol></details>
+  </div>
+
+  <article class="em-prose gd">
+   <section aria-labelledby="principis">
+    <h2 id="principis">Principis</h2>
+    <dl class="em-words">
+     <div><dt>Clar abans que bonic</dt><dd>Qui arriba sovint està cansat, preocupat o té dificultats de visió, memòria o motricitat. Cada pàgina respon una pregunta i diu què pots fer després.</dd></div>
+     <div><dt>Proper i real</dt><dd>Fotos de la gent de TRANA, vivències amb la veu de qui les escriu i un telèfon sempre a mà. Res d’imatges de banc ni frases de farciment.</dd></div>
+     <div><dt>Cada pàgina, la seva forma</dt><dd>Mateixa paleta i tipografia, però composició adaptada al contingut: lectura llarga, activitat, llistat, document. No repetim el mateix hero ni omplim de targetes.</dd></div>
+     <div><dt>Accessible de sèrie</dt><dd>L’accessibilitat no és una revisió final. Cada component ja neix amb focus, etiquetes, contrast i mida tàctil correctes.</dd></div>
+    </dl>
+   </section>
+
+   <section aria-labelledby="color">
+    <h2 id="color">Color</h2>
+    <p>Els colors surten del logo. La <strong>tinta</strong> fa tota la feina de text; el <strong>groc</strong> és la marca; la resta són accents. El contrast es calcula automàticament amb la fórmula de WCAG.</p>
+    <div class="gd-table-wrap" tabindex="0" role="region" aria-label="Taula de colors">
+     <table class="gd-table">
+      <caption class="vh">Colors principals i contrast</caption>
+      <thead><tr><th scope="col">Color</th><th scope="col">Sobre blanc</th><th scope="col">Amb tinta</th><th scope="col">Ús</th></tr></thead>
+      <tbody>
+       {core.map((c) => {
+        const w = ratio(c.hex, '#ffffff'); const k = ratio(c.hex, ink);
+        return <tr>
+         <th scope="row"><span class="gd-sw" style={`background:${c.hex}`}></span><span><strong>{c.name}</strong><code>{c.hex}</code>{c.token !== '—' && <code>{c.token}</code>}</span></th>
+         <td><span class="gd-ratio">{fmt(w)}:1</span><span class:list={['gd-badge', verdict(w) === 'Decoratiu' || verdict(w) === 'Només gran' ? 'is-low' : '']}>{verdict(w)}</span></td>
+         <td>{c.hex === ink ? '—' : <><span class="gd-ratio">{fmt(k)}:1</span><span class:list={['gd-badge', verdict(k) === 'Decoratiu' || verdict(k) === 'Només gran' ? 'is-low' : '']}>{verdict(k)}</span></>}</td>
+         <td>{c.use}</td>
+        </tr>;
+       })}
+      </tbody>
+     </table>
+    </div>
+    <p class="em-small">«Només gran»: vàlid per a text de 24 px o 19 px en negreta, i per a icones i contorns (3:1). «Decoratiu»: mai com a únic portador d’informació.</p>
+
+    <h3 class="gd-h3">Un color de fons per secció</h3>
+    <p>Cada gran secció del menú té un to suau per a la capçalera. Ajuda a orientar-se sense dependre del color: el títol i la molla de pa diuen sempre on ets.</p>
+    <ul class="gd-tints">
+     {tints.map((t) => <li style={`background:${t.hex}`}><strong>{t.name}</strong><code>{t.hex}</code><span>{t.where}</span><span class="gd-ratio">Tinta: {fmt(ratio(t.hex, ink))}:1</span></li>)}
+    </ul>
+    <div class="pg-rule gd-rule" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    <p class="em-small">El filet de cinc colors del logo marca el final de la capçalera i separa seccions. És decoratiu.</p>
+   </section>
+
+   <section aria-labelledby="tipografia">
+    <h2 id="tipografia">Tipografia</h2>
+    <p><strong>Poppins</strong> per a títols, botons i etiquetes. <strong>Atkinson Hyperlegible</strong> per a tot el text: va ser dissenyada per a persones amb baixa visió i distingeix bé lletres semblants (I, l, 1). Totes dues es serveixen des del web, amb llicència OFL.</p>
+    <ul class="gd-type">
+     {type.map((t) => <li><p class="gd-type-meta"><strong>{t.el}</strong><span>{t.font} · {t.size} · interlineat {t.lh}</span></p><p style={t.css}>{t.sample}</p></li>)}
+    </ul>
+    <div class="em-note" role="note"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#172736" stroke-width="2"/><path d="M12 11v6" stroke="#172736" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="7.5" r="1.4" fill="#172736"/></svg><p>Línies de lectura de 60 a 70 caràcters. Sense text justificat, sense cursives llargues i sense títols en majúscules: es llegeixen pitjor. Els títols antics de WordPress en majúscules s’haurien de reescriure.</p></div>
+   </section>
+
+   <section aria-labelledby="espai">
+    <h2 id="espai">Espai i retícula</h2>
+    <dl class="em-words">
+     <div><dt>Amplada</dt><dd>Contingut a 1.060 px. Lectura a 700 px. Marges laterals de 24 px a l’escriptori i 16 px al mòbil.</dd></div>
+     <div><dt>Punt de tall</dt><dd>960 px, el mateix que el menú. Per sota, tot passa a una columna. Comprovat a 390 px i a 320 px sense desplaçament horitzontal.</dd></div>
+     <div><dt>Ritme vertical</dt><dd>Seccions separades per 72 px (48 al mòbil). Dins d’un bloc, 12, 16 o 24 px.</dd></div>
+     <div><dt>Cantonades</dt><dd>12 px per a elements petits, 16–24 px per a blocs i fotos. Les fotos destacades fan servir una cantonada gran asimètrica, que és la signatura visual.</dd></div>
+    </dl>
+    <div class="gd-corner" aria-hidden="true"><img src="/images/pages/wp-307.jpg" alt="" width="1159" height="780" loading="lazy" /></div>
+   </section>
+
+   <section aria-labelledby="components">
+    <h2 id="components">Components</h2>
+    <p>Mostres en viu. Cada component indica a quines pàgines s’usa.</p>
+
+    <div class="gd-demo">
+     <h3>Botons</h3>
+     <div class="gd-row">
+      <a class="pill pill-ink" href="#components" style="min-height:52px">Acció principal</a>
+      <a class="pill pill-sun" href="#components" style="min-height:52px">Donatiu</a>
+      <a class="pill" href="#components" style="min-height:52px">Acció secundària</a>
+     </div>
+     <p class="gd-note">Màxim una acció principal per bloc. Alçada mínima de 48 px. El text diu què passa: «Truca al +376 821 345», no «Clica aquí».</p>
+    </div>
+
+    <div class="gd-demo">
+     <h3>Enllaç amb fletxa</h3>
+     <div class="gd-row"><a class="pg-arrow" href="#components"><span>Totes les activitats</span><Arrow /></a></div>
+     <p class="gd-note">Per anar a una altra pàgina. Sempre subratllat: el color sol no basta per reconèixer un enllaç.</p>
+    </div>
+
+    <div class="gd-demo">
+     <h3>Etiqueta de secció, xip i data</h3>
+     <div class="gd-row"><p class="pg-eyebrow" style="--dot:var(--green);margin:0">Col·labora</p><span class="chip">El més recent</span><span class="sr-meta">Notícia · 12 de novembre de 2026</span></div>
+    </div>
+
+    <div class="gd-demo">
+     <h3>Nota</h3>
+     <div class="em-note" role="note" style="margin-top:0"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#172736" stroke-width="2"/><path d="M12 11v6" stroke="#172736" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="7.5" r="1.4" fill="#172736"/></svg><p>Per a avisos importants dins d’un text. Un per pàgina, com a molt dos.</p></div>
+    </div>
+
+    <div class="gd-demo">
+     <h3>Inicials</h3>
+     <div class="gd-row"><span class="vv-mono orange">NS</span><span class="vv-mono blue">SA</span><span class="vv-mono green">NR</span><span class="vv-mono red">JR</span><span class="vv-mono" style="--m:var(--ink)">IA</span></div>
+     <p class="gd-note">En lloc de fotos de persones quan no tenim una imatge amb permís. Decoratives: el nom sempre és al costat.</p>
+    </div>
+
+    <div class="gd-demo">
+     <h3>On es fa servir</h3>
+     <div class="gd-table-wrap" tabindex="0" role="region" aria-label="Taula de components"><table class="gd-table">
+      <thead><tr><th scope="col">Component</th><th scope="col">Pàgines</th></tr></thead>
+      <tbody>
+       <tr><th scope="row">Índex lateral</th><td><a href="/disseny/esclerosi-multiple/">Què és l’EM</a>, aquesta guia</td></tr>
+       <tr><th scope="row">Dades en quatre caselles</th><td><a href="/disseny/tallers-neurocognitius/">Tallers</a></td></tr>
+       <tr><th scope="row">Passos numerats</th><td><a href="/disseny/tallers-neurocognitius/#participa">Tallers</a>, <a href="/disseny/fes-te-soci/">Fes-te soci</a></td></tr>
+       <tr><th scope="row">Llista per autor</th><td><a href="/disseny/vivencies/">Vivències</a></td></tr>
+       <tr><th scope="row">Línia de temps</th><td><a href="/disseny/associacio/#historia">Associació</a></td></tr>
+       <tr><th scope="row">Llista de documents i cercador</th><td><a href="/disseny/documents/">Documents</a></td></tr>
+       <tr><th scope="row">Llista per any i paginació</th><td><a href="/disseny/noticies/">Notícies</a></td></tr>
+       <tr><th scope="row">Text de WordPress</th><td><a href="/disseny/noticies/comunicat-de-premsa-dia-mundial-em/">Article</a></td></tr>
+       <tr><th scope="row">Franja d’ajuda</th><td><a href="/disseny/esclerosi-multiple/">Què és l’EM</a></td></tr>
+      </tbody>
+     </table></div>
+    </div>
+   </section>
+
+   <section aria-labelledby="formularis">
+    <h2 id="formularis">Formularis</h2>
+    <p>Com menys camps, millor. L’etiqueta va sempre a sobre del camp i no es substitueix mai pel text d’exemple. Els camps opcionals s’indiquen; els obligatoris no cal.</p>
+    <div class="gd-demo">
+     <h3>Estats</h3>
+     <div class="fm gd-form" aria-label="Exemple d’estats de formulari">
+      <div class="fm-field"><label for="gd-a">Camp normal</label><input id="gd-a" type="text" autocomplete="off" /></div>
+      <div class="fm-field"><label for="gd-b">Amb ajuda <span class="fm-opt">(opcional)</span></label><p class="fm-hint" id="gd-b-h">Si prefereixes que et truquem.</p><input id="gd-b" type="tel" aria-describedby="gd-b-h" class="fm-w-md" autocomplete="off" /></div>
+      <div class="fm-field is-invalid"><label for="gd-c">Amb error</label><p class="fm-error" id="gd-c-e">Escriu un correu com nom@exemple.ad.</p><input id="gd-c" type="email" value="marta@" aria-invalid="true" aria-describedby="gd-c-e" autocomplete="off" /></div>
+      <fieldset class="fm-field"><legend>Opcions</legend><div class="fm-choices fm-inline"><label class="fm-choice"><input type="radio" name="gd-r" checked /><span><strong>Per correu</strong></span></label><label class="fm-choice"><input type="radio" name="gd-r" /><span><strong>Per telèfon</strong></span></label></div></fieldset>
+     </div>
+    </div>
+    <ul class="gd-list">
+     <li><strong>Errors:</strong> en enviar, un resum a dalt amb enllaços a cada camp, i el missatge al costat del camp, amb icona, text i vora vermella. El focus va al resum.</li>
+     <li><strong>Missatges:</strong> diuen com arreglar-ho. «Escriu un telèfon si vols que et truquem», no «Camp invàlid».</li>
+     <li><strong>Confirmació:</strong> substitueix el formulari, rep el focus, diu què passarà després i com contactar si no passa.</li>
+     <li><strong>Dades de salut:</strong> no les demanem. Si algú escriu un missatge, recordem que no cal explicar-ne.</li>
+     <li><strong>Autocompletar:</strong> <code>autocomplete</code> a nom, correu i telèfon, i el teclat adequat al mòbil.</li>
+    </ul>
+    <p><a class="pg-arrow" href="/disseny/fes-te-soci/"><span>Prova el formulari complet</span><Arrow /></a></p>
+   </section>
+
+   <section aria-labelledby="fotografia">
+    <h2 id="fotografia">Fotografia</h2>
+    <ul class="gd-list">
+     <li><strong>Fotos reals de TRANA</strong>, de la mediateca de WordPress o de Flickr. Les d’arxiu genèric, només per a temes (com el taxi adaptat) i dient-ho.</li>
+     <li><strong>Cada foto, un sol lloc.</strong> No repetim la mateixa imatge en dues pàgines.</li>
+     <li><strong>Peu de foto amb què i quan</strong>: «Festa de final de curs, juny de 2021». Una foto antiga no es presenta com a actual.</li>
+     <li><strong>Text alternatiu</strong>: descriu el que es veu i per què hi és. Mai no diu ni suggereix que una persona té EM o un diagnòstic.</li>
+     <li><strong>Decoratives</strong> amb <code>alt=""</code> quan el text del costat ja ho diu tot (miniatures de notícies).</li>
+     <li><strong>Cartells i logos no es retallen</strong>: es mostren sencers sobre fons clar.</li>
+     <li><strong>Sense escenes de patiment.</strong> Persones fent coses, juntes.</li>
+    </ul>
+   </section>
+
+   <section aria-labelledby="escriptura">
+    <h2 id="escriptura">Escriptura</h2>
+    <div class="gd-table-wrap" tabindex="0" role="region" aria-label="Taula d’escriptura"><table class="gd-table gd-do">
+     <thead><tr><th scope="col">Millor</th><th scope="col">Evitem</th></tr></thead>
+     <tbody>
+      <tr><td>Persones amb esclerosi múltiple</td><td>Malalts d’EM, víctimes, que pateixen</td></tr>
+      <tr><td>Truca’ns. Escriu-nos. (tracte de tu)</td><td>Pot contactar amb nosaltres</td></tr>
+      <tr><td>Soci o sòcia, voluntari o voluntària</td><td>Només el masculí</td></tr>
+      <tr><td>Dimecres, de 16 a 17 h</td><td>Dimecres 16:00-17:00h</td></tr>
+      <tr><td>12 de novembre de 2026</td><td>12/11/26</td></tr>
+      <tr><td>+376 821 345</td><td>821345</td></tr>
+      <tr><td>Consulta el glossari complet</td><td>Clica aquí, Més informació</td></tr>
+     </tbody>
+    </table></div>
+    <p class="em-small">Les vivències es publiquen amb les paraules de qui les escriu. No es corregeix l’estil, només s’hi afegeix estructura (títol, data, sèrie).</p>
+   </section>
+
+   <section aria-labelledby="accessibilitat">
+    <h2 id="accessibilitat">Accessibilitat</h2>
+    <p>Objectiu: <strong>WCAG 2.2 nivell AA</strong>. Això no és una declaració de conformitat: cal revisió amb lectors de pantalla i amb persones usuàries.</p>
+    <ol class="gd-check">
+     <li><strong>Estructura.</strong> Un sol h1. Títols en ordre. Enllaç «Vés al contingut principal». Zones <code>header</code>, <code>nav</code>, <code>main</code> i <code>footer</code>. Idioma <code>ca</code>.</li>
+     <li><strong>Teclat.</strong> Tot funciona amb tabulador, Retorn i Escapada. El menú i la cerca es tanquen amb Escapada i tornen el focus al botó.</li>
+     <li><strong>Focus visible.</strong> Contorn blau de 4 px, groc sobre fons fosc. Mai <code>outline:none</code> sense alternativa.</li>
+     <li><strong>Mida tàctil.</strong> Mínim 44 × 44 px per a botons i enllaços sols, 48 px recomanat.</li>
+     <li><strong>Contrast.</strong> 4,5:1 per al text; 3:1 per a icones, contorns de camps i text gran.</li>
+     <li><strong>Res només amb color.</strong> Errors amb icona i text. Enllaços subratllats. Estat actual amb pes i forma.</li>
+     <li><strong>Ampliació.</strong> Funciona al 200% i a 320 px d’amplada sense desplaçament horitzontal.</li>
+     <li><strong>Moviment.</strong> Transicions curtes i desactivades amb <code>prefers-reduced-motion</code>.</li>
+     <li><strong>Missatges d’estat.</strong> Resultats de cerca, còpia d’enllaç i filtres s’anuncien amb <code>role="status"</code>.</li>
+     <li><strong>Imatges i esquemes.</strong> Text alternatiu útil; els esquemes tenen títol i la llegenda no depèn del color.</li>
+     <li><strong>Documents.</strong> Els PDF nous, etiquetats i amb títol. Al costat de cada PDF, mida i format.</li>
+     <li><strong>Vídeo.</strong> Subtítols en català als vídeos propis.</li>
+    </ol>
+    <h3 class="gd-h3">Com ho comprovem</h3>
+    <dl class="em-words">
+     <div><dt>Automàtic</dt><dd>axe-core amb les regles WCAG 2.2 AA a cada pàgina, a 1.280 i 390 px. Estat actual: 0 errors a totes les pàgines de disseny, també amb resultats de cerca, sense resultats i amb errors de formulari.</dd></div>
+     <div><dt>Manual</dt><dd>Recorregut amb teclat, zoom al 200% i 400%, VoiceOver a macOS i iOS, NVDA a Windows. <em>Pendent.</em></dd></div>
+     <div><dt>Amb persones</dt><dd>Sessions curtes amb socis de TRANA, incloent-hi persones amb fatiga, baixa visió o tremolor. <em>Pendent.</em></dd></div>
+    </dl>
+   </section>
+
+   <section aria-labelledby="pendent">
+    <h2 id="pendent">Decisions pendents</h2>
+    <p>El codi actual fa servir dues versions d’alguns colors. Proposem unificar-los:</p>
+    <div class="gd-table-wrap" tabindex="0" role="region" aria-label="Taula de colors a unificar"><table class="gd-table">
+     <thead><tr><th scope="col">Ara</th><th scope="col">Proposta</th><th scope="col">Per què</th></tr></thead>
+     <tbody>
+      <tr><td><span class="gd-sw sm" style="background:#1f2a5c"></span><code>#1f2a5c</code> i <span class="gd-sw sm" style="background:#172736"></span><code>#172736</code></td><td><code>#172736</code></td><td>És la tinta del logo i la del menú v7. Contrast {fmt(ratio('#172736', '#ffffff'))}:1.</td></tr>
+      <tr><td><span class="gd-sw sm" style="background:#f4d077"></span><code>#f4d077</code> i <span class="gd-sw sm" style="background:#ffd23f"></span><code>#ffd23f</code></td><td><code>#ffd23f</code> per a marca, <code>#fff2ce</code> per a fons</td><td>Un sol groc fort. El suau només com a fons.</td></tr>
+      <tr><td><span class="gd-sw sm" style="background:#008f8c"></span><code>#008f8c</code> i <span class="gd-sw sm" style="background:#2a675c"></span><code>#2a675c</code></td><td><code>#2a675c</code></td><td>El turquesa fa {fmt(ratio('#008f8c', '#ffffff'))}:1 sobre blanc i no serveix per a text.</td></tr>
+      <tr><td><span class="gd-sw sm" style="background:#ed5b4c"></span><code>#ed5b4c</code> i <span class="gd-sw sm" style="background:#ef4337"></span><code>#ef4337</code></td><td><code>#ef4337</code> decoratiu, <code>#b3261e</code> per a errors</td><td>Separar marca i error.</td></tr>
+     </tbody>
+    </table></div>
+    <p>També cal decidir: el servei per enviar formularis i butlletí, si la cerca ha d’incloure pàgines a més de notícies, i qui revisa els textos alternatius de les fotos antigues de WordPress.</p>
+   </section>
+  </article>
+ </div>
+</div>
+
+<script>
+ const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc]')];
+ const secs = links.map((a) => document.querySelector<HTMLElement>(a.hash)).filter(Boolean) as HTMLElement[];
+ if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) links.forEach((a) => a.setAttribute('aria-current', String(a.hash === `#${e.target.id}`))); }, { rootMargin: '-20% 0px -70% 0px' });
+  secs.forEach((s) => io.observe(s));
+ }
+</script>

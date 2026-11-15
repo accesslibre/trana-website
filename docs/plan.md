@@ -1,6 +1,6 @@
 # Delivery plan
 
-Planning baseline · 13 November 2026. Updated 15 November: native Astro is in the local checkout with WordPress data, routes/search and noindex preview configuration. The current visual reference is the approved v7 home/navigation with the official TRANA logo; interior page designs are reviewed at `/disseny/`. Claude leads visual design; Codex handles data/URL/SEO integration, infrastructure and verification. Local commits are now authorized; ongoing design work remains separate. Production migration and publishing hooks are not activated.
+Planning baseline · 13 November 2026. Updated 15 November: native Astro is in the checkout with WordPress data, routes/search and noindex preview configuration. The current visual reference is the approved v7 home/navigation with the official TRANA logo; completed interior designs and the living style guide are reviewed at `/disseny/`. Claude leads visual design; Codex handles data/URL/SEO integration, infrastructure and verification. Local commits are authorized, with presentation work versioned separately from foundation/data. Production migration and publishing hooks are not activated.
 
 ## 1. Preparation — current stage
 
@@ -13,7 +13,7 @@ Planning baseline · 13 November 2026. Updated 15 November: native Astro is in t
 
 ## 2. Read-only frontend pilot
 
-1. **Implemented locally:** Astro static output, TypeScript, pinned Node 24.16.0 and a dependency lockfile. Commit the reviewed foundation/data layer separately from the presentation work while Claude is editing it. Pushes and deployment are outside this step.
+1. **Implemented locally:** Astro static output, TypeScript, pinned Node 24.16.0 and a dependency lockfile. The foundation/data and completed presentation work are versioned separately. Next, integrate the reviewed components into content-backed routes, complete page coverage and connect the forms. Pushes and deployment are outside this step.
 2. **Implemented and tested:** public WordPress adapter with explicit pagination, home, association page, 259 published articles at their original dated paths, a paginated news list, local search and 404. A failed build preserves the previous output.
 3. **Pending TRANA review:** agree heading changes, image alternatives, treatment of the article table and content rights.
 4. **Initial checks passed:** type checking, 13 unit tests and 13 browser checks covering keyboard focus, mobile menu, reflow, search and automated accessibility rules. Continue with screen-reader and user review against [WCAG 2.2 AA](https://www.w3.org/TR/WCAG22/); this is not a conformance claim.

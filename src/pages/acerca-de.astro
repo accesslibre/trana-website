@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPageBySlug } from '../lib/wordpress/index';
+const page = await getPageBySlug('acerca-de');
+---
+<BaseLayout title={`${page.title} · TRANA`} description={page.excerpt}>
+  <article class="association-page">
+    <a href="/">← Inici</a>
+    <h1>{page.title}</h1>
+    <div class="wordpress-content" set:html={page.html} />
+    <p><a href="/#contacte">Contacta amb TRANA</a></p>
+  </article>
+</BaseLayout>
+<style>
+  .association-page { max-width: 52rem; margin-inline: auto; padding: 64px 24px; overflow-wrap: anywhere; }
+  h1 { font-size: clamp(2.25rem, 5vw, 3rem); line-height: 1; margin-block: 32px; text-wrap: balance; }
+  .wordpress-content :global(img) { max-width: 100%; height: auto; }
+  .wordpress-content { overflow-x: auto; }
+  .wordpress-content :global(p), .wordpress-content :global(ul), .wordpress-content :global(ol) { line-height: 1.75; margin-block: 24px; }
+  .wordpress-content :global(h2), .wordpress-content :global(h3), .wordpress-content :global(h4) { margin-block: 32px 16px; }
+  @media (max-width: 40rem) { .association-page { padding: 40px 16px; } }
+</style>

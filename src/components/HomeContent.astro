@@ -1,0 +1,103 @@
+---
+import type { WordPressPost } from '../lib/wordpress';
+import { formatDate } from '../lib/routes';
+interface Props { posts: WordPressPost[] }
+const { posts } = Astro.props;
+---
+
+<!-- Portada -->
+<section id="top" aria-labelledby="hero-title" style="display:flex;flex-wrap:wrap;background:#FFF2CE;overflow:hidden;position:relative;min-height:531px">
+<span aria-hidden="true" style="position:absolute;left:0;top:0;width:62px;height:72px;background:#F4D077;clip-path:polygon(0 0,100% 0,0 100%)"></span>
+<div style="flex:1 1 460px;padding:64px 40px 64px clamp(24px,10.5vw,150px);display:flex;flex-direction:column;gap:22px;justify-content:center;box-sizing:border-box">
+<h1 id="hero-title" style="font-size:clamp(36px,4vw,54px);line-height:1.1;max-width:520px">Acompanyem les persones amb esclerosi múltiple</h1>
+<p style="font-size:18px;max-width:440px">Informació, tallers i defensa de drets a Andorra. Tant si acabes de rebre el diagnòstic com si fa anys que hi convius, aquí tens un lloc on començar.</p>
+<p style="margin-top:4px"><a class="pill pill-navy" href="#ajuda" style="min-height:52px;padding:0 28px">Acabo de rebre el diagnòstic</a></p>
+</div>
+<div style="flex:1.15 1 500px;min-height:420px;position:relative;clip-path:polygon(9% 0,100% 0,100% 100%,0 100%)">
+<img fetchpriority="high" decoding="async" src="/images/c12ca1b735e1848a2292ab29fe2c00d6.jpg" alt="Grup de persones de TRANA somrient juntes en una trobada a l'aire lliure" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%">
+</div>
+</section>
+
+<!-- Som TRANA -->
+<section id="som" aria-labelledby="som-title" style="padding:64px 24px 56px;box-sizing:border-box">
+<div style="max-width:545px;margin:0 auto;display:flex;flex-direction:column;gap:16px">
+<h2 id="som-title" style="font-size:clamp(34px,3.4vw,48px)">Som TRANA</h2>
+<p style="font-size:17px">Som l'associació que acompanya les persones amb esclerosi múltiple i les seves famílies a Andorra, a cada pas del camí.</p>
+<p style="font-size:17px">Informem i acompanyem. Entrenem la memòria i l'atenció amb tallers neurocognitius. Defensem els drets de les persones amb discapacitat.</p>
+<p style="font-size:17px">Som una comunitat unida per una missió: millorar la vida amb esclerosi múltiple.</p>
+</div>
+</section>
+
+<!-- Targetes principals -->
+<section id="ajuda" aria-label="Com et podem ajudar" style="background:#DDF2EC;padding:28px 24px;box-sizing:border-box">
+<ul style="max-width:1060px;margin:0 auto;list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:24px">
+<li class="pcard" style="flex:1 1 280px"><img loading="lazy" decoding="async" class="sq" src="/images/9090b0c6258bad4d63370d240db47feb.jpg" alt="Persones assegudes al voltant d'una taula en un taller de TRANA" style="object-position:50% 30%"><span aria-hidden="true" style="display:block;height:6px;background:#008F8C"></span><div style="padding:16px 18px 10px;display:flex;flex-direction:column;gap:10px;flex:1"><h3>Acabo de rebre el diagnòstic</h3><p style="font-size:15.5px">Quan reps el diagnòstic pot ser difícil saber per on començar. Hi ha molt a tenir en compte i cada persona és diferent. Som aquí per acompanyar-te.</p><a class="go" href="/#contacte"><span>Troba suport per a recent diagnosticats</span><svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="m2 2 6 6-6 6" stroke="#1F2A5C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></li>
+<li class="pcard" style="flex:1 1 280px"><img loading="lazy" decoding="async" class="sq" src="/images/05cfcd4f376004a90cba7fb72905c5c6.jpg" alt="Participants d'un taller neurocognitiu conversant" style="object-position:50% 20%"><span aria-hidden="true" style="display:block;height:6px;background:#2F7DDD"></span><div style="padding:16px 18px 10px;display:flex;flex-direction:column;gap:10px;flex:1"><h3>Tallers neurocognitius</h3><p style="font-size:15.5px">Sessions presencials per treballar la memòria i l’atenció. També en línia amb EM-LINE.</p><a class="go" href="#proxim"><span>Descobreix els tallers</span><svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="m2 2 6 6-6 6" stroke="#1F2A5C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></li>
+<li class="pcard" style="flex:1 1 280px"><img loading="lazy" decoding="async" class="sq" src="/images/9debb63c2805d84827144fb101d66099.jpg" alt="Persones de l'associació TRANA conversant a l'aire lliure" style="object-position:50% 20%"><span aria-hidden="true" style="display:block;height:6px;background:#ED5B4C"></span><div style="padding:16px 18px 10px;display:flex;flex-direction:column;gap:10px;flex:1"><h3>Defensa de drets</h3><p style="font-size:15.5px">Treballem amb la FAAD perquè les lleis i els serveis públics d'Andorra respectin la Convenció de l'ONU sobre els drets de les persones amb discapacitat.</p><a class="go" href="/acerca-de/"><span>Coneix la nostra defensa de drets</span><svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="m2 2 6 6-6 6" stroke="#1F2A5C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></li>
+</ul>
+</section>
+
+<!-- Donatiu -->
+<section id="collabora" class="dark" aria-labelledby="dona-title" style="padding:16px 24px;box-sizing:border-box">
+<div style="max-width:1060px;margin:0 auto;display:flex;flex-wrap:wrap;background:#1F2A5C;border-radius:10px;overflow:hidden;color:#fff;min-height:313px">
+<div style="flex:1 1 400px;padding:44px 44px;display:flex;flex-direction:column;gap:16px;justify-content:center;box-sizing:border-box">
+<h2 id="dona-title" style="font-size:clamp(28px,2.8vw,36px);color:#fff">Fes un donatiu</h2>
+<p style="font-size:16px;color:#EDF1F6">Cada donatiu ajuda a finançar els tallers neurocognitius, EM-LINE i la defensa dels drets de les persones amb esclerosi múltiple.</p>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px"><button type="button" class="pill pill-yellow" data-copy-bizum style="border-color:#F4D077">Bizum 14112 · copia el codi</button><span data-copy-status role="status" style="font-weight:700;color:#F4D077"></span></div>
+<p style="font-size:14.5px;color:#EDF1F6">Per fer-te soci, escriu-nos a info@tranandorra.org</p>
+</div>
+<div style="flex:1 1 400px;min-height:300px;position:relative"><img loading="lazy" decoding="async" src="/images/1a509c2ea8086de3270cc7497c38a621.jpg" alt="Dues persones de l'associació somrient durant una trobada" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%"></div>
+</div>
+</section>
+
+<!-- Suport local + com pots ajudar -->
+<section id="proxim" aria-labelledby="near-title" style="background:#EEE6F8;padding:36px 24px 0;box-sizing:border-box">
+<div style="max-width:1060px;margin:0 auto;display:flex;flex-direction:column;gap:16px;align-items:center;text-align:center">
+<h2 id="near-title" style="font-size:clamp(30px,3vw,38px)">Tallers al local i en línia</h2>
+<p style="font-size:16px;max-width:880px">Els tallers neurocognitius es fan al local d’Andorra la Vella i en línia amb EM-LINE. Contacta amb nosaltres per saber com participar-hi.</p>
+<div style="width:100%;background:#fff;border-radius:16px;padding:20px 28px;text-align:left;box-sizing:border-box;display:flex;flex-direction:column;gap:4px"><h3 data-parish-name style="font-size:20px">Andorra la Vella · seu social</h3><p data-parish-info style="font-size:16px">Carrer Prada Casadet, locals C-D. Tallers presencials i tallers en línia EM-LINE.</p><p><a href="tel:+376821345" style="font-weight:700">Truca al +376 821 345</a></p></div>
+</div>
+</section>
+
+<section id="ajudar" aria-labelledby="ajudar-title" style="background:#FCE4DF;padding:72px 24px 72px;box-sizing:border-box">
+<div style="max-width:1060px;margin:0 auto;display:flex;flex-direction:column;gap:36px">
+<h2 id="ajudar-title" style="font-size:clamp(34px,3.4vw,48px);text-align:center">Com pots ajudar</h2>
+<ul style="list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:24px">
+<li class="pcard" style="flex:1 1 220px"><div style="aspect-ratio:1/1;background:#008F8C;display:flex;align-items:center;justify-content:center"><svg width="110" height="110" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M22 34s-11-6.5-11-14.500A6 6 0 0 1 22 16a6 6 0 0 1 11 3.500C33 27.500 22 34 22 34Z" stroke="#fff" stroke-width="1.800" stroke-linejoin="round"></path></svg></div><div style="padding:16px 18px 10px;display:flex;flex-direction:column;gap:10px;flex:1"><h3>Fes-te soci</h3><p style="font-size:15.5px">Una quota estable ens ajuda a planificar tallers i serveis tot l'any.</p><a class="go" href="#contacte"><span>Escriu-nos</span><svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="m2 2 6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></li>
+<li class="pcard" style="flex:1 1 220px"><div style="aspect-ratio:1/1;background:#2F7DDD;display:flex;align-items:center;justify-content:center"><svg width="110" height="110" viewBox="0 0 44 44" fill="none" aria-hidden="true"><circle cx="17" cy="17" r="4.500" stroke="#fff" stroke-width="1.800"></circle><circle cx="29" cy="19" r="3.500" stroke="#fff" stroke-width="1.800"></circle><path d="M9 33c1-5.500 4.500-8 8-8s7 2.500 8 8M24 33c.8-3.800 3-5.500 5.500-5.500S34 29.200 35 33" stroke="#fff" stroke-width="1.800" stroke-linecap="round"></path></svg></div><div style="padding:16px 18px 10px;display:flex;flex-direction:column;gap:10px;flex:1"><h3>Fes de voluntari</h3><p style="font-size:15.5px">Dona unes hores a tallers, trobades i actes de l'associació.</p><a class="go" href="#contacte"><span>Escriu-nos</span><svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="m2 2 6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></li>
+<li class="pcard" style="flex:1 1 220px"><div style="aspect-ratio:1/1;background:#ED5B4C;display:flex;align-items:center;justify-content:center"><svg width="110" height="110" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M10 25v-6l17-7v20l-17-7Zm5 0 1.500 7h4l-1.500-6" stroke="#fff" stroke-width="1.800" stroke-linejoin="round" stroke-linecap="round"></path><path d="M32 17c2 1.500 2 8 0 9.500" stroke="#fff" stroke-width="1.800" stroke-linecap="round"></path></svg></div><div style="padding:16px 18px 10px;display:flex;flex-direction:column;gap:10px;flex:1"><h3>Sensibilitza</h3><p style="font-size:15.5px">Suma't al Dia Mundial de l'Esclerosi Múltiple i difon la nostra feina.</p><a class="go" href="#actualitat"><span>Més informació</span><svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="m2 2 6 6-6 6" stroke="#1F2A5C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></li>
+<li class="pcard" style="flex:1 1 220px"><div style="aspect-ratio:1/1;background:#E2A516;display:flex;align-items:center;justify-content:center"><svg width="110" height="110" viewBox="0 0 44 44" fill="none" aria-hidden="true"><rect x="10" y="17" width="24" height="15" rx="2" stroke="#1F2A5C" stroke-width="1.800"></rect><path d="M17 17v-3a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3M10 24h24" stroke="#1F2A5C" stroke-width="1.800" stroke-linecap="round"></path></svg></div><div style="padding:16px 18px 10px;display:flex;flex-direction:column;gap:10px;flex:1"><h3>Empreses i entitats</h3><p style="font-size:15.5px">Col·labora amb nosaltres, com ja fan el Govern, els comuns i empreses.</p><a class="go" href="#col-laboradors"><span>Qui ens dona suport</span><svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="m2 2 6 6-6 6" stroke="#1F2A5C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg></a></div></li>
+</ul>
+</div>
+</section>
+
+<section id="actualitat" aria-labelledby="news-title" class="news-section">
+<div class="content-width"><div class="section-heading"><h2 id="news-title">Actualitat</h2><a class="hl" href="/noticies/">Totes les notícies <span aria-hidden="true">→</span></a></div>
+<ul class="news-grid">{posts.slice(0, 3).map((post) => <li class="pcard news-card"><article><p class="post-date"><time datetime={post.date}>{formatDate(post.date)}</time></p><h3><a href={post.path}>{post.title}</a></h3><p>{post.excerpt}</p><a class="go" href={post.path}><span>Llegeix la notícia</span><span aria-hidden="true">→</span></a></article></li>)}</ul>
+</div></section>
+<!-- Col·laboradors -->
+<section id="col-laboradors" aria-labelledby="sup-title" style="padding:0 24px 64px;box-sizing:border-box">
+<div style="max-width:1060px;margin:0 auto;display:flex;flex-direction:column;gap:22px">
+<h2 id="sup-title" style="font-size:clamp(24px,2.4vw,30px);text-align:center">Ens donen suport</h2>
+<ul style="list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:12px">
+<li style="flex:1 1 180px;height:88px;background:#fff;border:2px solid #E2EEFC;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box"><img loading="lazy" decoding="async" src="/images/41f4bfdaab3527d4c6f84072da827b11.jpg" alt="Govern d'Andorra" style="max-width:100%;max-height:62px;width:auto;height:auto"></li>
+<li style="flex:1 1 180px;height:88px;background:#fff;border:2px solid #E2EEFC;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box"><img loading="lazy" decoding="async" src="/images/168af39cf17823d68a2be10c6ddf07ba.png" alt="Comú d'Andorra la Vella" style="max-width:100%;max-height:62px;width:auto;height:auto"></li>
+<li style="flex:1 1 180px;height:88px;background:#fff;border:2px solid #E2EEFC;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box"><img loading="lazy" decoding="async" src="/images/836849c16565286a9d7d867b13fad0e6.png" alt="Creand Fundació" style="max-width:100%;max-height:52px;width:auto;height:auto"></li>
+<li style="flex:1 1 180px;height:88px;background:#fff;border:2px solid #E2EEFC;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box"><img loading="lazy" decoding="async" src="/images/3990c6734396a31f3a0c62ed39226ee4.jpg" alt="Andorra Telecom" style="max-width:100%;max-height:52px;width:auto;height:auto"></li>
+<li style="flex:1 1 180px;height:88px;background:#fff;border:2px solid #E2EEFC;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box"><img loading="lazy" decoding="async" src="/images/4b3cd8bfb1129ab26424361716796b73.jpg" alt="Universitat d'Andorra" style="max-width:100%;max-height:48px;width:auto;height:auto"></li>
+<li style="flex:1 1 180px;height:88px;background:#fff;border:2px solid #E2EEFC;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box"><img loading="lazy" decoding="async" src="/images/7c1d7103d80ccd0b66bcb562dc665ad8.png" alt="Creu Roja Andorrana" style="max-width:100%;max-height:64px;width:auto;height:auto"></li>
+<li style="flex:1 1 180px;height:88px;background:#fff;border:2px solid #E2EEFC;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box"><img loading="lazy" decoding="async" src="/images/e605b3aa6f612338f9c7e2c2546b6a1d.png" alt="Mediand Group" style="max-width:100%;max-height:64px;width:auto;height:auto"></li>
+<li style="flex:1 1 180px;height:88px;background:#fff;border:2px solid #E2EEFC;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box"><img loading="lazy" decoding="async" src="/images/08dd0b01dc571b4271776b7693cf3459.png" alt="Loyal Business Consulting" style="max-width:100%;max-height:48px;width:auto;height:auto"></li>
+<li style="flex:1 1 180px;height:88px;background:#1F2A5C;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box"><img loading="lazy" decoding="async" src="/images/9f2ab197de4cd6da7ce01c2a11019f7e.png" alt="Menta" style="max-width:100%;max-height:44px;width:auto;height:auto"></li>
+<li style="flex:1 1 180px;height:88px;background:#fff;border:2px solid #E2EEFC;border-radius:12px;display:flex;align-items:center;justify-content:center;padding:10px;box-sizing:border-box;font-weight:700;text-align:center">Godoy Transports i Serveis</li>
+</ul>
+</div>
+</section>
+
+<script>
+document.querySelector<HTMLButtonElement>('[data-copy-bizum]')?.addEventListener('click', async () => {
+ const status = document.querySelector('[data-copy-status]');
+ try { await navigator.clipboard.writeText('14112'); if(status) status.textContent = 'Codi copiat: 14112'; }
+ catch { if(status) status.textContent = 'No s’ha pogut copiar. Escriu el codi 14112 a l’app del teu banc.'; }
+});
+</script>

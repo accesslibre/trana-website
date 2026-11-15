@@ -1,0 +1,37 @@
+---
+import '../../styles/pages.css';
+import Arrow from './Arrow.astro';
+import { contact } from './samples';
+interface Props { searchAction?: string }
+const { searchAction = '/cerca/' } = Astro.props;
+const links = [
+ { label: 'Què és l’esclerosi múltiple?', href: '/disseny/esclerosi-multiple/' },
+ { label: 'Tallers neurocognitius', href: '/disseny/tallers-neurocognitius/' },
+ { label: 'Notícies', href: '/noticies/' },
+ { label: 'Contacte', href: '/disseny/contacte/' },
+];
+---
+<div class="pg">
+ <section class="pg-wrap nf" aria-labelledby="nf-title">
+  <div class="nf-mark" aria-hidden="true"><span>4</span><span>0</span><span>4</span></div>
+  <div class="nf-text">
+   <p class="pg-eyebrow" style="--dot:var(--red)">Error 404</p>
+   <h1 id="nf-title">No trobem aquesta pàgina</h1>
+   <p class="pg-lede">Potser l’adreça ha canviat o té una lletra de més. Si venies d’un enllaç del web antic de TRANA, el contingut segurament encara existeix amb una altra adreça.</p>
+   <form class="sr-form nf-search" action={searchAction} method="get" role="search">
+    <label for="nf-q">Busca-ho aquí</label>
+    <div class="sr-field">
+     <svg width="24" height="24" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="2.4"/><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+     <input id="nf-q" type="search" name="q" maxlength="200" autocomplete="off" />
+     <button class="pill pill-ink" type="submit">Cerca</button>
+    </div>
+   </form>
+   <h2 class="nf-h2">O ves directament a</h2>
+   <ul class="nf-links">
+    <li><a class="pg-arrow" href="/"><span>Inici</span><Arrow /></a></li>
+    {links.map((l) => <li><a class="pg-arrow" href={l.href}><span>{l.label}</span><Arrow /></a></li>)}
+   </ul>
+   <p class="nf-help">Necessites ajuda? Truca’ns al <a href={contact.phoneHref}>{contact.phone}</a>.</p>
+  </div>
+ </section>
+</div>

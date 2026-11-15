@@ -1,0 +1,10 @@
+---
+interface Props { items: { label: string; href?: string }[]; inline?: boolean }
+const { items, inline = false } = Astro.props;
+---
+<nav class:list={['pg-crumbs', { 'pg-wrap': !inline }]} aria-label="Ets aquí">
+ <ol>
+  <li><a href="/">Inici</a></li>
+  {items.map((item) => <li>{item.href ? <a href={item.href}>{item.label}</a> : <span aria-current="page">{item.label}</span>}</li>)}
+ </ol>
+</nav>

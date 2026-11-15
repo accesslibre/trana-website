@@ -1,0 +1,63 @@
+---
+// Newsletter sign-up. Design only: the submit handler validates and shows the confirmation state,
+// it does not send data. Codex replaces `action` and the fake success with the real service.
+interface Props { id?: string }
+const { id = 'nl' } = Astro.props;
+---
+<section class="nl" aria-labelledby={`${id}-title`} data-nl>
+ <div class="nl-intro">
+  <svg width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true"><rect x="6" y="13" width="44" height="30" rx="5" fill="#fff" stroke="#172736" stroke-width="2.5"/><path d="m8 16 20 15 20-15" stroke="#172736" stroke-width="2.5" stroke-linejoin="round"/><circle cx="46" cy="14" r="8" fill="#ef4337"/></svg>
+  <div>
+   <h2 id={`${id}-title`}>Rep les notícies de TRANA</h2>
+   <p>Activitats, tallers i convocatòries, al teu correu. Et pots donar de baixa quan vulguis.</p>
+  </div>
+ </div>
+ <form class="nl-form fm" novalidate data-nl-form>
+  <div class="fm-field" data-field>
+   <label for={`${id}-email`}>Correu electrònic</label>
+   <p class="fm-error" id={`${id}-email-error`} hidden></p>
+   <input id={`${id}-email`} name="email" type="email" autocomplete="email" required aria-describedby={`${id}-email-error`} />
+  </div>
+  <div class="fm-check" data-field>
+   <p class="fm-error" id={`${id}-ok-error`} hidden></p>
+   <input id={`${id}-ok`} name="consent" type="checkbox" required aria-describedby={`${id}-ok-error`} />
+   <label for={`${id}-ok`}>Accepto rebre el butlletí i la <a href="https://www.tranandorra.org/avis-legal-i-politica-de-privacitat/">política de privacitat</a>.</label>
+  </div>
+  <button class="pill pill-ink" type="submit">Subscriu-me</button>
+ </form>
+ <div class="nl-done" tabindex="-1" hidden data-nl-done>
+  <h3>Gairebé fet</h3>
+  <p>T’hem enviat un correu a <strong data-nl-email></strong>. Obre’l i confirma la subscripció.</p>
+ </div>
+</section>
+
+<script>
+ for (const box of document.querySelectorAll<HTMLElement>('[data-nl]')) {
+  const form = box.querySelector<HTMLFormElement>('[data-nl-form]')!;
+  const done = box.querySelector<HTMLElement>('[data-nl-done]')!;
+  const email = form.querySelector<HTMLInputElement>('input[type=email]')!;
+  const ok = form.querySelector<HTMLInputElement>('input[type=checkbox]')!;
+  const setError = (input: HTMLInputElement, message: string) => {
+   const p = document.getElementById(input.getAttribute('aria-describedby')!.split(' ').find((x) => x.endsWith('-error'))!)!;
+   p.hidden = !message; p.textContent = message;
+   input.toggleAttribute('aria-invalid', !!message);
+   input.closest('[data-field]')?.classList.toggle('is-invalid', !!message);
+  };
+  const check = () => {
+   const v = email.value.trim();
+   const e1 = !v ? 'Escriu el teu correu electrònic.' : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? 'Escriu un correu com nom@exemple.ad.' : '';
+   const e2 = ok.checked ? '' : 'Marca la casella per poder-te enviar el butlletí.';
+   setError(email, e1); setError(ok, e2);
+   return e1 ? email : e2 ? ok : null;
+  };
+  let tried = false;
+  form.addEventListener('submit', (event) => {
+   event.preventDefault(); tried = true;
+   const first = check();
+   if (first) { first.focus(); return; }
+   box.querySelector('[data-nl-email]')!.textContent = email.value.trim();
+   form.hidden = true; done.hidden = false; done.focus();
+  });
+  form.addEventListener('input', () => { if (tried) check(); });
+ }
+</script>

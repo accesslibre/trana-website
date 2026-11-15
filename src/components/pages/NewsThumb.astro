@@ -1,0 +1,12 @@
+---
+// Featured image of a post, or a quiet branded tile when the post has none. Always decorative here:
+// the linked title next to it carries the meaning.
+import type { WordPressPost } from '../../lib/wordpress/index';
+interface Props { post: WordPressPost; eager?: boolean }
+const { post, eager = false } = Astro.props;
+const tones = ['#fde3c0', '#fcd9d4', '#d6e6f5', '#d3eae4', '#eee6f8'];
+const tone = tones[post.id % tones.length];
+---
+{post.image
+ ? <img class="nw-img" src={post.image.src} alt="" width={post.image.width} height={post.image.height} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+ : <span class="nw-img nw-img-empty" style={`--t:${tone}`}><span></span><span></span><span></span><span></span><span></span></span>}

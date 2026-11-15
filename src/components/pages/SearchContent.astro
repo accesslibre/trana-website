@@ -1,0 +1,132 @@
+---
+// Search page. Uses the existing build-time index (/cerca/search-index.json) and searchPosts().
+import '../../styles/pages.css';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Arrow from './Arrow.astro';
+import { contact } from './samples';
+const topics = ['EM-LINE', 'Tallers', 'Dia Mundial', 'Drets', 'Assemblea', 'Ioga'];
+const shortcuts = [
+ { label: 'Què és l’esclerosi múltiple?', href: '/disseny/esclerosi-multiple/' },
+ { label: 'Tallers neurocognitius', href: '/disseny/tallers-neurocognitius/' },
+ { label: 'Vivències', href: '/disseny/vivencies/' },
+ { label: 'Documents', href: '/disseny/documents/' },
+];
+---
+<div class="pg">
+ <header class="sr-top">
+  <Breadcrumbs items={[{ label: 'Cerca' }]} />
+  <div class="pg-wrap sr-top-inner">
+   <h1 id="search-title">Cerca</h1>
+   <form class="sr-form" method="get" role="search" aria-labelledby="search-title" data-search-form>
+    <label for="sr-q" class="vh">Què vols trobar?</label>
+    <div class="sr-field">
+     <svg width="24" height="24" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="2.4"/><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+     <input id="sr-q" type="search" name="q" maxlength="200" placeholder="Què vols trobar?" autocomplete="off" aria-describedby="sr-help" />
+     <button class="pill pill-ink" type="submit">Cerca</button>
+    </div>
+    <p id="sr-help">Cerquem al títol i al text de les notícies publicades des del 2016.</p>
+   </form>
+  </div>
+ </header>
+
+ <div class="pg-wrap sr-body">
+  <noscript><p class="dc-empty">La cerca necessita JavaScript. Pots <a href="/noticies/">consultar totes les notícies</a> per data.</p></noscript>
+  <p class="sr-status" id="sr-status" role="status" aria-live="polite" aria-atomic="true"></p>
+
+  <section class="sr-start" data-state="start" aria-labelledby="sr-topics">
+   <h2 id="sr-topics">Temes freqüents</h2>
+   <ul class="sr-chips">{topics.map((t) => <li><a href={`?q=${encodeURIComponent(t)}`}>{t}</a></li>)}</ul>
+  </section>
+
+  <ol class="sr-results" id="sr-results" aria-label="Resultats" data-state="results" hidden></ol>
+
+  <section class="sr-empty" data-state="empty" hidden aria-labelledby="sr-empty-title">
+   <svg width="88" height="88" viewBox="0 0 88 88" fill="none" aria-hidden="true"><circle cx="38" cy="38" r="24" fill="#fff2ce" stroke="#172736" stroke-width="4"/><path d="m56 56 18 18" stroke="#172736" stroke-width="6" stroke-linecap="round"/><path d="M30 42c4-4 12-4 16 0" stroke="#172736" stroke-width="3.5" stroke-linecap="round"/><circle cx="31" cy="33" r="2.6" fill="#172736"/><circle cx="45" cy="33" r="2.6" fill="#172736"/></svg>
+   <div>
+    <h2 id="sr-empty-title">No hem trobat res per <span data-q></span></h2>
+    <ul class="sr-tips">
+     <li>Revisa com està escrita la paraula.</li>
+     <li>Prova amb menys paraules o amb una de més general, com «tallers».</li>
+     <li>Busques una pàgina i no una notícia? Mira aquestes:</li>
+    </ul>
+    <ul class="sr-short">{shortcuts.map((s) => <li><a class="pg-arrow" href={s.href}><span>{s.label}</span><Arrow /></a></li>)}</ul>
+    <p class="sr-ask">També pots preguntar-nos-ho: <a href={contact.phoneHref}>{contact.phone}</a> o <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
+   </div>
+  </section>
+
+  <section class="sr-empty sr-error" data-state="error" hidden aria-labelledby="sr-error-title">
+   <div>
+    <h2 id="sr-error-title">La cerca no funciona ara mateix</h2>
+    <p>Torna-ho a provar d’aquí a una estona, o consulta <a href="/noticies/">totes les notícies</a> per data.</p>
+   </div>
+  </section>
+ </div>
+</div>
+
+<script>
+ import { searchPosts, normalizeSearch, type SearchEntry } from '../../lib/search';
+ const form = document.querySelector<HTMLFormElement>('[data-search-form]')!;
+ const input = form.querySelector<HTMLInputElement>('input')!;
+ const status = document.querySelector<HTMLElement>('#sr-status')!;
+ const list = document.querySelector<HTMLOListElement>('#sr-results')!;
+ const states = [...document.querySelectorAll<HTMLElement>('[data-state]')];
+ const show = (name: string) => states.forEach((el) => { el.hidden = el.dataset.state !== name; });
+ const months = ['de gener', 'de febrer', 'de març', 'd’abril', 'de maig', 'de juny', 'de juliol', 'd’agost', 'de setembre', 'd’octubre', 'de novembre', 'de desembre'];
+ const fmt = (iso: string) => { const [y, m, d] = iso.slice(0, 10).split('-').map(Number); return `${d} ${months[m - 1]} de ${y}`; };
+
+ // Normalised text with a map back to original indices, so highlights ignore accents and case.
+ function folded(s: string) {
+  let out = ''; const map: number[] = [];
+  for (let i = 0; i < s.length; i++) for (const ch of s[i].normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase('ca')) { out += ch; map.push(i); }
+  return { out, map };
+ }
+ function ranges(s: string, words: string[]) {
+  const { out, map } = folded(s); const r: [number, number][] = [];
+  for (const w of words) { let i = out.indexOf(w); while (i !== -1) { r.push([map[i], map[i + w.length - 1] + 1]); i = out.indexOf(w, i + w.length); } }
+  r.sort((a, b) => a[0] - b[0]);
+  return r.reduce<[number, number][]>((acc, cur) => { const last = acc.at(-1); if (last && cur[0] <= last[1]) last[1] = Math.max(last[1], cur[1]); else acc.push([...cur]); return acc; }, []);
+ }
+ function marked(s: string, words: string[]) {
+  const frag = document.createDocumentFragment(); let at = 0;
+  for (const [a, b] of ranges(s, words)) { frag.append(s.slice(at, a)); const m = document.createElement('mark'); m.textContent = s.slice(a, b); frag.append(m); at = b; }
+  frag.append(s.slice(at)); return frag;
+ }
+ function snippet(e: SearchEntry, words: string[]) {
+  const r = ranges(e.text, words)[0];
+  if (!r) return e.excerpt;
+  const start = Math.max(0, e.text.lastIndexOf(' ', Math.max(0, r[0] - 90)) + 1);
+  const end = e.text.indexOf(' ', Math.min(e.text.length, r[1] + 140));
+  return `${start > 0 ? '… ' : ''}${e.text.slice(start, end === -1 ? undefined : end)}${end !== -1 ? ' …' : ''}`;
+ }
+
+ let index: Promise<SearchEntry[]> | undefined; let req = 0;
+ async function run() {
+  const q = input.value.trim().slice(0, 200); const mine = ++req;
+  const url = new URL(location.href); if (q) url.searchParams.set('q', q); else url.searchParams.delete('q'); history.replaceState(null, '', url);
+  list.replaceChildren();
+  if (!q) { status.textContent = ''; show('start'); return; }
+  status.textContent = 'Cercant…'; form.setAttribute('aria-busy', 'true');
+  try {
+   index ??= fetch('/cerca/search-index.json').then((r) => { if (!r.ok) throw new Error(); return r.json(); });
+   const found = searchPosts(await index, q); if (mine !== req) return;
+   const words = normalizeSearch(q).split(' ').filter(Boolean);
+   if (!found.length) {
+    document.querySelector('[data-q]')!.textContent = `«${q}»`;
+    status.textContent = `No hem trobat cap resultat per «${q}».`; show('empty'); return;
+   }
+   list.replaceChildren(...found.slice(0, 50).map((e) => {
+    const li = document.createElement('li');
+    const meta = document.createElement('p'); meta.className = 'sr-meta'; meta.textContent = `Notícia · ${fmt(e.date)}`;
+    const h = document.createElement('h2'); const a = document.createElement('a'); a.href = e.path; a.append(marked(e.title, words)); h.append(a);
+    const p = document.createElement('p'); p.append(marked(snippet(e, words), words));
+    li.append(meta, h, p); return li;
+   }));
+   status.textContent = found.length === 1 ? `1 resultat per «${q}»` : `${found.length} resultats per «${q}»${found.length > 50 ? '. Es mostren els 50 primers' : ''}`;
+   show('results');
+  } catch { if (mine !== req) return; index = undefined; status.textContent = ''; show('error'); }
+  finally { if (mine === req) form.removeAttribute('aria-busy'); }
+ }
+ form.addEventListener('submit', (e) => { e.preventDefault(); void run(); });
+ input.value = new URLSearchParams(location.search).get('q')?.slice(0, 200) ?? '';
+ if (input.value.trim()) void run();
+</script>

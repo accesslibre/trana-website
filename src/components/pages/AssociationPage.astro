@@ -1,0 +1,107 @@
+---
+import '../../styles/pages.css';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Arrow from './Arrow.astro';
+import { board, milestones, contact } from './samples';
+const initials = (name: string) => name.split(' ').slice(0, 2).map((w) => w[0]).join('');
+const sections = [
+ { id: 'qui-som', label: 'Qui som' },
+ { id: 'historia', label: 'Història' },
+ { id: 'junta', label: 'Junta directiva' },
+];
+---
+<div class="pg">
+ <header class="pg-wrap as-top">
+  <Breadcrumbs inline items={[{ label: 'L’associació' }]} />
+  <div class="as-top-text">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--orange)">Associació T.R.A.N.A. Andorra</p>
+    <h1>Fem camí junts des de 1993</h1>
+   </div>
+   <p class="pg-lede">Som persones amb esclerosi múltiple, famílies, professionals i voluntaris. Acompanyem, informem i defensem els drets de les persones amb EM a Andorra.</p>
+  </div>
+  <figure class="as-hero">
+   <img src="/images/pages/wp-2709.jpg" width="1535" height="621" fetchpriority="high" alt="Una vintena de persones de TRANA, diverses en cadira de rodes, posen juntes en una sala" />
+   <figcaption>Sessió d’autoprotecció amb Protecció Civil, juliol de 2024.</figcaption>
+  </figure>
+ </header>
+
+ <nav class="as-tabs" aria-label="Seccions de la pàgina">
+  <div class="pg-wrap"><ul>{sections.map((s) => <li><a href={`#${s.id}`} data-tab>{s.label}</a></li>)}<li><a href="/disseny/documents/">Documents</a></li></ul></div>
+ </nav>
+
+ <section class="pg-wrap as-sec" id="qui-som" aria-labelledby="qui-som-title">
+  <h2 class="pg-h2" id="qui-som-title">Qui som</h2>
+  <ul class="as-what">
+   <li><h3>Acompanyem</h3><p>A les persones amb EM i a les seves famílies, des del diagnòstic i a cada etapa. Amb atenció psicològica i un espai on parlar.</p></li>
+   <li><h3>Entrenem</h3><p>La memòria i l’atenció amb tallers neurocognitius setmanals, i el cos amb ioga adaptat.</p></li>
+   <li><h3>Defensem drets</h3><p>Amb la FAAD, treballem perquè les lleis i els serveis públics d’Andorra respectin la Convenció de l’ONU.</p></li>
+  </ul>
+  <div class="as-community">
+   <img src="/images/pages/wp-3498.jpg" width="1600" height="1200" loading="lazy" alt="Socis i famílies de TRANA, alguns amb barret de Nadal, al voltant d’una taula parada" />
+   <div>
+    <h3>Una comunitat</h3>
+    <p>Més enllà dels tallers, ens trobem. La barbacoa d’estiu, el Dia Mundial de l’EM o la trobada de Nadal són moments per riure, menjar junts i conèixer gent que entén el que vius.</p>
+    <p class="as-faad"><img src="/images/87282ff3d9a44ac8d20cd3498ae6339d.jpg" width="56" height="40" loading="lazy" alt="" /><span>Membres de la FAAD, la Federació Andorrana d’Associacions de Persones amb Discapacitat.</span></p>
+   </div>
+  </div>
+ </section>
+
+ <section class="pg-wrap as-sec" id="historia" aria-labelledby="historia-title">
+  <h2 class="pg-h2" id="historia-title">Història</h2>
+  <div class="as-hist-grid">
+   <ol class="as-time">
+    {milestones.map((m) => (
+     <li>
+      <span class="yr">{m.year}</span>
+      <span class="dot" aria-hidden="true"></span>
+      <div>
+       <h3>{m.title}</h3>
+       <p>{m.text}</p>
+       {m.year === '2011' && (
+        <figure>
+         <img src="/images/pages/wp-2116.jpg" width="1546" height="1600" loading="lazy" alt="Dues dones somrients, una d’elles amb un document a la mà" />
+         <figcaption>La presidenta de TRANA amb Creand Fundació, gener de 2024.</figcaption>
+        </figure>
+       )}
+      </div>
+     </li>
+    ))}
+   </ol>
+   <aside class="as-hist-aside" aria-label="Resum">
+    <strong>33</strong>
+    <p>anys acompanyant persones amb esclerosi múltiple a Andorra.</p>
+    <p><a class="pg-arrow" href="https://www.tranandorra.org/?page_id=144"><span>Història detallada i juntes anteriors</span><Arrow /></a></p>
+   </aside>
+  </div>
+ </section>
+
+ <section class="pg-wrap as-sec" id="junta" aria-labelledby="junta-title">
+  <h2 class="pg-h2" id="junta-title">Junta directiva 2025–2029</h2>
+  <ul class="as-board">
+   {board.map((b) => <li><span class="vv-mono" aria-hidden="true">{initials(b.name)}</span><span><small>{b.role}</small><strong>{b.name}</strong></span></li>)}
+  </ul>
+  <p class="as-board-note"><span>Elegida per l’assemblea el 20 de febrer de 2025, per a quatre anys.</span><a class="pg-arrow" href={`mailto:${contact.email}?subject=${encodeURIComponent('Per a la junta de TRANA')}`}><span>Escriu a la junta</span><Arrow /></a></p>
+ </section>
+
+ <div class="pg-wrap">
+  <aside class="as-docs pg-dark" aria-labelledby="docs-cta">
+   <div>
+    <h2 id="docs-cta">Estatuts, memòries i pla estratègic</h2>
+    <p>Tota la documentació de l’associació, en un sol lloc.</p>
+   </div>
+   <a class="pill pill-sun" href="/disseny/documents/" style="min-height:52px">Consulta els documents</a>
+  </aside>
+ </div>
+</div>
+
+<script>
+ const tabs = [...document.querySelectorAll<HTMLAnchorElement>('[data-tab]')];
+ const targets = tabs.map((a) => document.querySelector<HTMLElement>(a.hash)).filter(Boolean) as HTMLElement[];
+ if ('IntersectionObserver' in window && targets.length) {
+  const io = new IntersectionObserver((entries) => {
+   for (const e of entries) if (e.isIntersecting) tabs.forEach((a) => a.setAttribute('aria-current', String(a.hash === `#${e.target.id}`)));
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  targets.forEach((t) => io.observe(t));
+ }
+</script>

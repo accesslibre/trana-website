@@ -2,9 +2,9 @@
 
 Accessible Astro frontend for TRANA EM Andorra. WordPress remains the editor and content source; Astro generates the public pages at build time.
 
-**Stage: local/staging pilot, no production migration.** The current design reference is the approved v7 home and desktop/mobile navigation with the official TRANA logo. Claude handles visual design; Codex handles WordPress integration, URL mapping, SEO, infrastructure and verification. The foundation and data layer are being committed separately from the ongoing local presentation work. The existing TRANA website/admin/DNS remain unchanged.
+**Stage: local/staging pilot, no production migration.** The current design reference is the approved v7 home and desktop/mobile navigation with the official TRANA logo. Claude handles visual design; Codex handles WordPress integration, URL mapping, SEO, infrastructure and verification. The foundation, data layer and completed presentation work are versioned separately. The existing TRANA website/admin/DNS remain unchanged.
 
-The local checkout includes the application and interior page designs at `/disseny/`. Presentation files are still being edited and have not yet joined the initial foundation commits; the full frontend requires that local work until its own commit is ready.
+The checkout includes the application and interior page designs at `/disseny/`. These review routes and the living style guide are maintained as project source. The current preview build includes them; excluding them from a future production build remains a launch task. Some pages use sample content and forms simulate confirmation without sending data. They are not the completed public website.
 
 ## Run locally
 

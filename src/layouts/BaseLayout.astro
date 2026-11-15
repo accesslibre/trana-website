@@ -1,0 +1,155 @@
+---
+import '../styles/global.css';
+import '../styles/header-v7.css';
+interface Props { title: string; description?: string }
+const { title, description = 'TRANA acompanya les persones amb esclerosi múltiple i les seves famílies a Andorra. Informació, tallers neurocognitius i defensa de drets.' } = Astro.props;
+const path = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="ca">
+<head>
+ <meta charset="utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <meta name="robots" content="noindex, nofollow, noarchive" />
+ <title>{title}</title>
+ <meta name="description" content={description} />
+ <meta name="theme-color" content="#1F2A5C" />
+ <meta property="og:title" content={title} />
+ <meta property="og:description" content={description} />
+ <meta property="og:type" content="website" />
+ <meta property="og:locale" content="ca_AD" />
+ <link rel="icon" href="/brand/trana-favicon.png" type="image/png" />
+ <link rel="preload" href="/fonts/atkinson-400.ttf" as="font" type="font/ttf" crossorigin />
+</head>
+<body class="header-v7">
+ <a class="skip" href="#main">Vés al contingut principal</a>
+ <div class="site-shell">
+ <header class="site-header"><a class="brand v7-brand" href="/" aria-current={path === '/' ? 'page' : undefined} aria-label="TRANA Andorra, Associació d’Esclerosi Múltiple. Inici"><img src="/brand/logo-trana-tif.png" fetchpriority="high" width="132" height="96" alt=""></a><div class="v7-utilities"><a class="hl v7-contact-link" href="tel:+376821345"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 3h3l1.5 4-2 1.2a10 10 0 0 0 4.3 4.3l1.2-2 4 1.5v3a2 2 0 0 1-2 2A12 12 0 0 1 3 5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>+376 821 345</a><a class="hl v7-contact-link" href="mailto:info@tranandorra.org"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="m3 6 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>info@tranandorra.org</a><button type="button" class="pill v7-search-toggle" aria-label="Cerca" aria-expanded="false" aria-controls="v7-search"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="2.4"/><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="v7-search-label">Cerca</span></button><a class="pill pill-yellow header-donate" href="/#collabora"><span class="donate-heart" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21C5 16.5 2 12.5 2 8.8 2 6.1 4.1 4 6.7 4c1.9 0 3.7 1 5.3 3 1.6-2 3.4-3 5.3-3C19.9 4 22 6.1 22 8.8c0 3.7-3 7.7-10 12.2z"/></svg></span><span class="donate-text">Fes un donatiu</span><span class="donate-short" aria-hidden="true">Donatiu</span></a><a class="v7-stuck-donate" href="/#collabora" aria-label="Fes un donatiu"><span aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21C5 16.5 2 12.5 2 8.8 2 6.1 4.1 4 6.7 4c1.9 0 3.7 1 5.3 3 1.6-2 3.4-3 5.3-3C19.9 4 22 6.1 22 8.8c0 3.7-3 7.7-10 12.2z"/></svg></span>Donatiu</a><button class="pill menu-toggle mobile-nav-toggle" type="button" aria-expanded="false" aria-controls="navigation-options" hidden>Menú <svg class="v7-menu-icon" width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true"><path d="M4 7h18M4 13h18M4 19h18" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg></button></div><form id="v7-search" class="v7-search-form" action="/cerca/" method="get" role="search" hidden><label class="vh" for="v7-search-query">Cerca notícies</label><input id="v7-search-query" type="search" name="q" maxlength="200" placeholder="Cerca notícies"><button class="pill" type="submit">Cerca</button></form><nav class="nav-section main-nav" id="navigation-options" aria-label="Menú principal"><ul class="variant-nav"><li class="nav-entry "><button type="button" class="nav-trigger " data-disclosure aria-expanded="false" aria-controls="panel-0">L’esclerosi múltiple<span class="nav-chevron" aria-hidden="true"></span></button><div class="nav-panel wide" id="panel-0" style="--columns:2" hidden><section aria-labelledby="panel-0-heading-0"><h2 id="panel-0-heading-0">Entendre l’EM</h2><ul><li><a href="https://www.tranandorra.org/que-es-lem/">Què és l’esclerosi múltiple?</a></li><li><a href="https://www.tranandorra.org/glossari-em/">Glossari de l’EM</a></li><li><a href="https://www.lavanguardia.com/lv/brandslab/esclerosis-multiple-mil-caras-novartis-brl/">Les mil cares de l’EM</a></li></ul></section><section aria-labelledby="panel-0-heading-1"><h2 id="panel-0-heading-1">Salut i vida quotidiana</h2><ul><li><a href="https://www.tranandorra.org/deteriorament-cognitiu-en-la-em/">Deteriorament cognitiu</a></li><li><a href="https://www.tranandorra.org/afectacio-cognitiva-i-esclerosi-multiple/">Cognició i esclerosi múltiple</a></li><li><a href="https://www.tranandorra.org/pla-integral-de-benestar-emocional-2/">Benestar emocional</a></li><li><a href="https://www.tranandorra.org/decaleg-exercici-fisic-em/">Activitat física i EM</a></li></ul></section></div></li><li class="nav-entry "><button type="button" class="nav-trigger " data-disclosure aria-expanded="false" aria-controls="panel-1">Suport i activitats<span class="nav-chevron" aria-hidden="true"></span></button><div class="nav-panel wide" id="panel-1" style="--columns:2" hidden><section aria-labelledby="panel-1-heading-0"><h2 id="panel-1-heading-0">Activitats i tallers</h2><ul><li><a href="https://www.tranandorra.org/activitats-2/">Activitats de TRANA</a></li><li><a href="https://www.tranandorra.org/borrador-automatico/">Properes activitats</a></li><li><a href="https://www.tranandorra.org/2024/05/els-tallers-neurocognitius-de-tranaem/">Tallers neurocognitius</a></li><li><a href="/2026/06/em-line-ajudeu-nos-a-la-seva-implantancio/">Tallers en línia EM-LINE</a></li></ul></section><section aria-labelledby="panel-1-heading-1"><h2 id="panel-1-heading-1">Suport i drets</h2><ul><li><a href="https://www.tranandorra.org/pla-integral-de-benestar-emocional-2/">Benestar emocional</a></li><li><a href="https://www.tranandorra.org/conveni-sobre-els-drets-de-les-persones-amb-discapacitat-cdpd/">Convenció de l’ONU (CDPD)</a></li><li><a href="https://www.tranandorra.org/borrador-automatico-2/">Contacta amb TRANA</a></li></ul></section></div></li><li class="nav-entry "><button type="button" class="nav-trigger " data-disclosure aria-expanded="false" aria-controls="panel-2">Vivències<span class="nav-chevron" aria-hidden="true"></span></button><div class="nav-panel " id="panel-2" style="--columns:1" hidden><section aria-labelledby="panel-2-heading-0"><h2 id="panel-2-heading-0">Experiències personals</h2><ul><li><a href="https://www.tranandorra.org/opinio/">Totes les vivències</a></li><li><a href="https://www.tranandorra.org/sonia-araujo/">Sònia Araujo</a></li><li><a href="https://www.tranandorra.org/nor-raguig/">Nor Raguig</a></li><li><a href="https://www.tranandorra.org/el-nen-del-sola-dandorra/">El nen del Solà d’Andorra</a></li><li><a href="https://www.tranandorra.org/jacint-risco/">Jacint Risco</a></li></ul></section></div></li><li class="nav-entry "><button type="button" class="nav-trigger " data-disclosure aria-expanded="false" aria-controls="panel-3">Actualitat<span class="nav-chevron" aria-hidden="true"></span></button><div class="nav-panel wide" id="panel-3" style="--columns:2" hidden><section aria-labelledby="panel-3-heading-0"><h2 id="panel-3-heading-0">Notícies i vídeos</h2><ul><li><a href="/noticies/">Notícies</a></li><li><a href="https://www.youtube.com/channel/UCn-SCjKNvcF3Azw3ZjPTlIA/videos">Vídeos a YouTube</a></li></ul></section><section aria-labelledby="panel-3-heading-1"><h2 id="panel-3-heading-1">Fotos i trobades</h2><ul><li><a href="https://www.flickr.com/photos/193066573@N04/albums/72157719250247126">Fotos de TRANA</a></li><li><a href="https://flic.kr/s/aHBqjCkZbX">Mulla’t 2025</a></li><li><a href="https://flic.kr/s/aHBqjCjc73">Dia Mundial de l’EM 2025</a></li><li><a href="https://flic.kr/s/aHBqjBssoc">Dia Mundial de l’EM 2024</a></li><li><a href="https://www.flickr.com/photos/193066573@N04/albums/72177720322935955">Dia Mundial de l’EM 2023</a></li><li><a href="https://www.flickr.com/photos/193066573@N04/albums/72177720322937796">Dia Mundial de l’EM 2022</a></li><li><a href="https://www.flickr.com/photos/193066573@N04/albums/72177720295460840">Nadal a TRANA</a></li><li><a href="https://www.flickr.com/photos/193066573@N04/albums/72157719889969314">Mou-te</a></li><li><a href="https://flic.kr/s/aHBqjBwmV6">Barbacoa 2024</a></li><li><a href="https://www.flickr.com/photos/193066573@N04/albums/72177720318966494">Protecció Civil 2024</a></li></ul></section></div></li><li class="nav-entry "><button type="button" class="nav-trigger " data-disclosure aria-expanded="false" aria-controls="panel-4">L’associació<span class="nav-chevron" aria-hidden="true"></span></button><div class="nav-panel wide" id="panel-4" style="--columns:2" hidden><section aria-labelledby="panel-4-heading-0"><h2 id="panel-4-heading-0">Coneix TRANA</h2><ul><li><a href="/acerca-de/">Qui som</a></li><li><a href="https://www.tranandorra.org/?page_id=144">Història</a></li><li><a href="https://www.tranandorra.org/?page_id=142">Junta directiva</a></li><li><a href="https://www.tranandorra.org/borrador-automatico-2/">Contacta amb TRANA</a></li></ul></section><section aria-labelledby="panel-4-heading-1"><h2 id="panel-4-heading-1">Documents</h2><ul><li><a href="https://www.tranandorra.org/pla-estrategic-2020-2024/">Pla estratègic 2020–2024</a></li><li><a href="https://www.tranandorra.org/estatuts/">Estatuts</a></li><li><a href="https://www.tranandorra.org/memories-assemblea-general/">Memòries anuals</a></li></ul></section></div></li></ul></nav><div class="v7-color-rule" aria-hidden="true"><span style="background:#F7941D"></span><span style="background:#EF4337"></span><span style="background:#176BA3"></span><span style="background:#2A675C"></span><span style="background:#172736"></span></div></header>
+ <main id="main" tabindex="-1"><slot /></main>
+ <footer id="contacte" class="site-footer dark">
+  <div class="content-width footer-content">
+   <a class="brand brand-light brand-official" href="/" aria-label="TRANA Andorra. Inici"><img src="/brand/trana-official.webp" alt="" width="640" height="465" loading="lazy" /></a>
+   <nav class="footer-social" aria-label="Xarxes socials de TRANA">
+    <h2>Segueix-nos</h2>
+    <ul>
+     <li><a href="https://www.facebook.com/associaciotranaem.tranaem.5" aria-label="TRANA a Facebook"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 8h2V5h-2.5C11 5 10 6.600 10 8.500V10H8v3h2v6h3v-6h2.200l.4-3H13V8.700c0-.5.200-.7 1-.7z"/></svg></a></li>
+     <li><a href="https://www.instagram.com/tranaemandorra/" aria-label="TRANA a Instagram"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.500" cy="6.500" r="1.200" fill="currentColor"/></svg></a></li>
+     <li><a href="https://twitter.com/em_trana" aria-label="TRANA a X (Twitter)"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17.750 3h3.080l-6.730 7.690L22 21h-6.200l-4.850-6.340L5.400 21H2.320l7.200-8.230L2 3h6.360l4.390 5.800L17.750 3zm-1.080 16.150h1.710L7.400 4.760H5.570l11.100 14.390z"/></svg></a></li>
+     <li><a href="https://www.youtube.com/channel/UCn-SCjKNvcF3Azw3ZjPTlIA/videos" aria-label="TRANA a YouTube"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.600 7.200a2.500 2.500 0 0 0-1.800-1.800C18.200 5 12 5 12 5s-6.200 0-7.800.4A2.500 2.500 0 0 0 2.400 7.200C2 8.800 2 12 2 12s0 3.200.4 4.800a2.500 2.500 0 0 0 1.800 1.800C5.800 19 12 19 12 19s6.200 0 7.800-.4a2.500 2.500 0 0 0 1.800-1.800c.4-1.600.4-4.800.4-4.800s0-3.200-.4-4.800zM10 15V9l5.200 3L10 15z"/></svg></a></li>
+    </ul>
+   </nav>
+   <nav class="footer-map" aria-label="Mapa del web">
+    <details open><summary>L’esclerosi múltiple</summary><ul><li><a href="https://www.tranandorra.org/que-es-lem/">Què és l’esclerosi múltiple?</a></li><li><a href="https://www.tranandorra.org/glossari-em/">Glossari de l’EM</a></li><li><a href="https://www.tranandorra.org/deteriorament-cognitiu-en-la-em/">Deteriorament cognitiu</a></li><li><a href="https://www.tranandorra.org/pla-integral-de-benestar-emocional-2/">Benestar emocional</a></li><li><a href="https://www.tranandorra.org/decaleg-exercici-fisic-em/">Activitat física i EM</a></li></ul></details>
+    <details open><summary>Suport i activitats</summary><ul><li><a href="https://www.tranandorra.org/activitats-2/">Activitats de TRANA</a></li><li><a href="https://www.tranandorra.org/borrador-automatico/">Properes activitats</a></li><li><a href="https://www.tranandorra.org/2024/05/els-tallers-neurocognitius-de-tranaem/">Tallers neurocognitius</a></li><li><a href="/2026/06/em-line-ajudeu-nos-a-la-seva-implantancio/">Tallers en línia EM-LINE</a></li><li><a href="https://www.tranandorra.org/conveni-sobre-els-drets-de-les-persones-amb-discapacitat-cdpd/">Convenció de l’ONU (CDPD)</a></li></ul></details>
+    <details open><summary>Vivències</summary><ul><li><a href="https://www.tranandorra.org/opinio/">Totes les vivències</a></li><li><a href="https://www.tranandorra.org/sonia-araujo/">Sònia Araujo</a></li><li><a href="https://www.tranandorra.org/nor-raguig/">Nor Raguig</a></li><li><a href="https://www.tranandorra.org/jacint-risco/">Jacint Risco</a></li></ul></details>
+    <details open><summary>Actualitat</summary><ul><li><a href="/noticies/">Notícies</a></li><li><a href="https://www.youtube.com/channel/UCn-SCjKNvcF3Azw3ZjPTlIA/videos">Vídeos a YouTube</a></li><li><a href="https://www.flickr.com/photos/193066573@N04/albums/72157719250247126">Fotos de TRANA</a></li><li><a href="https://flic.kr/s/aHBqjCjc73">Dia Mundial de l’EM 2025</a></li><li><a href="/cerca/">Cerca al web</a></li></ul></details>
+    <details open><summary>L’associació</summary><ul><li><a href="/acerca-de/">Qui som</a></li><li><a href="https://www.tranandorra.org/?page_id=144">Història</a></li><li><a href="https://www.tranandorra.org/?page_id=142">Junta directiva</a></li><li><a href="https://www.tranandorra.org/estatuts/">Estatuts</a></li><li><a href="https://www.tranandorra.org/memories-assemblea-general/">Memòries anuals</a></li><li><a href="/#col-laboradors">Col·laboradors</a></li><li><a class="heart-link" href="/#collabora"><span aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21C5 16.5 2 12.5 2 8.8 2 6.1 4.1 4 6.7 4c1.9 0 3.7 1 5.3 3 1.6-2 3.4-3 5.3-3C19.9 4 22 6.1 22 8.8c0 3.7-3 7.7-10 12.2z"/></svg></span>Fes un donatiu</a></li></ul></details>
+   </nav>
+   <div class="footer-grid">
+    <div><h2>Línia d’atenció</h2><p><strong>Truca’ns</strong><br /><a href="tel:+376821345"><svg class="line-svg" width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 3h3l1.5 4-2 1.2a10 10 0 0 0 4.3 4.3l1.2-2 4 1.5v3a2 2 0 0 1-2 2A12 12 0 0 1 3 5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>+376 821 345</a></p><p><strong>Escriu-nos</strong><br /><a href="mailto:info@tranandorra.org"><svg class="line-svg" width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="m3 6 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>info@tranandorra.org</a></p></div>
+    <div><h2>Contacte</h2><p class="lines"><span>Associació T.R.A.N.A. Andorra</span><span>Carrer Prada Casadet, locals C-D</span><span>AD500 Andorra la Vella</span></p></div>
+    <div><h2>Horari</h2><p class="lines"><span>De dilluns a divendres</span><span>De 9 a 13 h i de 15 a 18 h</span><span>Festius, tancat</span></p></div>
+   </div>
+   <div class="footer-bottom"><p>© 2014–{new Date().getFullYear()} Associació T.R.A.N.A. Andorra<br /><a href="https://www.tranandorra.org/avis-legal-i-politica-de-privacitat/">Avís legal i privacitat</a></p><p class="faad"><img src="/images/87282ff3d9a44ac8d20cd3498ae6339d.jpg" width="56" height="40" loading="lazy" alt="FAAD" /><span>Membre de la FAAD, Federació Andorrana d’Associacions de Persones amb Discapacitat</span></p></div>
+  </div>
+ </footer>
+ </div>
+ <a class="v7-float-donate" href="/#collabora"><span aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21C5 16.5 2 12.5 2 8.8 2 6.1 4.1 4 6.7 4c1.9 0 3.7 1 5.3 3 1.6-2 3.4-3 5.3-3C19.9 4 22 6.1 22 8.8c0 3.7-3 7.7-10 12.2z"/></svg></span>Fes un donatiu</a>
+ <script>
+  // Header V7-G behaviour: menu disclosures, mobile menu toggle and search.
+  document.documentElement.classList.add('js');
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const mobile = document.querySelector<HTMLButtonElement>('.mobile-nav-toggle');
+  const triggers = [...document.querySelectorAll<HTMLButtonElement>('[data-disclosure]')];
+  const panelFor = (button: HTMLElement) => document.getElementById(button.getAttribute('aria-controls')!)!;
+  const closeMenus = (except?: HTMLElement) => {
+   for (const button of triggers) if (button !== except) { button.setAttribute('aria-expanded', 'false'); panelFor(button).hidden = true; }
+  };
+  for (const button of triggers) {
+   button.addEventListener('click', () => {
+    const opening = button.getAttribute('aria-expanded') !== 'true';
+    closeMenus(button);
+    button.setAttribute('aria-expanded', String(opening));
+    panelFor(button).hidden = !opening;
+   });
+  }
+  if (header) new ResizeObserver(() => {
+   document.documentElement.style.setProperty('--navigation-panel-top', `${Math.ceil(header.getBoundingClientRect().height - 6)}px`);
+  }).observe(header);
+  const menuIcon = (open: boolean) => `${open ? 'Tanca' : 'Menú'} <svg class="v7-menu-icon" width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true"><path d="${open ? 'M6 6l14 14M20 6L6 20' : 'M4 7h18M4 13h18M4 19h18'}" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>`;
+  const search = document.querySelector<HTMLButtonElement>('.v7-search-toggle');
+  const form = document.querySelector<HTMLFormElement>('#v7-search');
+  const input = document.querySelector<HTMLInputElement>('#v7-search-query');
+  const closeSearch = (restore: boolean) => {
+   if (!form || !search) return;
+   form.hidden = true; search.setAttribute('aria-expanded', 'false');
+   if (restore) search.focus();
+  };
+  if (mobile) {
+   mobile.hidden = false;
+   mobile.addEventListener('click', () => {
+    const opening = mobile.getAttribute('aria-expanded') !== 'true';
+    mobile.setAttribute('aria-expanded', String(opening));
+    mobile.innerHTML = menuIcon(opening);
+    if (!opening) closeMenus();
+    closeSearch(false);
+   });
+  }
+  const collapseMobile = () => { if (mobile) { mobile.setAttribute('aria-expanded', 'false'); mobile.innerHTML = menuIcon(false); } };
+  if (search && form && input) {
+   search.addEventListener('click', () => {
+    if (search.getAttribute('aria-expanded') === 'true') { closeSearch(true); return; }
+    closeMenus(); collapseMobile();
+    form.hidden = false; search.setAttribute('aria-expanded', 'true'); input.focus();
+   });
+   form.addEventListener('keydown', event => {
+    if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeSearch(true); }
+   }, true);
+   document.addEventListener('click', event => {
+    const target = event.target as Node;
+    if (!form.hidden && !form.contains(target) && !search.contains(target)) closeSearch(false);
+   });
+  }
+  document.addEventListener('click', event => { if (header && !header.contains(event.target as Node)) closeMenus(); });
+  header?.addEventListener('focusout', () => setTimeout(() => { if (!header.contains(document.activeElement)) closeMenus(); }, 0));
+  document.addEventListener('keydown', event => {
+   if (event.key !== 'Escape') return;
+   const expanded = triggers.find(button => button.getAttribute('aria-expanded') === 'true');
+   if (expanded) { closeMenus(); expanded.focus(); event.preventDefault(); }
+   else if (mobile?.getAttribute('aria-expanded') === 'true') { collapseMobile(); mobile.focus(); event.preventDefault(); }
+  });
+  header?.addEventListener('click', event => {
+   if ((event.target as HTMLElement).closest('a')) { closeMenus(); collapseMobile(); }
+  });
+  // Sticky yellow strip on mobile (only the strip stays pinned) and floating donate on desktop.
+  const mobileMq = window.matchMedia('(max-width: 959px)');
+  const floatDonate = document.querySelector<HTMLElement>('.v7-float-donate');
+  const searchToggle = document.querySelector<HTMLElement>('.v7-search-toggle');
+  const updatePin = () => {
+   if (!header || !searchToggle) return;
+   const nav = header.querySelector<HTMLElement>('.main-nav');
+   const pin = mobileMq.matches ? Math.max(0, searchToggle.offsetTop - 10) : Math.max(0, nav?.offsetTop ?? 0);
+   header.style.setProperty('--v7-pin', `${pin}px`);
+   header.classList.toggle('is-stuck', mobileMq.matches && window.scrollY > pin);
+   // Desktop: the pinned menu bar slides away when the footer, which repeats the menu, comes into view.
+   const footerTop = document.querySelector('.site-footer')?.getBoundingClientRect().top ?? Infinity;
+   header.classList.toggle('is-footer', !mobileMq.matches && footerTop < header.offsetHeight - pin + 24);
+  };
+  const onScroll = () => {
+   updatePin();
+   const footerTop = document.querySelector('.site-footer')?.getBoundingClientRect().top ?? Infinity;
+   floatDonate?.classList.toggle('is-visible', window.scrollY > 320 && footerTop > window.innerHeight - 40);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+  // Footer site map: sections stay open on desktop and collapse on mobile.
+  const mapDetails = [...document.querySelectorAll<HTMLDetailsElement>('.footer-map details')];
+  const wide = window.matchMedia('(min-width: 960px)');
+  const syncMap = () => mapDetails.forEach(d => { d.open = wide.matches; d.querySelector('summary')!.tabIndex = wide.matches ? -1 : 0; });
+  mapDetails.forEach(d => d.addEventListener('toggle', () => { if (wide.matches && !d.open) d.open = true; }));
+  syncMap();
+  wide.addEventListener('change', syncMap);
+ </script>
+</body>
+</html>

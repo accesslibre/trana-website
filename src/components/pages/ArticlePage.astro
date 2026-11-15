@@ -1,0 +1,69 @@
+---
+// One news article. Same post object as src/pages/[...slug].astro; `related` is optional.
+import '../../styles/pages.css';
+import type { WordPressPost } from '../../lib/wordpress/index';
+import { formatDate } from '../../lib/routes';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Arrow from './Arrow.astro';
+import NewsThumb from './NewsThumb.astro';
+
+interface Props { post: WordPressPost; related?: WordPressPost[]; siteOrigin?: string }
+const { post, related = [], siteOrigin = 'https://www.tranandorra.org' } = Astro.props;
+
+const words = post.html.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.round(words / 200));
+// Skip the featured image when the body already starts with the same picture (common in WordPress posts).
+const base = (src: string) => src.split('/').pop()!.replace(/-(\d+x\d+|scaled)(?=\.\w+$)/g, '').replace(/-(\d+x\d+|scaled)(?=\.\w+$)/g, '');
+const bodyImages = [...post.html.matchAll(/<img[^>]+src="([^"]+)"/g)].map((m) => base(m[1]));
+const showHero = post.image && !bodyImages.includes(base(post.image.src));
+const shareUrl = new URL(post.path, siteOrigin).href;
+const crumbTitle = post.title.length > 48 ? `${post.title.slice(0, 46).trimEnd()}…` : post.title;
+---
+<div class="pg">
+ <article class="ar">
+  <header class="pg-narrow ar-head">
+   <Breadcrumbs inline items={[{ label: 'Notícies', href: '/disseny/noticies/' }, { label: crumbTitle }]} />
+   <p class="ar-meta"><span class="chip">Notícia</span><time datetime={post.date}>{formatDate(post.date)}</time><span>Lectura de {minutes} {minutes === 1 ? 'minut' : 'minuts'}</span></p>
+   <h1>{post.title}</h1>
+  </header>
+  {showHero && <figure class="ar-hero"><NewsThumb post={post} eager /></figure>}
+  <div class="pg-narrow wp-prose" set:html={post.html} />
+  <footer class="pg-narrow ar-foot">
+   <div class="ar-share" data-share>
+    <h2>Comparteix aquesta notícia</h2>
+    <ul>
+     <li><button type="button" class="pill" data-copy={shareUrl}><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M13 4H5a2 2 0 0 0-2 2v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Copia l’enllaç</button></li>
+     <li><a class="pill" href={`https://wa.me/?text=${encodeURIComponent(`${post.title} ${shareUrl}`)}`}>WhatsApp</a></li>
+     <li><a class="pill" href={`mailto:?subject=${encodeURIComponent(post.title)}&body=${encodeURIComponent(shareUrl)}`}>Correu</a></li>
+    </ul>
+    <p role="status" class="ar-copied" data-copied></p>
+   </div>
+   <p class="ar-source"><a href={post.url}>Consulta l’article al web original de TRANA</a></p>
+  </footer>
+ </article>
+
+ {related.length > 0 && (
+  <section class="pg-wrap ar-more" aria-labelledby="more-title">
+   <div class="ar-more-head"><h2 class="pg-h2" id="more-title">Més notícies</h2><a class="pg-arrow" href="/disseny/noticies/"><span>Totes les notícies</span><Arrow /></a></div>
+   <ul>
+    {related.map((p) => (
+     <li><article>
+      <span class="nw-thumb" aria-hidden="true"><NewsThumb post={p} /></span>
+      <p class="nw-kicker"><time datetime={p.date}>{formatDate(p.date)}</time></p>
+      <h3><a href={p.path}>{p.title}</a></h3>
+     </article></li>
+    ))}
+   </ul>
+  </section>
+ )}
+</div>
+
+<script>
+ document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((button) => {
+  button.addEventListener('click', async () => {
+   const status = button.closest('[data-share]')?.querySelector<HTMLElement>('[data-copied]');
+   try { await navigator.clipboard.writeText(button.dataset.copy!); if (status) status.textContent = 'Enllaç copiat.'; }
+   catch { if (status) status.textContent = 'No s’ha pogut copiar. Copia l’adreça de la barra del navegador.'; }
+  });
+ });
+</script>

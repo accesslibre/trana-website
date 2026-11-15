@@ -12,7 +12,7 @@ Updated 15 November 2026. **Preview only; no production migration.**
 - `robots.txt` disallows all crawlers. Every generated HTML page includes `noindex, nofollow, noarchive`, also sent in `X-Robots-Tag` on assets and 404 responses. This is a public preview, not access control.
 - Deployed directly from the local build. No implementation commits, pushes, GitHub integration, Workers Builds, Deploy Hooks or WordPress plugin changes.
 
-That deployment predates the local implementation commits. Versioning the foundation/data layer does not update the hosted preview or enable publishing automation; the presentation work remains separate while it is being edited.
+That deployment predates the local implementation commits. Versioning foundation/data and the completed presentation work does not update the hosted preview or enable publishing automation. Local builds include `/disseny/` for review; a future production build must exclude those demo routes while retaining their source and the style guide in the repository.
 
 The current TRANA website, WordPress editing and media remain unchanged. Content in this preview updates only after another successful build and deployment.
 

@@ -1,0 +1,110 @@
+---
+import '../../styles/pages.css';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Arrow from './Arrow.astro';
+import { contact } from './samples';
+const mailto = `mailto:${contact.email}?subject=${encodeURIComponent('Vull participar als tallers neurocognitius')}`;
+---
+<div class="pg">
+ <header class="act-top">
+  <Breadcrumbs items={[{ label: 'Suport i activitats', href: '/disseny/tallers-neurocognitius/' }, { label: 'Tallers neurocognitius' }]} />
+  <div class="pg-wrap act-top-inner">
+   <div>
+    <p class="pg-eyebrow" style="--dot:#8b5cca">Taller setmanal · des del 2011</p>
+    <h1>Tallers neurocognitius</h1>
+    <p class="pg-lede">Entrenem l’atenció i la memòria en grup, cada setmana. Un espai per exercitar la ment i per trobar-te amb gent que entén com et sents.</p>
+    <div class="act-actions">
+     <a class="pill pill-ink" href="#participa" style="min-height:52px;padding:0 28px">Com participar-hi</a>
+     <a class="pg-arrow" href={contact.phoneHref}><span>Truca al {contact.phone}</span><Arrow /></a>
+    </div>
+   </div>
+   <figure class="act-photo">
+    <div class="act-frame"><img src="/images/pages/wp-307.jpg" width="1159" height="780" alt="Persones assegudes en cercle, algunes en cadira de rodes, fent un exercici amb les mans juntes en una sala de TRANA" fetchpriority="high" /></div>
+    <figcaption>Inici de les activitats presencials, gener de 2021.</figcaption>
+   </figure>
+  </div>
+ </header>
+
+ <div class="pg-wrap">
+  <section class="act-facts" aria-label="El taller en quatre dades">
+   <dl>
+    <div><dt><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="4.5" width="14" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M3 8.5h14M7 2.5v4M13 2.5v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Quan</dt><dd>Dimecres<span>De 16 a 17 h</span></dd></div>
+    <div><dt><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 18s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10Z" stroke="currentColor" stroke-width="2"/><circle cx="10" cy="8" r="2.2" fill="currentColor"/></svg>On</dt><dd>Local de TRANA<span>Prada Casadet, Andorra la Vella</span></dd></div>
+    <div><dt><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="7.5" cy="7" r="3" stroke="currentColor" stroke-width="2"/><circle cx="14" cy="8" r="2.2" stroke="currentColor" stroke-width="2"/><path d="M2 17c.6-3.4 2.800-5 5.500-5s4.900 1.600 5.500 5M13 13c2 0 4 1 4.6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Per a qui</dt><dd>Persones amb EM<span>En grups reduïts</span></dd></div>
+    <div><dt><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 17s-6.500-3.800-6.500-8.300A3.500 3.500 0 0 1 10 7a3.500 3.500 0 0 1 6.500 1.700C16.500 13.200 10 17 10 17Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Amb el suport de</dt><dd>Creand Fundació<span>Des del 2011</span></dd></div>
+   </dl>
+  </section>
+
+  <section class="act-what" aria-labelledby="what-title">
+   <div>
+    <h2 class="pg-h2" id="what-title" style="margin-bottom:18px">Què hi fem</h2>
+    <p>L’esclerosi múltiple pot afectar l’atenció, la memòria o la rapidesa amb què processem la informació. Als tallers fem exercicis pensats per mantenir i estimular aquestes capacitats, adaptats al ritme de cada persona.</p>
+    <p>Treballem en grup i cada setmana. A més d’entrenar, compartim estratègies per al dia a dia i ens fem costat.</p>
+    <ul class="act-skills" aria-label="Capacitats que treballem">
+     <li>Atenció</li><li>Memòria</li><li>Velocitat de processament</li><li>Organització</li><li>Llenguatge</li>
+    </ul>
+    <p style="margin-top:22px"><a class="pg-arrow" href="https://www.tranandorra.org/deteriorament-cognitiu-en-la-em/"><span>Per què és important: la cognició en l’EM</span><Arrow /></a></p>
+   </div>
+   <figure class="act-quote">
+    <img src="/images/pages/wp-1253.jpg" width="1159" height="652" loading="lazy" alt="Participants de TRANA somrients al voltant d’una taula amb esmorzar" />
+    <blockquote><p>Cada sessió és més que una oportunitat d’aprenentatge; és un espai de comunitat.</p></blockquote>
+    <figcaption>Festa de final de curs, juny de 2021.</figcaption>
+   </figure>
+  </section>
+ </div>
+
+ <section class="act-join pg-dark" id="participa" aria-labelledby="join-title">
+  <div class="pg-wrap">
+   <h2 class="pg-h2" id="join-title">Com participar-hi</h2>
+   <p>No cal experiència prèvia. Només ganes de provar-ho.</p>
+   <ol class="act-steps">
+    <li><h3>Explica’ns-ho</h3><p>Truca al <a href={contact.phoneHref}>{contact.phone}</a> o escriu-nos. Et preguntarem com estàs i què busques.</p></li>
+    <li><h3>Trobem el teu grup</h3><p>Mirem amb tu quin grup i horari et van millor.</p></li>
+    <li><h3>Vine a la primera sessió</h3><p>Pots venir acompanyat. Si necessites alguna adaptació, digues-nos-ho abans.</p></li>
+   </ol>
+   <div class="act-join-cta">
+    <a class="pill pill-sun" href={contact.phoneHref} style="min-height:52px">Truca al {contact.phone}</a>
+    <a class="pill" href={mailto} style="min-height:52px">Escriu-nos un correu</a>
+   </div>
+  </div>
+ </section>
+
+ <section class="act-week pg-wrap" aria-labelledby="week-title">
+  <h2 class="pg-h2" id="week-title">La setmana a TRANA</h2>
+  <div class="act-week-grid">
+   <div>
+    <div class="act-day">
+     <h3>Dimecres</h3>
+     <ul>
+      <li class="is-here"><span class="when">16–17 h</span><span><strong>Tallers neurocognitius</strong><em>Aquesta pàgina</em></span></li>
+      <li><span class="when">17–18 h</span><strong>Ioga adaptat, nivell 1</strong></li>
+     </ul>
+    </div>
+    <div class="act-day">
+     <h3>Amb cita</h3>
+     <ul>
+      <li><span class="when">A convenir</span><strong>Atenció psicològica</strong></li>
+      <li><span class="when">A convenir</span><strong>Musicoteràpia</strong></li>
+     </ul>
+    </div>
+    <p style="margin-top:20px"><a class="pg-arrow" href="https://www.tranandorra.org/activitats-2/"><span>Totes les activitats</span><Arrow /></a></p>
+   </div>
+   <div class="act-pics">
+    <figure><img src="/images/pages/wp-245.jpg" width="978" height="719" loading="lazy" alt="Un grup fa estiraments amb els braços enlaire en una sala" /><figcaption>Una activitat de grup.</figcaption></figure>
+    <figure><img src="/images/pages/wp-1595.jpg" width="1600" height="1066" loading="lazy" alt="Silueta d’una persona que empeny una cadira de rodes al costat d’una piscina" /><figcaption>Mou-te, 2021.</figcaption></figure>
+   </div>
+  </div>
+ </section>
+
+ <div class="pg-wrap">
+  <aside class="act-online" aria-labelledby="online-title">
+   <img src="/images/pages/wp-3563.jpg" width="1409" height="1600" loading="lazy" alt="Logotip d’EM-LINE" />
+   <div>
+    <span class="label">Projecte en marxa</span>
+    <h2 id="online-title">EM-LINE: els tallers, des de casa</h2>
+    <p>Volem que hi pugui participar qui no es pot desplaçar. Estem recaptant fons per implantar els tallers neurocognitius en línia.</p>
+   </div>
+   <a class="pg-arrow" href="/2026/06/em-line-ajudeu-nos-a-la-seva-implantancio/"><span>Com pots ajudar</span><Arrow /></a>
+  </aside>
+ </div>
+</div>

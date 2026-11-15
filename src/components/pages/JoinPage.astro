@@ -1,0 +1,146 @@
+---
+// Membership / volunteer form. Design only: validation and the confirmation state run in the browser,
+// nothing is sent. Codex connects `action` to the chosen backend and keeps the same messages.
+import '../../styles/pages.css';
+import Breadcrumbs from './Breadcrumbs.astro';
+import { contact } from './samples';
+---
+<div class="pg">
+ <header class="jn-top">
+  <Breadcrumbs items={[{ label: 'Col·labora' }, { label: 'Fes-te soci o voluntari' }]} />
+  <div class="pg-wrap jn-top-inner">
+   <p class="pg-eyebrow" style="--dot:var(--green)">Col·labora</p>
+   <h1>Fes-te soci o voluntari</h1>
+   <p class="pg-lede">Deixa’ns les teves dades i et contactarem per explicar-te com funciona. Trigaràs uns dos minuts.</p>
+  </div>
+ </header>
+
+ <div class="pg-wrap jn-body">
+  <aside class="jn-aside" aria-labelledby="jn-why">
+   <h2 id="jn-why">Per què és important</h2>
+   <p>Una quota estable ens ajuda a planificar els tallers i els serveis tot l’any. Les persones voluntàries fan possibles les trobades i els actes.</p>
+   <h2>Què passa després</h2>
+   <ol class="jn-next">
+    <li>Revisem la teva sol·licitud.</li>
+    <li>Et truquem o t’escrivim, com prefereixis.</li>
+    <li>Et resolem els dubtes sobre la quota o el voluntariat.</li>
+   </ol>
+   <p class="jn-alt">Prefereixes parlar-ne? Truca al <a href={contact.phoneHref}>{contact.phone}</a>.</p>
+  </aside>
+
+  <div class="jn-main">
+   <p class="fm-demo" role="note">Demostració de disseny: aquest formulari encara no envia cap dada.</p>
+
+   <div class="fm-summary" tabindex="-1" hidden data-summary>
+    <h2 data-summary-title></h2>
+    <ul data-summary-list></ul>
+   </div>
+
+   <form class="fm jn-form" novalidate data-join>
+    <div class="fm-field" data-field>
+     <label for="jn-name">Nom i cognoms</label>
+     <p class="fm-error" id="jn-name-error" hidden></p>
+     <input id="jn-name" name="name" type="text" autocomplete="name" required aria-describedby="jn-name-error" />
+    </div>
+
+    <div class="fm-field" data-field>
+     <label for="jn-email">Correu electrònic</label>
+     <p class="fm-error" id="jn-email-error" hidden></p>
+     <input id="jn-email" name="email" type="email" autocomplete="email" required aria-describedby="jn-email-error" />
+    </div>
+
+    <div class="fm-field" data-field>
+     <label for="jn-phone">Telèfon <span class="fm-opt">(opcional)</span></label>
+     <p class="fm-hint" id="jn-phone-hint">Si prefereixes que et truquem.</p>
+     <p class="fm-error" id="jn-phone-error" hidden></p>
+     <input id="jn-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" aria-describedby="jn-phone-hint jn-phone-error" class="fm-w-md" />
+    </div>
+
+    <fieldset class="fm-field" data-field id="jn-what" aria-describedby="jn-what-error">
+     <legend>Com vols col·laborar?</legend>
+     <p class="fm-error" id="jn-what-error" hidden></p>
+     <div class="fm-choices">
+      <label class="fm-choice"><input type="radio" name="what" value="soci" required /><span><strong>Fer-me soci o sòcia</strong><small>Amb una quota periòdica.</small></span></label>
+      <label class="fm-choice"><input type="radio" name="what" value="voluntari" /><span><strong>Fer de voluntari o voluntària</strong><small>Unes hores del teu temps.</small></span></label>
+      <label class="fm-choice"><input type="radio" name="what" value="tots" /><span><strong>Les dues coses</strong></span></label>
+     </div>
+    </fieldset>
+
+    <fieldset class="fm-field" data-field id="jn-how">
+     <legend>Com prefereixes que et contactem?</legend>
+     <div class="fm-choices fm-inline">
+      <label class="fm-choice"><input type="radio" name="how" value="correu" checked /><span><strong>Per correu</strong></span></label>
+      <label class="fm-choice"><input type="radio" name="how" value="telefon" /><span><strong>Per telèfon</strong></span></label>
+     </div>
+    </fieldset>
+
+    <div class="fm-field" data-field>
+     <label for="jn-msg">Vols explicar-nos alguna cosa més? <span class="fm-opt">(opcional)</span></label>
+     <p class="fm-hint" id="jn-msg-hint">No cal que ens expliquis res sobre la teva salut.</p>
+     <textarea id="jn-msg" name="message" rows="4" maxlength="1000" aria-describedby="jn-msg-hint"></textarea>
+    </div>
+
+    <div class="fm-check" data-field>
+     <p class="fm-error" id="jn-ok-error" hidden></p>
+     <input id="jn-ok" name="consent" type="checkbox" required aria-describedby="jn-ok-error" />
+     <label for="jn-ok">He llegit la <a href="https://www.tranandorra.org/avis-legal-i-politica-de-privacitat/">política de privacitat</a> i accepto que TRANA faci servir aquestes dades per contactar amb mi.</label>
+    </div>
+
+    <button class="pill pill-ink fm-submit" type="submit">Envia la sol·licitud</button>
+   </form>
+
+   <section class="fm-done" tabindex="-1" hidden data-done aria-labelledby="done-title">
+    <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#2a675c"/><path d="m20 33 8 8 16-17" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <h2 id="done-title">Gràcies, <span data-done-name></span>!</h2>
+    <p>Hem rebut la teva sol·licitud. Et contactarem <span data-done-how></span>.</p>
+    <p>Si no tens notícies nostres en una setmana, truca’ns al <a href={contact.phoneHref}>{contact.phone}</a>.</p>
+    <p><a class="pg-arrow" href="/disseny/tallers-neurocognitius/"><span>Mentrestant, coneix els tallers</span><svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="m2 2 6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>
+   </section>
+  </div>
+ </div>
+</div>
+
+<script>
+ const form = document.querySelector<HTMLFormElement>('[data-join]')!;
+ const summary = document.querySelector<HTMLElement>('[data-summary]')!;
+ const done = document.querySelector<HTMLElement>('[data-done]')!;
+ const $ = <T extends Element>(s: string) => form.querySelector<T>(s)!;
+ const email = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+ type Rule = { id: string; target: string; test: () => string };
+ const rules: Rule[] = [
+  { id: 'jn-name', target: '#jn-name', test: () => $<HTMLInputElement>('#jn-name').value.trim() ? '' : 'Escriu el teu nom i cognoms.' },
+  { id: 'jn-email', target: '#jn-email', test: () => { const v = $<HTMLInputElement>('#jn-email').value.trim(); return !v ? 'Escriu el teu correu electrònic.' : email(v) ? '' : 'Escriu un correu com nom@exemple.ad.'; } },
+  { id: 'jn-phone', target: '#jn-phone', test: () => { const v = $<HTMLInputElement>('#jn-phone').value.trim(); const wantsCall = $<HTMLInputElement>('input[name=how][value=telefon]').checked; if (wantsCall && !v) return 'Escriu un telèfon si vols que et truquem.'; return v && !/^[+\d][\d\s.-]{5,}$/.test(v) ? 'Escriu el telèfon només amb números, per exemple 821 345.' : ''; } },
+  { id: 'jn-what', target: 'input[name=what]', test: () => form.querySelector('input[name=what]:checked') ? '' : 'Tria com vols col·laborar.' },
+  { id: 'jn-ok', target: '#jn-ok', test: () => $<HTMLInputElement>('#jn-ok').checked ? '' : 'Marca la casella per poder-te contactar.' },
+ ];
+ const paint = (r: Rule, msg: string) => {
+  const err = document.getElementById(`${r.id}-error`)!; err.hidden = !msg; err.textContent = msg;
+  const field = (document.getElementById(r.id) as HTMLElement).closest('[data-field]') ?? document.getElementById(r.id)!;
+  field.classList.toggle('is-invalid', !!msg);
+  form.querySelectorAll<HTMLElement>(r.target).forEach((el) => el.toggleAttribute('aria-invalid', !!msg));
+ };
+ const validate = () => rules.map((r) => { const m = r.test(); paint(r, m); return { r, m }; }).filter((x) => x.m);
+ let tried = false;
+ form.addEventListener('submit', (e) => {
+  e.preventDefault(); tried = true;
+  const errors = validate();
+  if (errors.length) {
+   summary.querySelector('[data-summary-title]')!.textContent = errors.length === 1 ? 'Revisa 1 camp' : `Revisa ${errors.length} camps`;
+   summary.querySelector('[data-summary-list]')!.replaceChildren(...errors.map(({ r, m }) => {
+    const li = document.createElement('li'); const a = document.createElement('a');
+    a.href = `#${r.id}`; a.textContent = m;
+    a.addEventListener('click', (ev) => { ev.preventDefault(); (form.querySelector<HTMLElement>(r.target))?.focus(); });
+    li.append(a); return li;
+   }));
+   summary.hidden = false; summary.focus(); return;
+  }
+  summary.hidden = true;
+  const data = new FormData(form);
+  done.querySelector('[data-done-name]')!.textContent = String(data.get('name')).trim().split(/\s+/)[0];
+  done.querySelector('[data-done-how]')!.textContent = data.get('how') === 'telefon' ? `per telèfon al ${String(data.get('phone')).trim()}` : `per correu a ${String(data.get('email')).trim()}`;
+  form.hidden = true; document.querySelector<HTMLElement>('.fm-demo')!.hidden = true; done.hidden = false; done.focus();
+ });
+ form.addEventListener('change', () => { if (tried) validate(); });
+ form.addEventListener('input', () => { if (tried) validate(); });
+</script>

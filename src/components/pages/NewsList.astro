@@ -1,0 +1,97 @@
+---
+// News list. Same props as src/pages/noticies/[...page].astro, so the route can render <NewsList {...Astro.props} />.
+import '../../styles/pages.css';
+import type { WordPressPost } from '../../lib/wordpress/index';
+import { newsPath } from '../../lib/routes';
+import Breadcrumbs from './Breadcrumbs.astro';
+import NewsletterForm from './NewsletterForm.astro';
+import NewsThumb from './NewsThumb.astro';
+
+interface Props { page: number; total: number; posts: WordPressPost[]; previous?: string; next?: string; searchAction?: string }
+const { page, total, posts, previous, next, searchAction = '/cerca/' } = Astro.props;
+
+const months = ['gen.', 'febr.', 'març', 'abr.', 'maig', 'juny', 'jul.', 'ag.', 'set.', 'oct.', 'nov.', 'des.'];
+const parts = (iso: string) => { const [y, m, d] = iso.slice(0, 10).split('-').map(Number); return { y, m: months[m - 1], d }; };
+const featured = page === 1 ? posts[0] : undefined;
+const rest = featured ? posts.slice(1) : posts;
+// Group the remaining posts by year, keeping order.
+const groups: { year: number; posts: WordPressPost[] }[] = [];
+for (const p of rest) {
+ const y = parts(p.date).y;
+ if (groups.at(-1)?.year !== y) groups.push({ year: y, posts: [] });
+ groups.at(-1)!.posts.push(p);
+}
+// Compact page list: first, last, current ±1, with gaps.
+const pageNums = [...new Set([1, page - 1, page, page + 1, total])].filter((n) => n >= 1 && n <= total).sort((a, b) => a - b);
+---
+<div class="pg">
+ <header class="nw-top">
+  <Breadcrumbs items={[{ label: 'Actualitat' }, { label: page > 1 ? `Notícies · pàgina ${page}` : 'Notícies' }]} />
+  <div class="pg-wrap nw-top-inner">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--orange)">Actualitat</p>
+    <h1>Notícies</h1>
+    <p class="pg-lede">Activitats, convocatòries i el que passa al voltant de l’esclerosi múltiple a Andorra.</p>
+   </div>
+   <form class="nw-search" action={searchAction} method="get" role="search">
+    <label for="nw-q">Cerca a les notícies</label>
+    <div class="nw-search-row">
+     <input id="nw-q" type="search" name="q" maxlength="200" placeholder="Per exemple: Dia Mundial" autocomplete="off" />
+     <button class="pill pill-ink" type="submit">Cerca</button>
+    </div>
+   </form>
+  </div>
+ </header>
+
+ <div class="pg-wrap nw-body">
+  {featured && (
+   <article class="nw-feature" aria-labelledby="nw-feature-title">
+    <a class="nw-feature-media" href={featured.path} tabindex="-1" aria-hidden="true"><NewsThumb post={featured} eager /></a>
+    <div>
+     <p class="nw-kicker"><span class="chip">El més recent</span><time datetime={featured.date}>{parts(featured.date).d} {parts(featured.date).m} {parts(featured.date).y}</time></p>
+     <h2 id="nw-feature-title"><a href={featured.path}>{featured.title}</a></h2>
+     <p>{featured.excerpt}</p>
+    </div>
+   </article>
+  )}
+
+  {groups.map((g) => (
+   <section class="nw-year" aria-labelledby={`y-${g.year}`}>
+    <h2 id={`y-${g.year}`} class="nw-year-title">{g.year}</h2>
+    <ul class="nw-list">
+     {g.posts.map((p) => {
+      const d = parts(p.date);
+      return (
+       <li>
+        <article class="nw-item">
+         <time class="nw-date" datetime={p.date}><strong>{d.d}</strong><span>{d.m}</span></time>
+         <div>
+          <h3><a href={p.path}>{p.title}</a></h3>
+          <p>{p.excerpt}</p>
+         </div>
+         <span class="nw-thumb" aria-hidden="true"><NewsThumb post={p} /></span>
+        </article>
+       </li>
+      );
+     })}
+    </ul>
+   </section>
+  ))}
+  {!posts.length && <p class="dc-empty">Encara no hi ha notícies publicades.</p>}
+
+  <nav class="nw-pages" aria-label="Pàgines de notícies">
+   {previous ? <a class="nw-step" href={previous} rel="prev"><svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="M8 2 2 8l6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Més recents</a> : <span></span>}
+   <ol>
+    {pageNums.map((n, i) => (
+     <>
+      {i > 0 && n - pageNums[i - 1] > 1 && <li aria-hidden="true" class="gap">…</li>}
+      <li>{n === page ? <span aria-current="page"><span class="vh">Pàgina </span>{n}</span> : <a href={newsPath(n)}><span class="vh">Pàgina </span>{n}</a>}</li>
+     </>
+    ))}
+   </ol>
+   {next ? <a class="nw-step" href={next} rel="next">Més antigues<svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="m2 2 6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a> : <span></span>}
+  </nav>
+ </div>
+
+ <div class="pg-wrap"><NewsletterForm /></div>
+</div>

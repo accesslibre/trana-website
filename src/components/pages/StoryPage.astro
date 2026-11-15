@@ -1,0 +1,53 @@
+---
+import '../../styles/pages.css';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Arrow from './Arrow.astro';
+import { story, voices, contact } from './samples';
+const author = story.author;
+const prev = author.stories[story.position - 2];
+const next = author.stories[story.position];
+const others = voices.filter((v) => v !== author);
+---
+<div class="pg st">
+ <article>
+  <header class="pg-narrow st-head">
+   <Breadcrumbs inline items={[{ label: 'Vivències', href: '/disseny/vivencies/' }, { label: author.name }]} />
+   <p class="st-kicker"><span class="chip">Vivència</span><span>Text {story.position} de {author.stories.length} de {author.name}</span></p>
+   <h1>{story.title}</h1>
+   <div class="st-by">
+    <span class={`vv-mono ${author.colour}`} aria-hidden="true">{author.initials}</span>
+    <div><strong>{author.name}</strong><span>{author.note}</span></div>
+    <div class="when"><span><time datetime={story.date}>{story.dateLabel}</time> · Lectura de {story.minutes} minuts</span></div>
+   </div>
+  </header>
+
+  <div class="pg-narrow st-body">
+   <p class="lede">{story.lede}</p>
+   {story.before.map((p) => <p>{p}</p>)}
+   <blockquote class="st-quote" aria-hidden="true"><p>{story.quote}</p></blockquote>
+   {story.after.map((p) => <p>{p}</p>)}
+   <p class="st-sign"><strong>{author.name}</strong><br />{author.note}</p>
+
+   <aside class="st-care" aria-label="Una nota de TRANA">
+    <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path fill="#ef4337" d="M12 21C5 16.5 2 12.5 2 8.8 2 6.1 4.1 4 6.7 4c1.9 0 3.7 1 5.3 3 1.6-2 3.4-3 5.3-3C19.9 4 22 6.1 22 8.8c0 3.7-3 7.7-10 12.2z"/></svg>
+    <div>
+     <p><strong>Si et reconeixes en aquesta història, parla amb nosaltres.</strong> Truca’ns al <a href={contact.phoneHref}>{contact.phone}</a> o escriu a <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
+     <p>Les vivències expliquen l’experiència de qui les escriu. No substitueixen el consell del teu equip mèdic.</p>
+    </div>
+   </aside>
+  </div>
+ </article>
+
+ <nav class="pg-narrow st-series" aria-labelledby="series-title">
+  <h2 id="series-title">Més textos de {author.name}</h2>
+  <div class="st-pager">
+   {prev && <a href={prev.href ?? author.page} class="prev"><small><svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="M8 2 2 8l6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Anterior · {story.position - 1}</small><strong>{prev.title}</strong></a>}
+   {next && <a href={next.href ?? author.page} class="next"><small>Següent · {story.position + 1}<Arrow /></small><strong>{next.title}</strong></a>}
+  </div>
+  <h2 style="margin-top:40px">Altres veus</h2>
+  <ul class="st-others">
+   {others.map((v) => <li><a href={v.page}><span class={`vv-mono ${v.colour}`} aria-hidden="true">{v.initials}</span>{v.name}</a></li>)}
+  </ul>
+  <p style="margin-top:24px"><a class="pg-arrow" href="/disseny/vivencies/"><span>Totes les vivències</span><Arrow /></a></p>
+ </nav>
+</div>

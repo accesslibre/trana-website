@@ -1,0 +1,17 @@
+---
+import { contact } from './samples';
+interface Props { title: string; text: string }
+const { title, text } = Astro.props;
+---
+<section class="pg-help" aria-labelledby="help-title">
+ <div class="pg-wrap pg-help-inner">
+  <div>
+   <h2 id="help-title">{title}</h2>
+   <p>{text}</p>
+  </div>
+  <div class="pg-help-links">
+   <a href={contact.phoneHref}><svg width="28" height="28" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 3h3l1.5 4-2 1.2a10 10 0 0 0 4.3 4.3l1.2-2 4 1.5v3a2 2 0 0 1-2 2A12 12 0 0 1 3 5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span><small>Truca’ns, de dilluns a divendres</small>{contact.phone}</span></a>
+   <a href={`mailto:${contact.email}`}><svg width="28" height="28" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="m3 6 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span><small>Escriu-nos</small>{contact.email}</span></a>
+  </div>
+ </div>
+</section>
