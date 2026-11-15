@@ -1,22 +1,23 @@
 # Delivery plan
 
-Planning baseline · 13 November 2026.
+Planning baseline · 13 November 2026. Updated 15 November: native Astro is in the local checkout with WordPress data, routes/search and noindex preview configuration. The current visual reference is the approved v7 home/navigation with the official TRANA logo; interior page designs are reviewed at `/disseny/`. Claude leads visual design; Codex handles data/URL/SEO integration, infrastructure and verification. Local commits are now authorized; ongoing design work remains separate. Production migration and publishing hooks are not activated.
 
 ## 1. Preparation — current stage
 
 - [x] Establish the frontend repository with Markdown documentation.
 - [x] Verify anonymous REST access and select page `8` and post `3589` for the first content review.
 - [x] Record observed HTML issues and the proposed publishing flow.
-- [ ] Agree the content, language, visual direction and pilot reviewer with TRANA.
+- [x] Jordi selected the v7 home and desktop/mobile navigation, superseding the initial v5 pilot reference. Use the supplied official TRANA logo and Catalan UI. Earlier palettes and the fibre logo remain historical design references.
+- [ ] Obtain TRANA’s final content, brand and usability review.
 - [ ] Confirm who administers WordPress, Cloudflare, DNS and the GitHub integration.
 
 ## 2. Read-only frontend pilot
 
-1. Add Astro after this planning stage; choose supported versions and commit a lockfile then.
-2. Build a small content adapter and the association, news-list and article templates. Handle WordPress pagination explicitly; record which content is included in the pilot rather than relying on an API default limit.
-3. Review the two selected records with TRANA. Agree heading changes, image alternatives, treatment of the article table and content rights.
-4. Use [WCAG 2.2 AA](https://www.w3.org/TR/WCAG22/) as the working accessibility target. Test keyboard navigation, focus, zoom/reflow and screen-reader reading order alongside automated checks and review with people who will use the site. A target is not a conformance claim.
-5. Use a separate preview hostname. Keep the current public website, WordPress editing and media available during review.
+1. **Implemented locally:** Astro static output, TypeScript, pinned Node 24.16.0 and a dependency lockfile. Commit the reviewed foundation/data layer separately from the presentation work while Claude is editing it. Pushes and deployment are outside this step.
+2. **Implemented and tested:** public WordPress adapter with explicit pagination, home, association page, 259 published articles at their original dated paths, a paginated news list, local search and 404. A failed build preserves the previous output.
+3. **Pending TRANA review:** agree heading changes, image alternatives, treatment of the article table and content rights.
+4. **Initial checks passed:** type checking, 13 unit tests and 13 browser checks covering keyboard focus, mobile menu, reflow, search and automated accessibility rules. Continue with screen-reader and user review against [WCAG 2.2 AA](https://www.w3.org/TR/WCAG22/); this is not a conformance claim.
+5. **Preview scope:** a separate Cloudflare Worker with no custom-domain routes, robots disallow and HTTP/HTML noindex. Keep the current public website, WordPress editing and media unchanged during review.
 
 **Pilot acceptance:** the association page and EM-LINE article retain their agreed content; the news list links to the article; images and links work; unsupported content or API failures cannot silently produce an apparently successful empty site.
 
