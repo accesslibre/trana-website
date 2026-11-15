@@ -1,0 +1,31 @@
+node_modules/
+dist/
+.astro/
+.wrangler/
+.cache/
+
+# Local credentials; keep the documented public configuration template.
+.env
+.env.*
+!.env.example
+.dev.vars*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Generated reports, browser captures and editor/build output.
+playwright-report/
+test-results/
+coverage/
+*.log
+*.har
+*.tsbuildinfo
+gitleaks-report.*
+.DS_Store
+
+# Local references and working notes are not project source.
+local-explorations/
+local-notes/
+local-audits/
+local-backups/
