@@ -1,6 +1,7 @@
 ---
-// Membership / volunteer form. Design only: validation and the confirmation state run in the browser,
-// nothing is sent. Codex connects `action` to the chosen backend and keeps the same messages.
+// Membership / volunteer form. DEMO ONLY: validation and the confirmation run in the browser and nothing is sent.
+// The submit button stays disabled until the script runs, so the form can never submit (no accidental GET with
+// personal data in the URL). When a real backend exists, replace the demo confirmation and remove the demo notes.
 import '../../styles/pages.css';
 import Breadcrumbs from './Breadcrumbs.astro';
 import { contact } from './samples';
@@ -29,7 +30,8 @@ import { contact } from './samples';
   </aside>
 
   <div class="jn-main">
-   <p class="fm-demo" role="note">Demostració de disseny: aquest formulari encara no envia cap dada.</p>
+   <p class="fm-demo" role="note">Demostració de disseny: aquest formulari no envia cap dada ni cap correu. Per fer-te soci o voluntari, truca al <a href={contact.phoneHref}>{contact.phone}</a> o escriu a <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
+   <noscript><p class="fm-demo">Aquest formulari necessita JavaScript i, de moment, és només una demostració. Truca’ns al <a href={contact.phoneHref}>{contact.phone}</a> o escriu a <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p></noscript>
 
    <div class="fm-summary" tabindex="-1" hidden data-summary>
     <h2 data-summary-title></h2>
@@ -37,6 +39,7 @@ import { contact } from './samples';
    </div>
 
    <form class="fm jn-form" novalidate data-join>
+    <p class="fm-hint">Tots els camps són obligatoris, excepte els que diuen «opcional».</p>
     <div class="fm-field" data-field>
      <label for="jn-name">Nom i cognoms</label>
      <p class="fm-error" id="jn-name-error" hidden></p>
@@ -51,7 +54,7 @@ import { contact } from './samples';
 
     <div class="fm-field" data-field>
      <label for="jn-phone">Telèfon <span class="fm-opt">(opcional)</span></label>
-     <p class="fm-hint" id="jn-phone-hint">Si prefereixes que et truquem.</p>
+     <p class="fm-hint" id="jn-phone-hint">Necessari si prefereixes que et truquem.</p>
      <p class="fm-error" id="jn-phone-error" hidden></p>
      <input id="jn-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" aria-describedby="jn-phone-hint jn-phone-error" class="fm-w-md" />
     </div>
@@ -86,15 +89,17 @@ import { contact } from './samples';
      <label for="jn-ok">He llegit la <a href="https://www.tranandorra.org/avis-legal-i-politica-de-privacitat/">política de privacitat</a> i accepto que TRANA faci servir aquestes dades per contactar amb mi.</label>
     </div>
 
-    <button class="pill pill-ink fm-submit" type="submit">Envia la sol·licitud</button>
+    <div class="fm-field">
+     <p class="fm-hint" id="jn-submit-note">En aquesta demostració, el botó no envia res.</p>
+     <button class="pill pill-ink fm-submit" type="submit" disabled aria-describedby="jn-submit-note" data-ready>Envia la sol·licitud</button>
+    </div>
    </form>
 
    <section class="fm-done" tabindex="-1" hidden data-done aria-labelledby="done-title">
     <svg width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#2a675c"/><path d="m20 33 8 8 16-17" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    <h2 id="done-title">Gràcies, <span data-done-name></span>!</h2>
-    <p>Hem rebut la teva sol·licitud. Et contactarem <span data-done-how></span>.</p>
-    <p>Si no tens notícies nostres en una setmana, truca’ns al <a href={contact.phoneHref}>{contact.phone}</a>.</p>
-    <p><a class="pg-arrow" href="/disseny/tallers-neurocognitius/"><span>Mentrestant, coneix els tallers</span><svg width="10" height="16" viewBox="0 0 10 16" fill="none" aria-hidden="true"><path d="m2 2 6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>
+    <h2 id="done-title">Demostració completada</h2>
+    <p>Has omplert bé el formulari, però no s’ha enviat cap dada ni cap correu: TRANA no ha rebut aquesta sol·licitud.</p>
+    <p>Si vols fer-te soci o voluntari, truca al <a href={contact.phoneHref}>{contact.phone}</a> o escriu a <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
    </section>
   </div>
  </div>
@@ -110,7 +115,7 @@ import { contact } from './samples';
  const rules: Rule[] = [
   { id: 'jn-name', target: '#jn-name', test: () => $<HTMLInputElement>('#jn-name').value.trim() ? '' : 'Escriu el teu nom i cognoms.' },
   { id: 'jn-email', target: '#jn-email', test: () => { const v = $<HTMLInputElement>('#jn-email').value.trim(); return !v ? 'Escriu el teu correu electrònic.' : email(v) ? '' : 'Escriu un correu com nom@exemple.ad.'; } },
-  { id: 'jn-phone', target: '#jn-phone', test: () => { const v = $<HTMLInputElement>('#jn-phone').value.trim(); const wantsCall = $<HTMLInputElement>('input[name=how][value=telefon]').checked; if (wantsCall && !v) return 'Escriu un telèfon si vols que et truquem.'; return v && !/^[+\d][\d\s.-]{5,}$/.test(v) ? 'Escriu el telèfon només amb números, per exemple 821 345.' : ''; } },
+  { id: 'jn-phone', target: '#jn-phone', test: () => { const v = $<HTMLInputElement>('#jn-phone').value.trim(); const wantsCall = $<HTMLInputElement>('input[name=how][value=telefon]').checked; if (wantsCall && !v) return 'Escriu un telèfon si vols que et truquem.'; return v && !/^[+\d][\d\s.-]{5,}$/.test(v) ? 'Escriu el telèfon amb números, per exemple +376 821 345.' : ''; } },
   { id: 'jn-what', target: 'input[name=what]', test: () => form.querySelector('input[name=what]:checked') ? '' : 'Tria com vols col·laborar.' },
   { id: 'jn-ok', target: '#jn-ok', test: () => $<HTMLInputElement>('#jn-ok').checked ? '' : 'Marca la casella per poder-te contactar.' },
  ];
@@ -118,29 +123,33 @@ import { contact } from './samples';
   const err = document.getElementById(`${r.id}-error`)!; err.hidden = !msg; err.textContent = msg;
   const field = (document.getElementById(r.id) as HTMLElement).closest('[data-field]') ?? document.getElementById(r.id)!;
   field.classList.toggle('is-invalid', !!msg);
-  form.querySelectorAll<HTMLElement>(r.target).forEach((el) => el.toggleAttribute('aria-invalid', !!msg));
+  form.querySelectorAll<HTMLElement>(r.target).forEach((el) => { if (msg) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid'); });
  };
  const validate = () => rules.map((r) => { const m = r.test(); paint(r, m); return { r, m }; }).filter((x) => x.m);
+ const renderSummary = (errors: { r: Rule; m: string }[]) => {
+  if (!errors.length) { summary.hidden = true; return; }
+  summary.querySelector('[data-summary-title]')!.textContent = errors.length === 1 ? 'Revisa 1 camp' : `Revisa ${errors.length} camps`;
+  summary.querySelector('[data-summary-list]')!.replaceChildren(...errors.map(({ r, m }) => {
+   const li = document.createElement('li'); const a = document.createElement('a');
+   a.href = `#${r.id}`; a.textContent = m;
+   a.addEventListener('click', (ev) => { ev.preventDefault(); (form.querySelector<HTMLElement>(r.target))?.focus(); });
+   li.append(a); return li;
+  }));
+  summary.hidden = false;
+ };
  let tried = false;
  form.addEventListener('submit', (e) => {
   e.preventDefault(); tried = true;
   const errors = validate();
-  if (errors.length) {
-   summary.querySelector('[data-summary-title]')!.textContent = errors.length === 1 ? 'Revisa 1 camp' : `Revisa ${errors.length} camps`;
-   summary.querySelector('[data-summary-list]')!.replaceChildren(...errors.map(({ r, m }) => {
-    const li = document.createElement('li'); const a = document.createElement('a');
-    a.href = `#${r.id}`; a.textContent = m;
-    a.addEventListener('click', (ev) => { ev.preventDefault(); (form.querySelector<HTMLElement>(r.target))?.focus(); });
-    li.append(a); return li;
-   }));
-   summary.hidden = false; summary.focus(); return;
-  }
-  summary.hidden = true;
-  const data = new FormData(form);
-  done.querySelector('[data-done-name]')!.textContent = String(data.get('name')).trim().split(/\s+/)[0];
-  done.querySelector('[data-done-how]')!.textContent = data.get('how') === 'telefon' ? `per telèfon al ${String(data.get('phone')).trim()}` : `per correu a ${String(data.get('email')).trim()}`;
-  form.hidden = true; document.querySelector<HTMLElement>('.fm-demo')!.hidden = true; done.hidden = false; done.focus();
+  renderSummary(errors);
+  if (errors.length) { summary.focus(); return; }
+  // Demo: nothing is sent. Keep the demo notice visible and show the demo confirmation.
+  form.hidden = true; done.hidden = false; done.focus();
  });
- form.addEventListener('change', () => { if (tried) validate(); });
- form.addEventListener('input', () => { if (tried) validate(); });
+ // After the first attempt, keep inline errors and the summary in step with the fields, without moving focus.
+ const live = () => { if (tried && !form.hidden) renderSummary(validate()); };
+ form.addEventListener('change', live);
+ form.addEventListener('input', live);
+ // Enable the button only now that submission is handled here.
+ form.querySelector<HTMLButtonElement>('[data-ready]')!.disabled = false;
 </script>

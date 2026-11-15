@@ -5,10 +5,10 @@ import Arrow from './Arrow.astro';
 import { contact } from './samples';
 const mail = (subject: string) => `mailto:${contact.email}?subject=${encodeURIComponent(subject)}`;
 const reasons = [
- { title: 'Acabo de rebre el diagnòstic', text: 'Parlem-ne amb calma. T’expliquem què fem i com et podem acompanyar, a tu i a la teva família.', subject: 'Acabo de rebre el diagnòstic' },
- { title: 'Vull participar en una activitat', text: 'Tallers neurocognitius, ioga adaptat, musicoteràpia o atenció psicològica.', subject: 'Vull participar en una activitat' },
- { title: 'Vull fer-me soci o voluntari', text: 'Una quota estable o unes hores del teu temps ens ajuden a mantenir els tallers.', subject: 'Vull fer-me soci o voluntari' },
- { title: 'Represento una entitat o un mitjà', text: 'Col·laboracions, premsa i propostes per a la defensa de drets.', subject: 'Col·laboració o premsa' },
+ { title: 'Acabo de rebre el diagnòstic', text: 'Parlem-ne amb calma. T’expliquem què fem i com et podem acompanyar, a tu i a la teva família.', subject: 'Acabo de rebre el diagnòstic', link: 'Escriu-nos sobre el diagnòstic', call: true },
+ { title: 'Vull participar en una activitat', text: 'Tallers neurocognitius, ioga adaptat, musicoteràpia o atenció psicològica.', subject: 'Vull participar en una activitat', link: 'Pregunta per les activitats' },
+ { title: 'Vull fer-me soci o voluntari', text: 'Una quota estable o unes hores del teu temps ens ajuden a mantenir els tallers.', subject: 'Vull fer-me soci o voluntari', link: 'Escriu-nos per fer-te soci o voluntari', call: true },
+ { title: 'Represento una entitat o un mitjà', text: 'Col·laboracions, premsa i propostes per a la defensa de drets.', subject: 'Col·laboració o premsa', link: 'Escriu-nos com a entitat o mitjà' },
 ];
 const social = [
  { label: 'Instagram', icon: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg>', href: 'https://www.instagram.com/tranaemandorra/' },
@@ -46,8 +46,9 @@ const social = [
  <section class="ct-why" aria-labelledby="why-title">
   <div class="pg-wrap">
    <h2 class="pg-h2" id="why-title">Què necessites?</h2>
+   <p style="margin-top:10px;font-size:17.5px;max-width:42em">Els enllaços «Escriu-nos» obren el teu programa de correu amb l’assumpte ja escrit. Si no s’obre res, escriu a <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
    <ul>
-    {reasons.map((r) => <li><h3>{r.title}</h3><p>{r.text}</p><a class="pg-arrow" href={mail(r.subject)}><span>Escriu-nos sobre això</span><Arrow /></a></li>)}
+    {reasons.map((r) => <li><h3>{r.title}</h3><p>{r.text}</p><a class="pg-arrow" href={mail(r.subject)}><span>{r.link}</span><Arrow /></a>{r.call && <p style="margin-top:2px">O truca al <a href={contact.phoneHref}>{contact.phone}</a>.</p>}</li>)}
    </ul>
   </div>
  </section>
@@ -64,7 +65,7 @@ const social = [
 </div>
 
 <script>
- // Opening status in Andorra time. Public holidays are not known here, so the text says so.
+ // Opening status in Andorra time. Public holidays are not known here, so every message says so.
  const el = document.querySelector<HTMLElement>('[data-status]');
  if (el) {
   const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Andorra', weekday: 'short', hour: 'numeric', minute: 'numeric', hourCycle: 'h23' }).formatToParts(new Date()).map((p) => [p.type, p.value]));
@@ -72,13 +73,13 @@ const social = [
   const t = Number(parts.hour) * 60 + Number(parts.minute);
   const slots: [number, number][] = [[540, 780], [900, 1080]];
   const open = day && slots.find(([a, b]) => t >= a && t < b);
-  if (open) { el.textContent = `Ara obert, fins a les ${open[1] / 60} h`; el.classList.add('open'); }
+  if (open) { el.textContent = `Ara obert, fins a les ${open[1] / 60} h (si no és festiu)`; el.classList.add('open'); }
   else {
    let when = 'dilluns a les 9 h';
    if (day && t < 540) when = 'avui a les 9 h';
    else if (day && t >= 780 && t < 900) when = 'avui a les 15 h';
    else if (day && parts.weekday !== 'Fri') when = 'demà a les 9 h';
-   el.textContent = `Ara tancat. Obrim ${when}`;
+   el.textContent = `Ara tancat. Obrim ${when}, si no és festiu`;
    el.classList.add('closed');
   }
   el.hidden = false;
