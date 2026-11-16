@@ -1,0 +1,27 @@
+---
+// Entry point for group A (information, health and rights). Root connects it from src/pages/[...slug].astro.
+// Each page gets its dedicated layout only when src/lib/info-pages.ts confirms that all WordPress text and images
+// are represented; otherwise it falls back to the generic page with the migration note, as before.
+import type { WordPressPage, WordPressPost } from '../../lib/wordpress/index';
+import type { PageMigration } from '../../pages/_migration';
+import { buildInfoPage, INFO_RELATED_SLUGS } from '../../lib/info-pages';
+import InfoEmPage from '../pages/InfoEmPage.astro';
+import GlossaryPage from '../pages/GlossaryPage.astro';
+import CognitivePage from '../pages/CognitivePage.astro';
+import ArticlePage from '../pages/ArticlePage.astro';
+import ResourcePage from './ResourcePage.astro';
+
+interface Props { post: WordPressPage; pages: WordPressPage[]; posts: WordPressPost[]; migration?: PageMigration }
+const { post, pages, migration } = Astro.props;
+const info = migration?.status === 'pendent' ? null : buildInfoPage(post);
+const family = post.slug === 'conveni-sobre-els-drets-de-les-persones-amb-discapacitat-cdpd' ? 'drets' : 'salut';
+const related = family === 'drets' ? [] : pages
+ .filter((p) => INFO_RELATED_SLUGS.includes(p.slug) && p.id !== post.id)
+ .sort((a, b) => INFO_RELATED_SLUGS.indexOf(a.slug) - INFO_RELATED_SLUGS.indexOf(b.slug))
+ .map((p) => ({ title: p.title, path: p.path }));
+---
+{info?.kind === 'em' ? <InfoEmPage post={post} info={info} related={related} resources={migration?.resources} note={migration?.reason} />
+: info?.kind === 'glossary' ? <GlossaryPage post={post} info={info} related={related} />
+: info?.kind === 'cognitive' ? <CognitivePage post={post} info={info} related={related} />
+: info?.kind === 'resources' ? <ResourcePage post={post} info={info} related={related} family={family} />
+: <ArticlePage post={post} related={[]} kind="page" pendingReason={migration?.reason} resources={migration?.resources} />}

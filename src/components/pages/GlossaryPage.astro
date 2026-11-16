@@ -1,0 +1,110 @@
+---
+// /glossari-em/ with every WordPress term and definition, grouped by initial letter.
+// The filter is progressive enhancement: without JavaScript the full list and the letter index stay available.
+import '../../styles/pages.css';
+import '../../styles/informative-pages.css';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import type { GlossaryInfo } from '../../lib/info-pages';
+import Breadcrumbs from './Breadcrumbs.astro';
+import HelpStrip from './HelpStrip.astro';
+import InfoRelated from './InfoRelated.astro';
+
+interface Props { post: WordPressPage; info: GlossaryInfo; related: { title: string; path: string }[] }
+const { post, info, related } = Astro.props;
+const letters: { letter: string; terms: GlossaryInfo['terms'] }[] = [];
+for (const term of info.terms) {
+ const group = letters.find((g) => g.letter === term.letter);
+ if (group) group.terms.push(term); else letters.push({ letter: term.letter, terms: [term] });
+}
+letters.sort((a, b) => a.letter.localeCompare(b.letter, 'ca'));
+const count = info.terms.length;
+---
+<div class="pg gl">
+ <header class="em-top">
+  <Breadcrumbs items={[{ label: post.title }]} />
+  <div class="pg-wrap em-top-inner emr-solo">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--blue)">L’esclerosi múltiple</p>
+    <h1>{post.title}</h1>
+    <ul class="pg-meta"><li>{count} termes, per ordre alfabètic</li>{info.credits && <li><a href="#font">Font i revisió</a></li>}</ul>
+    <div class="gl-find" data-gl-find hidden>
+     <label for="gl-q">Busca un terme</label>
+     <div class="field">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="2.4"/><path d="m13 13 4.5 4.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <input id="gl-q" type="search" autocomplete="off" placeholder="Per exemple: mielina" aria-describedby="gl-status" />
+     </div>
+     <p id="gl-status" role="status" aria-live="polite"></p>
+    </div>
+   </div>
+  </div>
+ </header>
+
+ <nav class="gl-letters" aria-label="Lletres del glossari">
+  <ul class="pg-wrap">{letters.map((g) => <li><a href={`#lletra-${g.letter.toLowerCase()}`} data-letter={g.letter}>{g.letter}</a></li>)}</ul>
+  <p id="gl-off-note" class="vh">Aquesta lletra no té resultats amb el filtre actual. En triar-la, s’esborra el filtre i es mostra tota la llista.</p>
+ </nav>
+
+ <div class="pg-wrap gl-body">
+  {letters.map((g) => (
+   <section class="gl-group" aria-labelledby={`lletra-${g.letter.toLowerCase()}`} data-gl-group>
+    <h2 id={`lletra-${g.letter.toLowerCase()}`} class="gl-letter">{g.letter}</h2>
+    <dl class="gl-list">
+     {g.terms.map((t) => (
+      <div class="gl-term" id={t.id} data-gl-term>
+       <dt>{t.term}</dt>
+       <dd>
+        {t.images.map((img) => <img class="gl-img" src={img.src} alt={img.alt} width={img.width} height={img.height} loading="lazy" decoding="async" />)}
+        <p set:html={t.html} />
+       </dd>
+      </div>
+     ))}
+    </dl>
+   </section>
+  ))}
+  <p class="dc-empty" data-gl-empty hidden>No hi ha cap terme amb aquesta paraula. Prova amb una altra o <a href="#gl-q" data-gl-clear>mostra’ls tots</a>.</p>
+
+  {info.credits && (
+   <aside class="gl-credits" id="font" aria-labelledby="font-title">
+    <h2 id="font-title">Font i revisió</h2>
+    {info.credits.images.map((img) => <img class="gl-img" src={img.src} alt={img.alt} width={img.width} height={img.height} loading="lazy" decoding="async" />)}
+    <p set:html={info.credits.html} />
+   </aside>
+  )}
+ </div>
+
+ <InfoRelated items={related} />
+ <HelpStrip title="No trobes una paraula?" text="Si a la consulta t’han dit una paraula que no entens, pregunta-ho al teu equip mèdic. També pots trucar-nos o escriure’ns." />
+</div>
+
+<script>
+ const find = document.querySelector<HTMLElement>('[data-gl-find]');
+ const input = document.querySelector<HTMLInputElement>('#gl-q');
+ const status = document.querySelector<HTMLElement>('#gl-status');
+ const empty = document.querySelector<HTMLElement>('[data-gl-empty]');
+ const terms = [...document.querySelectorAll<HTMLElement>('[data-gl-term]')];
+ const groups = [...document.querySelectorAll<HTMLElement>('[data-gl-group]')];
+ const letterLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-letter]')];
+ const fold = (s: string) => s.normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase('ca');
+ const index = terms.map((el) => ({ el, term: fold(el.querySelector('dt')!.textContent ?? ''), all: fold(el.textContent ?? '') }));
+ if (find && input && status) {
+  find.hidden = false;
+  const apply = () => {
+   const words = fold(input.value).split(/\s+/).filter(Boolean);
+   let shown = 0;
+   for (const t of index) { const ok = words.every((w) => t.all.includes(w)); t.el.hidden = !ok; if (ok) shown++; }
+   for (const g of groups) g.hidden = !g.querySelector('[data-gl-term]:not([hidden])');
+   for (const a of letterLinks) {
+    const off = !!document.getElementById(a.hash.slice(1))?.closest('[data-gl-group]')?.hasAttribute('hidden');
+    // Still a working link (it clears the filter), so it is described, not disabled.
+    a.classList.toggle('is-off', off);
+    if (off) a.setAttribute('aria-describedby', 'gl-off-note'); else a.removeAttribute('aria-describedby');
+   }
+   if (empty) empty.hidden = shown > 0;
+   status.textContent = words.length ? (shown === 1 ? '1 terme' : `${shown} termes`) : '';
+  };
+  input.addEventListener('input', apply);
+  document.querySelector('[data-gl-clear]')?.addEventListener('click', (e) => { e.preventDefault(); input.value = ''; apply(); input.focus(); });
+  // A letter hidden by the filter: clear the filter first so the jump always lands on visible content.
+  letterLinks.forEach((a) => a.addEventListener('click', () => { if (a.classList.contains('is-off')) { input.value = ''; apply(); } }));
+ }
+</script>

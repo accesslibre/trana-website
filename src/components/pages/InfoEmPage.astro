@@ -1,0 +1,87 @@
+---
+// /que-es-lem/ with the real WordPress content, reorganised by src/lib/info-pages.ts (no text added or removed).
+import '../../styles/pages.css';
+import '../../styles/informative-pages.css';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import type { EmInfo } from '../../lib/info-pages';
+import { watchUrl } from '../../lib/info-pages';
+import Breadcrumbs from './Breadcrumbs.astro';
+import HelpStrip from './HelpStrip.astro';
+import InfoRelated from './InfoRelated.astro';
+import Arrow from './Arrow.astro';
+
+interface Props { post: WordPressPage; info: EmInfo; related: { title: string; path: string }[]; resources?: { label: string; url: string }[]; note?: string }
+const { post, info, related, resources = [], note } = Astro.props;
+const words = post.html.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.round(words / 200));
+const toc = [
+ ...info.types.map((t) => ({ id: t.id, label: t.name })),
+ ...(info.source ? [{ id: 'font', label: 'Font' }] : []),
+];
+---
+<div class="pg">
+ <header class="em-top">
+  <Breadcrumbs items={[{ label: post.title }]} />
+  <div class:list={['pg-wrap', 'em-top-inner', { 'emr-solo': !resources.length }]}>
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--blue)">L’esclerosi múltiple</p>
+    <h1>{post.title}</h1>
+    <p class="pg-lede" set:html={info.lede} />
+    <ul class="pg-meta">
+     <li><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="2"/><path d="M10 6v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Lectura de {minutes} {minutes === 1 ? 'minut' : 'minuts'}</li>
+     {info.source && <li><a href="#font">Font</a></li>}
+    </ul>
+   </div>
+   {resources.length > 0 && (
+    <aside class="em-gist emr-video" aria-labelledby="video-title">
+     <h2 id="video-title">Vídeo</h2>
+     {note && <p class="emr-note">{note}</p>}
+     <ul>{resources.map((r) => <li><a class="pg-arrow" href={watchUrl(r.url)}><span>{r.label}</span><Arrow /></a><span class="emr-ext">S’obre a YouTube</span></li>)}</ul>
+    </aside>
+   )}
+  </div>
+ </header>
+
+ <div class="pg-wrap em-body">
+  <div>
+   <nav class="em-toc em-toc-desk" aria-labelledby="toc-d"><p class="em-toc-title" id="toc-d">En aquesta pàgina</p><ol>{toc.map((t) => <li><a href={`#${t.id}`} data-toc>{t.label}</a></li>)}</ol></nav>
+   <details class="em-toc em-toc-mob"><summary>En aquesta pàgina</summary><ol>{toc.map((t) => <li><a href={`#${t.id}`}>{t.label}</a></li>)}</ol></details>
+  </div>
+
+  <article class="em-prose">
+   {info.intro.map((html) => <p set:html={html} />)}
+
+   <section aria-labelledby="tipus" class="emr-types-sec">
+    <h2 id="tipus">Tipus d’esclerosi múltiple</h2>
+    {info.typesIntro && <p set:html={info.typesIntro} />}
+    <ul class="em-types emr-types">
+     {info.types.map((t) => (
+      <li>
+       {t.image ? <figure><img src={t.image.src} alt={t.image.alt} width={t.image.width} height={t.image.height} loading="lazy" decoding="async" /></figure> : <span></span>}
+       <div>
+        <h3 id={t.id}>{t.name}</h3>
+        {t.paragraphs.map((html) => <p set:html={html} />)}
+       </div>
+      </li>
+     ))}
+    </ul>
+   </section>
+
+   {info.source && <p id="font" class="emr-source" set:html={info.source} />}
+  </article>
+ </div>
+
+ <InfoRelated items={related} />
+ <HelpStrip title="Tens preguntes sobre l’EM?" text="Si acabes de rebre el diagnòstic o convius amb l’EM des de fa temps, pots trucar-nos o escriure’ns. Ho parlem amb tu." />
+</div>
+
+<script>
+ const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc]')];
+ const targets = links.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1)))).filter(Boolean) as HTMLElement[];
+ if ('IntersectionObserver' in window && targets.length) {
+  const io = new IntersectionObserver((entries) => {
+   for (const e of entries) if (e.isIntersecting) links.forEach((a) => a.setAttribute('aria-current', String(a.hash === `#${e.target.id}`)));
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  targets.forEach((t) => io.observe(t));
+ }
+</script>

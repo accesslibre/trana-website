@@ -1,0 +1,108 @@
+---
+// Resource pages of group A (afectació cognitiva, benestar emocional, decàleg, CDPD): the WordPress text stays
+// verbatim; every linked document or presentation becomes a card. Labels and images come from WordPress.
+import '../../styles/pages.css';
+import '../../styles/informative-pages.css';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import type { ResourceInfo, InfoResource } from '../../lib/info-pages';
+import { RESOURCE_NOTICES, PAGE_NOTICES } from '../../lib/info-pages';
+import { contact } from '../pages/samples';
+import { formatDate } from '../../lib/routes';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import HelpStrip from '../pages/HelpStrip.astro';
+import InfoRelated from '../pages/InfoRelated.astro';
+import Arrow from '../pages/Arrow.astro';
+
+type Family = 'salut' | 'drets';
+interface Props { post: WordPressPage; info: ResourceInfo; related: { title: string; path: string }[]; family: Family }
+const { post, info, related, family } = Astro.props;
+const eyebrow = family === 'drets' ? 'Suport i drets' : 'L’esclerosi múltiple';
+// One or two resources: feature the page's own document (not a link already in the text), preferably with
+// an image. Three or more: all of them in the list, in source order.
+const own = info.resources.filter((r) => !r.inline);
+const featured = info.resources.length <= 2 ? (own.find((r) => r.images.length) ?? own[0] ?? info.resources[0]) : undefined;
+const listed = info.resources.filter((r) => r !== featured);
+const action: Record<InfoResource['type'], string> = {
+ 'PDF': 'Document PDF', 'Google Drive': 'Presentació a Google Drive', 'Notícia': 'Notícia del web de TRANA', 'Vídeo': 'Vídeo', 'Web': 'Pàgina web',
+};
+const fallback: Record<InfoResource['type'], string> = {
+ 'PDF': 'Document complet en PDF', 'Google Drive': 'Obre la presentació', 'Notícia': 'Llegeix la notícia', 'Vídeo': 'Mira el vídeo', 'Web': 'Obre l’enllaç',
+};
+const pageNotice = PAGE_NOTICES[post.slug];
+const checkedLabel = (iso: string) => formatDate(`${iso}T12:00:00`);
+const help = family === 'drets'
+ ? { title: 'Tens dubtes sobre els teus drets?', text: 'Truca’ns o escriu-nos i en parlem.' }
+ : { title: 'Tens preguntes sobre l’EM?', text: 'Si acabes de rebre el diagnòstic o convius amb l’EM des de fa temps, pots trucar-nos o escriure’ns. Ho parlem amb tu.' };
+---
+<div class:list={['pg', 'ir', `ir-${family}`]}>
+ <header class="em-top ir-top">
+  <Breadcrumbs items={[{ label: post.title }]} />
+  <div class:list={['pg-wrap', 'em-top-inner', { 'emr-solo': !featured }]}>
+   <div>
+    <p class="pg-eyebrow" style={`--dot:${family === 'drets' ? '#8b5cca' : 'var(--blue)'}`}>{eyebrow}</p>
+    <h1>{post.title}</h1>
+    {info.lede && <p class="pg-lede ir-lede" set:html={info.lede} />}
+    <ul class="pg-meta">
+     <li>{info.resources.length === 1 ? '1 document' : `${info.resources.length} documents i enllaços`}</li>
+     <li>Darrera actualització al web: <time datetime={post.modified}>{formatDate(post.modified)}</time></li>
+    </ul>
+   </div>
+   {featured && (
+    <article class:list={['ir-card', 'ir-featured', { 'has-notice': !!RESOURCE_NOTICES[featured.href] }]} aria-labelledby="ir-feat">
+     {featured.images.length > 0 && <div class="ir-thumb">{featured.images.map((img) => <img src={img.src} alt={img.alt} width={img.width} height={img.height} decoding="async" />)}</div>}
+     <div class="ir-card-body">
+      <p class="ir-type"><span class="chip">{action[featured.type]}</span>{featured.easyRead && <span class="chip ir-easy">Lectura fàcil</span>}{RESOURCE_NOTICES[featured.href] && <span class="chip ir-down">No disponible</span>}</p>
+      <h2 id="ir-feat"><a href={featured.href}>{featured.label ? <Fragment set:html={featured.label} /> : fallback[featured.type]}</a></h2>
+      {RESOURCE_NOTICES[featured.href] ? (
+       <div class="ir-notice">
+        <p>{RESOURCE_NOTICES[featured.href].text} <span class="ir-checked">Comprovat el {checkedLabel(RESOURCE_NOTICES[featured.href].checked)}.</span></p>
+        <p>Si la necessites, demana-la a TRANA: <a href={contact.phoneHref}>{contact.phone}</a> o <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
+       </div>
+      ) : null}
+      <p class="ir-host">{featured.host}{RESOURCE_NOTICES[featured.href] && ' · enllaç original'}</p>
+     </div>
+     {!RESOURCE_NOTICES[featured.href] && <span class="ir-go" aria-hidden="true"><Arrow /></span>}
+    </article>
+   )}
+  </div>
+ </header>
+
+ <div class="pg-wrap ir-body">
+  {pageNotice && (
+   <div class="em-note ir-page-note" role="note">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#172736" stroke-width="2"/><path d="M12 11v6" stroke="#172736" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="7.5" r="1.4" fill="#172736"/></svg>
+    <p>{pageNotice} <a href={contact.phoneHref}>{contact.phone}</a> · <a href={`mailto:${contact.email}`}>{contact.email}</a></p>
+   </div>
+  )}
+  {listed.length > 0 && (
+   <section aria-labelledby="ir-list-title">
+    <h2 class="pg-h2" id="ir-list-title">{featured ? 'També et pot interessar' : 'Documents i enllaços'}</h2>
+    <ul class="ir-grid">
+     {listed.map((r, i) => (
+      <li>
+       <article class="ir-card" aria-labelledby={`ir-r${i}`}>
+        {r.images.length > 0 && <div class="ir-thumb">{r.images.map((img) => <img src={img.src} alt={img.alt} width={img.width} height={img.height} loading="lazy" decoding="async" />)}</div>}
+        <div class="ir-card-body">
+         <p class="ir-type"><span class="chip">{action[r.type]}</span>{r.easyRead && <span class="chip ir-easy">Lectura fàcil</span>}</p>
+         <h3 id={`ir-r${i}`}><a href={r.href}>{r.label ? <Fragment set:html={r.label} /> : fallback[r.type]}</a></h3>
+         <p class="ir-host">{r.host}</p>
+        </div>
+        <span class="ir-go" aria-hidden="true"><Arrow /></span>
+       </article>
+      </li>
+     ))}
+    </ul>
+   </section>
+  )}
+
+  {(info.notes.length > 0 || info.figures.length > 0) && (
+   <div class:list={['ir-notes', { 'has-fig': info.figures.length > 0 }]}>
+    {info.notes.length > 0 && <div class="ir-text">{info.notes.map((html) => <p set:html={html} />)}</div>}
+    {info.figures.map((img) => <figure class="ir-figure"><img src={img.src} alt={img.alt} width={img.width} height={img.height} loading="lazy" decoding="async" /></figure>)}
+   </div>
+  )}
+ </div>
+
+ <InfoRelated items={related} />
+ <HelpStrip title={help.title} text={help.text} />
+</div>

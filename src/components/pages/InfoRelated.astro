@@ -1,0 +1,14 @@
+---
+// "Continua llegint" for the information pages. Titles come from WordPress; no invented descriptions.
+import Arrow from './Arrow.astro';
+interface Props { items: { title: string; path: string }[] }
+const { items } = Astro.props;
+---
+{items.length > 0 && (
+ <section class="em-next" aria-labelledby="next-title">
+  <div class="pg-wrap">
+   <h2 class="pg-h2" id="next-title">Continua llegint</h2>
+   <ol>{items.map((i) => <li><a href={i.path}><span><strong>{i.title}</strong></span><Arrow /></a></li>)}</ol>
+  </div>
+ </section>
+)}

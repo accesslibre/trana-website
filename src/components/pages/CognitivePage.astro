@@ -1,0 +1,80 @@
+---
+// /deteriorament-cognitiu-en-la-em/ with the real WordPress content in numbered sections (no text added or removed).
+import '../../styles/pages.css';
+import '../../styles/informative-pages.css';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import type { CognitiveInfo } from '../../lib/info-pages';
+import Breadcrumbs from './Breadcrumbs.astro';
+import HelpStrip from './HelpStrip.astro';
+import InfoRelated from './InfoRelated.astro';
+
+interface Props { post: WordPressPage; info: CognitiveInfo; related: { title: string; path: string }[] }
+const { post, info, related } = Astro.props;
+const words = post.html.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length;
+const minutes = Math.max(1, Math.round(words / 200));
+const hasCredits = !!info.credits || info.banner.length > 0;
+---
+<div class="pg cg">
+ <header class="em-top">
+  <Breadcrumbs items={[{ label: post.title }]} />
+  <div class="pg-wrap em-top-inner emr-solo">
+   <div>
+    {info.kicker ? <p class="cg-kicker" set:html={info.kicker} /> : <p class="pg-eyebrow" style="--dot:var(--blue)">L’esclerosi múltiple</p>}
+    <h1>{post.title}</h1>
+    {info.lede && <p class="pg-lede" set:html={info.lede} />}
+    <ul class="pg-meta">
+     <li><svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="2"/><path d="M10 6v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Lectura de {minutes} {minutes === 1 ? 'minut' : 'minuts'}</li>
+     {hasCredits && <li><a href="#autoria">Autoria i fonts</a></li>}
+    </ul>
+   </div>
+  </div>
+ </header>
+
+ <div class="pg-wrap em-body">
+  <div>
+   <nav class="em-toc em-toc-desk" aria-labelledby="toc-d"><p class="em-toc-title" id="toc-d">En aquesta pàgina</p><ol>{info.sections.map((s) => <li><a href={`#${s.id}`} data-toc>{s.heading}</a></li>)}</ol></nav>
+   <details class="em-toc em-toc-mob"><summary>En aquesta pàgina</summary><ol>{info.sections.map((s) => <li><a href={`#${s.id}`}>{s.heading}</a></li>)}</ol></details>
+  </div>
+
+  <article class="em-prose cg-prose">
+   {info.sections.map((s) => (
+    <section aria-labelledby={s.id} class:list={['cg-sec', { 'has-fig': s.figures.length > 0 }]}>
+     <h2 id={s.id}>{s.number && <span class="cg-num" aria-hidden="true">{s.number}</span>}<span>{s.heading}</span></h2>
+     <div class="cg-text">
+      {s.blocks.map((b) => b.kind === 'p' ? <p set:html={b.html} />
+       : b.kind === 'list' && b.ordered ? <ol class="cg-steps" start={b.items[0]?.number}>{b.items.map((i, n) => { const value = i.number ?? (b.items[0]?.number ?? 1) + n; return <li value={value} data-n={value}><span set:html={i.html} /></li>; })}</ol>
+       : b.kind === 'list' ? <ul class="cg-list">{b.items.map((i) => <li set:html={i.html} />)}</ul>
+       : null)}
+     </div>
+     {s.figures.length > 0 && <div class="cg-figs">{s.figures.map((img) => <img src={img.src} alt={img.alt} width={img.width} height={img.height} loading="lazy" decoding="async" />)}</div>}
+    </section>
+   ))}
+
+   {hasCredits && (
+    <aside class="cg-credits" id="autoria" aria-labelledby="autoria-title">
+     <h2 id="autoria-title">Autoria i fonts</h2>
+     {info.credits && <p set:html={info.credits.html} />}
+     {(info.credits?.images.length || info.banner.length) ? (
+      <ul class="cg-logos">
+       {[...(info.credits?.images ?? []), ...info.banner].map((img) => <li><img src={img.src} alt={img.alt} width={img.width} height={img.height} loading="lazy" decoding="async" /></li>)}
+      </ul>
+     ) : null}
+    </aside>
+   )}
+  </article>
+ </div>
+
+ <InfoRelated items={related} />
+ <HelpStrip title="Notes canvis en l’atenció o la memòria?" text="Parla’n amb el teu equip de neurologia. A TRANA també fem tallers neurocognitius cada setmana: pregunta’ns com participar-hi." />
+</div>
+
+<script>
+ const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc]')];
+ const targets = links.map((a) => document.getElementById(a.hash.slice(1))).filter(Boolean) as HTMLElement[];
+ if ('IntersectionObserver' in window && targets.length) {
+  const io = new IntersectionObserver((entries) => {
+   for (const e of entries) if (e.isIntersecting) links.forEach((a) => a.setAttribute('aria-current', String(a.hash === `#${e.target.id}`)));
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  targets.forEach((t) => io.observe(t));
+ }
+</script>
