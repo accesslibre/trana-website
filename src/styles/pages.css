@@ -787,15 +787,14 @@
 .gd code,.wp-prose code{font-family:ui-monospace,Menlo,monospace;font-size:.88em;background:#f1f3f7;border-radius:5px;padding:1px 5px}
 @media(max-width:959px){.gd-tints{grid-template-columns:repeat(2,minmax(0,1fr))}.gd-demo{padding:18px 16px}.gd-form .fm-field.is-invalid{margin-left:-13px}}
 
-/* The yellow menu bar is pinned (82 px desktop, ~80 px mobile). Keep anchors and sticky parts clear of it.
-   If the header height changes, update --pg-stick (or set it from the header script). */
+/* The yellow menu bar is pinned. BaseLayout writes its real height to --pg-stick (82 px and 78 px are only fallbacks).
+   html scroll-padding-top clears the bar once; scroll-margin adds just the gap, so the two do not stack. */
 :root{--pg-stick:82px}
-@media(max-width:959px){:root{--pg-stick:80px}}
-html:has(.pg){scroll-padding-top:calc(var(--pg-stick) + 20px)}
-.pg [id]{scroll-margin-top:calc(var(--pg-stick) + 20px)}
+@media(max-width:959px){:root{--pg-stick:78px}}
 .em-toc-desk{top:calc(var(--pg-stick) + 24px)}
 .as-tabs{top:calc(var(--pg-stick) - 1px)}
-.as-sec{scroll-margin-top:calc(var(--pg-stick) + 80px)}
+.as-sec{scroll-margin-top:72px}
+@media(max-width:959px){.as-sec{scroll-margin-top:20px}}
 .as-hist-aside{top:calc(var(--pg-stick) + 96px)}
 .nw-year-title{top:calc(var(--pg-stick) + 24px)}
 .jn-aside{top:calc(var(--pg-stick) + 24px)}

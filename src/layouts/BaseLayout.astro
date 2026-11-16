@@ -127,6 +127,10 @@ const path = Astro.url.pathname;
    const nav = header.querySelector<HTMLElement>('.main-nav');
    const pin = mobileMq.matches ? Math.max(0, searchToggle.offsetTop - 10) : Math.max(0, nav?.offsetTop ?? 0);
    header.style.setProperty('--v7-pin', `${pin}px`);
+   // Real height of the pinned bar, used by scroll-padding and the sticky parts of the pages.
+   const rule = header.querySelector<HTMLElement>('.v7-color-rule');
+   const bar = mobileMq.matches ? searchToggle.offsetHeight + 20 + (rule?.offsetHeight ?? 0) : (nav?.offsetHeight ?? 0) + (rule?.offsetHeight ?? 0);
+   if (bar > 0) document.documentElement.style.setProperty('--pg-stick', `${bar}px`);
    header.classList.toggle('is-stuck', mobileMq.matches && window.scrollY > pin);
    // Desktop: the pinned menu bar slides away when the footer, which repeats the menu, comes into view.
    const footerTop = document.querySelector('.site-footer')?.getBoundingClientRect().top ?? Infinity;
@@ -140,6 +144,25 @@ const path = Astro.url.pathname;
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
   onScroll();
+  if (header) new ResizeObserver(updatePin).observe(header);
+  // Focus must never end up under the pinned bar or the floating donate button.
+  header?.addEventListener('focusin', event => {
+   // Controls of the white row scroll out of view while the bar is pinned: bring the page back to the top.
+   // Only controls that really sit inside the pinned strip are left alone; anything above it (even at 24 px, under a 78 px bar) is obscured.
+   const target = event.target as HTMLElement;
+   const stripTop = header.getBoundingClientRect().top + (parseFloat(header.style.getPropertyValue('--v7-pin')) || 0);
+   if (window.scrollY > 0 && target.getBoundingClientRect().top < stripTop - 1) window.scrollTo({ top: 0 });
+  });
+  const clearFloat = () => {
+   const active = document.activeElement as HTMLElement | null;
+   if (!floatDonate || !active || active === document.body || active === floatDonate) { floatDonate?.classList.remove('is-suppressed'); return; }
+   const a = active.getBoundingClientRect(), f = floatDonate.getBoundingClientRect();
+   const overlap = a.left < f.right && a.right > f.left && a.top < f.bottom && a.bottom > f.top;
+   floatDonate.classList.toggle('is-suppressed', overlap && floatDonate.classList.contains('is-visible'));
+  };
+  document.addEventListener('focusin', () => requestAnimationFrame(clearFloat));
+  document.addEventListener('focusout', () => setTimeout(clearFloat, 0));
+  window.addEventListener('scroll', () => { if (floatDonate?.classList.contains('is-suppressed')) clearFloat(); }, { passive: true });
   // Footer site map: sections stay open on desktop and collapse on mobile.
   const mapDetails = [...document.querySelectorAll<HTMLDetailsElement>('.footer-map details')];
   const wide = window.matchMedia('(min-width: 960px)');

@@ -100,7 +100,7 @@ test('search finds published content locally and handles empty results', async (
   await expect(search).toBeVisible();
   await search.fill('EM');
   await search.press('Enter');
-  const result = page.locator('main a').filter({ hasText: /EM.LINE/i }).first();
+  const result = page.getByRole('list', { name: 'Resultats' }).getByRole('link', { name: /EM.LINE/i }).first();
   await expect(result).toBeVisible();
   expect(await result.getAttribute('href')).toMatch(/^\//);
   await search.fill('zzzzqainexistent987654321');
