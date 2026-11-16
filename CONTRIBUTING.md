@@ -60,6 +60,30 @@ docs: update contribution guidelines
 
 These conventions are reviewed manually; no commit-message hook or automated release process is configured. In a handoff or pull request, describe the resulting behavior, relevant checks and any remaining limitations.
 
+## Engineer and AI attribution
+
+For every new AI-assisted commit:
+
+- Keep the human engineer as the Git author, using the configured name and email. Never replace the engineer with an assistant or silently change Git identity.
+- Add `Model: <actual model> (reasoning effort: <actual effort>)` to the commit body.
+- Add a `Co-Authored-By: <model display name> <provider noreply email>` trailer. Use `noreply@openai.com` for OpenAI models and `noreply@anthropic.com` for Claude models.
+- Verify the model and effort from reliable metadata for the contributing session, or explicit user confirmation. A global default alone does not prove a session's effective setting. Do not infer effort from the model name, copy it from an earlier commit or invent a numeric value. Confirm missing values before committing.
+- Credit every model and effort combination that materially contributed to the committed change, rather than only the agent that runs `git commit`. Use separate `Model:` lines when necessary and retain each model's co-author trailer when squashing.
+- Before committing, show the proposed subject, configured human identity, confirmed model/effort and contributing roles. When the user has requested approval, show the complete proposed message and wait for that approval.
+- Apply this convention to new commits. Do not amend existing history solely to add attribution unless the user explicitly requests it.
+
+Example using verified Codex session metadata; replace these values for each commit:
+
+```text
+docs(contributing): document engineer and AI attribution
+
+Model: gpt-6.1-sol (reasoning effort: xhigh)
+
+Co-Authored-By: GPT-6.1 Sol <noreply@openai.com>
+```
+
+For a commit without AI assistance, record `Model: none (reasoning effort: n/a)` and omit the AI co-author trailer. These attribution trailers are separate from cryptographic Git signing.
+
 ## Licensing
 
 Documentation uses [CC BY-SA 4.0](LICENSE.md); original code uses [AGPL-3.0-only](LICENSE). TRANA content and third-party assets retain their existing rights and licences.
