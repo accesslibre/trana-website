@@ -6,13 +6,14 @@ Updated 15 November 2026. **Preview only; no production migration.**
 
 - URL: <https://trana-website-preview.libreaccessibility.workers.dev/>
 - Worker: `trana-website-preview`, LibreAccessibility account `32e5ce409bf8494ab7e611df6adaeaca`.
-- Deployed version: `e66e2e9d-022b-46c1-b6f3-7d88079de0fd`.
+- Deployed version: `28211539-c8ed-4936-95f6-d8bcefbfa6fe`.
+- Reviewed application source: `25d319f2268628f62f02a4c0ea473e16663c020f`.
 - Static assets from `dist/`; no custom-domain routes, DNS changes, runtime WordPress requests or storage bindings.
 - `workers_dev: true`; additional version preview URLs disabled.
 - `robots.txt` disallows all crawlers. Every generated HTML page includes `noindex, nofollow, noarchive`, also sent in `X-Robots-Tag` on assets and 404 responses. This is a public preview, not access control.
-- Deployed directly from the local build. No implementation commits, pushes, GitHub integration, Workers Builds, Deploy Hooks or WordPress plugin changes.
+- Deployed directly from the reviewed local build and implementation commits. GitHub pushes, Workers Builds, Deploy Hooks and WordPress plugin changes remain outside this task.
 
-That deployment predates the local implementation commits. Versioning foundation/data and the completed presentation work does not update the hosted preview or enable publishing automation. Local builds include `/disseny/` for review; a future production build must exclude those demo routes while retaining their source and the style guide in the repository.
+This deployment includes the approved v7 home/navigation, the interior design gallery, and the WordPress route/search/SEO integration. Builds include `/disseny/` for review; a future production build must exclude those demo routes while retaining their source and the style guide in the repository. Source covers 259 articles and 33 published pages, but 10 pages remain partial and 6 pending. Explicit notices link to the original content; URL coverage does not certify a completed migration.
 
 The current TRANA website, WordPress editing and media remain unchanged. Content in this preview updates only after another successful build and deployment.
 
@@ -50,19 +51,21 @@ Browser tests use installed Chrome and two workers. Failure traces and screensho
 
 ## Verified on 15 November
 
-1. Astro type checking: no errors, warnings or hints. Thirteen unit tests pass.
-2. Live build: 259 published articles and the association page; 285 HTML documents including pagination and 404.
+1. Astro type checking: 62 files, no errors, warnings or hints. All 31 unit tests pass.
+2. Live build: 259 published articles and 33 pages; 333 HTML documents including pagination, design review and 404. The static search index contains 259 articles and 28 informative pages.
 3. Preview guard: every generated HTML document, robots, headers and dedicated Worker configuration pass.
-4. Deliberate API failure: build exits nonzero and the previous `dist/` remains byte-for-byte unchanged.
-5. Thirteen browser tests pass locally and on the deployed Cloudflare URL: home/news/association/search, `lang`, headings, automated accessibility rules, skip-link focus, keyboard mobile menu, article links, EM-LINE, local search, robots, noindex, custom 404 and reflow at 320/375/768/1280 pixels.
-6. The initial deployment's desktop and mobile layouts were compared with the then-approved v5 reference. Later local v7/interior designs require their own verification; these historical results do not cover them. Automated checks do not establish WCAG conformance.
+4. The build inputs remained unchanged throughout generation and QA. The existing atomic build mechanism was previously tested with a deliberate API failure: it exits nonzero and preserves the last good `dist/`. The expanded adapter tests also cover page pagination failures and timeouts.
+5. Browser coverage includes original page/article paths, pagination, local search, real navigation destinations, explicit migration fallbacks, demo forms with and without JavaScript, live error summaries, automated accessibility rules, skip links, forward/reverse keyboard navigation, pinned-menu focus, donation-button overlap, robots/noindex, custom 404 and reflow at 320/375/768/1280 pixels. Results for this deployment are recorded below.
+6. Deployed desktop/mobile screenshots were reviewed against the approved v7 presentation. Automated rules and keyboard checks do not establish screen-reader usability or WCAG conformance.
+
+All 26 browser cases have passed locally; the complete hosted run passes **26/26**. Hosted verification uses installed Chrome. If a raw HTTP client receives a Cloudflare edge 403, verify in Chrome before diagnosing the application.
 
 Still required before launch: TRANA's content/brand review, legacy headings/alternative text/embeds review, screen-reader and user testing, publishing-event integration and failure monitoring. Production-domain migration needs its own approval and CMS/media continuity plan.
 
 ## Recovery and future publishing
 
-The initial preview version above provides the deployment reference. A later failed build leaves both the last local output and the deployed Worker unchanged. To replace a bad preview, rebuild the reviewed source and deploy only after checks pass; do not change production routes or DNS.
+The version and source commit above identify this deployment. The earlier pilot version was `e66e2e9d-022b-46c1-b6f3-7d88079de0fd`. A later failed build leaves both the last local output and the deployed Worker unchanged. To replace a bad preview, rebuild reviewed source and deploy only after checks pass; do not change production routes or DNS.
 
-GitHub/Workers Builds and a private Deploy Hook remain deferred until implementation may be committed and pushed. Validate publication, correction, scheduled posts, withdrawal, media changes, retries and urgent removal with TRANA before enabling that workflow. Keep the hook URL private and out of this repository.
+GitHub/Workers Builds and a private Deploy Hook remain deferred. Validate publication, correction, scheduled posts, withdrawal, media changes, retries and urgent removal with TRANA before enabling that workflow. Keep the hook URL private and out of this repository.
 
 References: [Cloudflare static assets](https://developers.cloudflare.com/workers/static-assets/), [SSG routing](https://developers.cloudflare.com/workers/static-assets/routing/static-site-generation/), [Wrangler configuration](https://developers.cloudflare.com/workers/wrangler/configuration/).

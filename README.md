@@ -31,15 +31,17 @@ npm run test:browser -- --workers=2
 
 The Cloudflare runtime preview is on <http://127.0.0.1:4189/>. Browser tests use installed Chrome. `QA_BASE_URL` overrides the test target.
 
-`npm run build` fetches all published posts and the selected association page through the public WordPress REST API. It fails on network, validation or inconsistent-pagination errors. A build runs in a temporary output directory and replaces `dist/` only after success; an API failure preserves the last good build. Requests time out after 60 seconds by default (`WORDPRESS_TIMEOUT_MS` overrides this). Unit tests inject responses without calling the live CMS. No tests publish, edit or delete WordPress content.
+`npm run build` fetches all published posts and pages through the public WordPress REST API. It fails on network, validation or inconsistent-pagination errors. A build runs in a temporary output directory and replaces `dist/` only after success; an API failure preserves the last good build. Requests time out after 60 seconds by default (`WORDPRESS_TIMEOUT_MS` overrides this). Unit tests inject responses without calling the live CMS. No tests publish, edit or delete WordPress content.
 
-The pilot provides the home, `/acerca-de/`, paginated `/noticies/`, original dated article URLs, `/cerca/` with a static search index, and a custom 404. The 15 November live build included 259 articles. Legacy content still needs editorial review of headings, media alternatives and unsupported embeds before a production migration.
+The pilot provides the approved home, paginated `/noticies/`, original article and page URLs, `/cerca/` with a static search index, and a custom 404. The 15 November source contains 259 articles and 33 pages. Search includes informative published pages as well as news; it excludes empty forms, galleries and technical scaffolding. Yoast JSON supplies validated head metadata while the preview robots policy always takes precedence.
+
+URL coverage is not a completed migration: 10 pages remain partial and 6 pending, including forms, galleries and unsupported embeds. Pending routes show an explicit notice and link to the original website. Recoverable HTML also needs editorial, media and accessibility review before launch. The newsletter on real routes offers contact rather than simulating a subscription; design forms clearly identify their confirmations as demonstrations that send nothing.
 
 ## Preview configuration
 
-Hosted preview: <https://trana-website-preview.libreaccessibility.workers.dev/>. The initial 15 November 2026 deployment passed all 13 browser checks, including robots and HTTP/HTML noindex. These results describe that deployment; they do not certify later local changes.
+Hosted preview: <https://trana-website-preview.libreaccessibility.workers.dev/>. The 15 November 2026 update includes v7 and the integrated page/news/search templates. See [preview operations](ops/preview.md) for the deployed version, exact application source and verification record.
 
-The approved v7 navigation and the newer interior page designs are reviewed locally. Local source changes are not automatically deployed to Cloudflare; check the deployed version before comparing environments. The `/disseny/` routes use sample content and do not establish complete content or SEO parity with WordPress.
+The approved v7 navigation and the interior page designs are available on the hosted preview, including `/disseny/`. Further local changes are not automatically deployed to Cloudflare. Design routes can use sample content and do not establish complete content or SEO parity with WordPress.
 
 - `wrangler.jsonc`: dedicated **trana-website-preview** Worker in LibreAccessibility, static `dist/`, no custom-domain routes.
 - `public/robots.txt`: all crawlers disallowed.

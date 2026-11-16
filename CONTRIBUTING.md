@@ -22,7 +22,7 @@ Use Node **24.16.0** and `npm ci`. See the [README](README.md#build-and-verify) 
 
 ## Commits and handoff
 
-**Current stage: local commits are authorized.** Keep ongoing design work separate from reviewed changes, and leave pushes and deployments outside the current commit task.
+**Current stage: local commits and deployment to the dedicated preview Worker are authorized.** Keep ongoing work separate from reviewed changes. Preview deployment must retain robots/HTML/HTTP noindex and pass the checks in [ops/preview.md](ops/preview.md). GitHub pushes, production-domain migration and CMS changes require their own task authorization.
 
 Use [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/):
 
