@@ -72,19 +72,24 @@ test('EM-LINE uses ArticlePage at its original permalink and preserves related l
 
 test('published page paths use real content and pending form routes stay honest', async ({ page }) => {
   await page.goto('/avis-legal-i-politica-de-privacitat/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('article.ar h1')).toBeVisible();
-  await expect(page.locator('article .wp-prose')).toContainText(/TRANA/i);
-  await expect(page.locator('.ar-meta')).not.toContainText('Notícia');
+  await expect(page.locator('main h1')).toBeVisible();
+  await expect(page.locator('main article')).toContainText(/TRANA/i);
+  await expect(page.locator('[data-page-presentation]')).toHaveAttribute('data-page-presentation', 'association');
+  await expect(page.locator('.ar-meta')).toHaveCount(0);
   await page.goto('/que-es-lem/', { waitUntil: 'domcontentloaded' });
-  await expect(page.locator('aside[aria-label="Contingut pendent de revisió"]')).toContainText(/vídeo/i);
-  await expect(page.locator('aside a[href^="https://www.youtube.com/"]')).toHaveCount(1);
+  await expect(page.locator('main aside').filter({ hasText: /vídeo/i })).toContainText(/encara no/i);
+  await expect(page.locator('main aside a[href^="https://www.youtube.com/"]')).toHaveCount(1);
   for (const path of ['/alta-soci/', '/alta-al-butlleti-de-noticies/', '/trana-home/', '/imatges/', '/borrador-automatico-2/']) {
     const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
     expect(response?.status(), path).toBe(200);
     await expect(page.locator('main form')).toHaveCount(0);
-    await expect(page.locator('aside a[href^="https://www.tranandorra.org/"]')).toHaveCount(1);
+    await expect(page.locator('main')).toContainText(/encara|pendent|no té contingut/i);
+    expect(await page.locator('main a[href="/contactans/"], main a[href^="tel:"], main a[href^="mailto:"]').count()).toBeGreaterThan(0);
     await expect(page.locator('main')).not.toContainText(/\[\/?(?:et_pb_|wpforms)/);
   }
+  await page.goto('/alta-soci/', { waitUntil: 'domcontentloaded' });
+  await page.getByText('Protecció de dades: text original del formulari', { exact: true }).click();
+  await expect(page.locator('main a[href="/avis-legal-i-politica-de-privacitat/"]')).toBeVisible();
 });
 
 test('newsletter demo clearly confirms that it sends no data or email', async ({ page }) => {

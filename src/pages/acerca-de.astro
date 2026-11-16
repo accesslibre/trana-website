@@ -1,9 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ArticlePage from '../components/pages/ArticlePage.astro';
-import { getPageBySlug } from '../lib/wordpress/index';
-const page = await getPageBySlug('acerca-de');
+import AssociationRouter from '../components/association/AssociationRouter.astro';
+import { getAllPages, getAllPosts } from '../lib/wordpress/index';
+const [pages, posts] = await Promise.all([getAllPages(), getAllPosts()]);
+const page = pages.find((entry) => entry.slug === 'acerca-de');
+if (!page) throw new Error('Expected the published association page');
 ---
 <BaseLayout title={`${page.title} · TRANA`} description={page.excerpt || undefined} seo={page.seo}>
-  <ArticlePage post={page} kind="page" />
+  <div data-page-presentation="association" data-page-id={page.id}>
+    <AssociationRouter post={page} pages={pages} posts={posts} />
+  </div>
 </BaseLayout>

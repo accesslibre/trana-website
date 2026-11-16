@@ -2,15 +2,35 @@
 import type { WordPressPost } from '../lib/wordpress/index';
 import { getAllPosts, getAllPages } from '../lib/wordpress/index';
 import { contentRoutes, type PageMigration } from './_migration';
+import { pagePresentation } from '../lib/page-presentations';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ArticlePage from '../components/pages/ArticlePage.astro';
+import InformativeRouter from '../components/informative/InformativeRouter.astro';
+import AssociationRouter from '../components/association/AssociationRouter.astro';
+import CommunityRouter from '../components/community/CommunityRouter.astro';
 export async function getStaticPaths() {
   const [posts, pages] = await Promise.all([getAllPosts(), getAllPages()]);
   return contentRoutes(posts, pages);
 }
 interface Props { post: WordPressPost; related: WordPressPost[]; kind: 'article' | 'page'; migration?: PageMigration }
 const { post, related, kind, migration } = Astro.props;
+const assigned = kind === 'page' ? pagePresentation(post.slug) : undefined;
+const presentation = assigned;
+const pages = presentation ? await getAllPages() : [];
+const posts = presentation ? await getAllPosts() : [];
+// Pending form routes deliberately hide their old body in the generic template.
+// The dedicated contact-only designs can safely retain the published explanatory
+// text and illustrations without rendering an interactive form.
+const needsSourcePage = presentation === 'community' || (presentation === 'association'
+  && ['alta-soci', 'alta-al-butlleti-de-noticies'].includes(post.slug));
+const presentationPost = needsSourcePage
+  ? pages.find((entry) => entry.id === post.id) ?? post : post;
 ---
 <BaseLayout title={`${post.title} · TRANA`} description={post.excerpt || undefined} seo={post.seo}>
-  <ArticlePage post={post} related={related} kind={kind} pendingReason={migration?.reason} resources={migration?.resources} />
+  <div data-page-presentation={presentation ?? kind} data-page-id={post.id}>
+    {presentation === 'informative' ? <InformativeRouter post={post} pages={pages} posts={posts} migration={migration} />
+    : presentation === 'association' ? <AssociationRouter post={presentationPost} pages={pages} posts={posts} migration={migration} />
+    : presentation === 'community' ? <CommunityRouter post={presentationPost} pages={pages} posts={posts} migration={migration} />
+    : <ArticlePage post={post} related={related} kind={kind} pendingReason={migration?.reason} resources={migration?.resources} />}
+  </div>
 </BaseLayout>
