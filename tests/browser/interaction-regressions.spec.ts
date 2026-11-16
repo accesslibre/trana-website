@@ -102,3 +102,25 @@ test('floating donation control does not cover focused main content', async ({ p
   });
   expect(obscured).toBe(false);
 });
+
+test('tabbing back from the footer reveals header controls immediately', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/que-es-lem/', { waitUntil: 'domcontentloaded' });
+  await page.locator('footer a').last().focus();
+  let headerControls = 0;
+  for (let step = 0; step < 20; step++) {
+    await page.keyboard.press('Tab');
+    const position = await page.evaluate(() => {
+      const active = document.activeElement as HTMLElement | null;
+      if (!active?.closest('header.site-header')) return null;
+      const rect = active.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, visibility: getComputedStyle(active).visibility };
+    });
+    if (!position) continue;
+    headerControls++;
+    expect(position.visibility).toBe('visible');
+    expect(position.top).toBeGreaterThanOrEqual(-1);
+    expect(position.bottom).toBeLessThanOrEqual(901);
+  }
+  expect(headerControls).toBeGreaterThanOrEqual(5);
+});

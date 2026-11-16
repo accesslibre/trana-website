@@ -69,7 +69,7 @@
  .header-v7 .site-header .v7-utilities{display:contents}
  .header-v7 .site-header>.v7-brand{grid-column:1;grid-row:1 / span 3;align-self:center;min-height:0;padding:12px 8px 12px 16px}
  .header-v7 .v7-contact-link{display:inline-flex;grid-column:3;justify-self:stretch;margin:0 16px 0 8px;font-size:15px;align-items:center}
- .header-v7 .v7-contact-link:nth-of-type(1){grid-row:2;align-self:end;min-height:0;line-height:1.1;padding:4px 0 3px}
+ .header-v7 .v7-contact-link:nth-of-type(1){grid-row:2;align-self:end;min-height:24px;line-height:1.1;padding:4px 0 3px}
  .header-v7 .v7-contact-link:nth-of-type(2){grid-row:3;align-self:start;min-height:0;line-height:1.1;padding:4px 0 4px;margin-bottom:12px}
  .header-v7 .v7-search-toggle{grid-column:1;grid-row:4;justify-self:start;margin:10px 0 10px 16px;background:#fff;width:52px;min-width:52px;min-height:52px;padding:0;justify-content:center}
  .header-v7 .v7-search-label{display:none}
@@ -184,6 +184,7 @@
 @media(min-width:960px){
  .header-v7 .site-header{position:sticky;top:calc(var(--v7-pin,0px) * -1);transition:transform .25s ease,visibility 0s}
  .header-v7 .site-header.is-footer{transform:translateY(-100%);visibility:hidden;transition:transform .25s ease,visibility 0s linear .25s}
+ .header-v7 .site-header:focus-within{transform:none;visibility:visible;transition:none}
 }
 
 /* Keep keyboard focus clear of the floating donate button (desktop). */
