@@ -1,0 +1,41 @@
+---
+// /borrador-automatico-2/: an older "Contacta'ns" page whose content is empty in WordPress. We say so and
+// send people to the maintained route instead of showing an empty page or a made-up form.
+import '../../styles/pages.css';
+import '../../styles/association-pages.css';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import { CONTACT } from '../../lib/association-pages';
+interface Props { post: WordPressPage; reason?: string }
+const { post, reason } = Astro.props;
+---
+<div class="pg ap">
+ <header class="pg-wrap ap-top">
+  <Breadcrumbs inline items={[{ label: 'L’associació', href: '/acerca-de/' }, { label: post.title }]} />
+  <div class="ap-top-grid ap-top-narrow">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--muted)">Pàgina antiga</p>
+    <h1>{post.title}</h1>
+    <p class="pg-lede">Aquesta adreça del web antic no té contingut que es pugui mostrar.</p>
+   </div>
+  </div>
+ </header>
+
+ <section class="pg-wrap ap-sec" aria-labelledby="gone-title">
+  <div class="ap-gone">
+   <div>
+    <h2 id="gone-title">Què ha passat amb aquesta pàgina</h2>
+    <p>{reason ?? 'El contingut d’aquesta pàgina de contacte encara està pendent de recuperar.'}</p>
+    <p>No hem recreat cap formulari ni hem afegit dades que no estiguin publicades. La informació de contacte vigent és a Contacta’ns.</p>
+    <p class="ap-doc-cta"><a class="pill pill-ink" href="/contactans/" style="min-height:52px">Veure Contacta’ns</a></p>
+   </div>
+   <ul class="ap-exits" aria-label="Altres vies de contacte">
+    <li><a href={CONTACT.phoneHref}><small>Telèfon</small>{CONTACT.phone}</a></li>
+    <li><a href={`mailto:${CONTACT.email}`}><small>Correu electrònic</small>{CONTACT.email}</a></li>
+    <li><a href="/noticies/"><small>Notícies</small>Últimes notícies de TRANA<span aria-hidden="true"><Arrow /></span></a></li>
+   </ul>
+  </div>
+ </section>
+ <div class="ap-end"></div>
+</div>

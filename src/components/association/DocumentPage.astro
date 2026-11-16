@@ -1,0 +1,102 @@
+---
+// Estatuts, pla estratègic and memòries anuals: one document composition. PDFs and original labels are kept;
+// a year that differs between a link label and its file name is flagged for review, never corrected.
+import '../../styles/pages.css';
+import '../../styles/association-pages.css';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import { DOC_LINKS, mailto, type DocumentData } from '../../lib/association-pages';
+interface Props { post: WordPressPage; data: DocumentData; pages: WordPressPage[]; note?: string }
+const { post, data, pages, note } = Astro.props;
+const reports = data.kind === 'reports';
+const link = data.links[0];
+const others = DOC_LINKS.filter((d) => d.slug !== post.slug).map((d) => ({ ...d, page: pages.find((p) => p.slug === d.slug) })).filter((d) => d.page);
+const accessible = reports ? 'Memòries anuals' : post.title;
+const openLabel = post.slug === 'estatuts' ? 'Obre els estatuts (PDF)' : 'Obre el document (PDF)';
+const fileName = (href: string) => decodeURIComponent(href.split('/').pop() ?? '');
+---
+<div class="pg ap">
+ <header class="ap-doc-top">
+  <Breadcrumbs items={[{ label: 'L’associació', href: '/acerca-de/' }, { label: 'Documents' }, { label: post.title }]} />
+  <div class="pg-wrap ap-doc-top-inner">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--green)">Documents</p>
+    <h1>{post.title}</h1>
+    {data.lead && <p class="pg-lede">{data.lead}</p>}
+    {reports && <p class="pg-lede">Una memòria per any, en PDF, publicades al web de TRANA.</p>}
+    {!reports && link && <p class="ap-doc-cta"><a class="pill pill-ink" href={link.href} style="min-height:52px">{openLabel}</a></p>}
+   </div>
+   {data.image && (
+    <figure class="ap-doc-cover">
+     <img src={data.image.src} width={data.image.width} height={data.image.height} alt={data.image.alt} fetchpriority="high" />
+    </figure>
+   )}
+  </div>
+ </header>
+
+ <div class="pg-wrap ap-doc-body">
+  {reports ? (
+   <section class="dc-sec" aria-labelledby="reports-title">
+    <header><h2 id="reports-title">Memòries per any</h2><p>Cada targeta obre el PDF original.</p></header>
+    <ul class="dc-years ap-years">
+     {data.links.map((l) => (
+      <li>
+       <a href={l.href} aria-describedby={l.yearMismatch ? `rev-${l.year}` : undefined}>
+        <strong>{l.year}</strong>
+        <span><span class="vh">{l.prefix} </span>{l.label}<br />PDF{l.yearMismatch && <><br /><em class="ap-flag">Any pendent de revisar</em></>}</span>
+       </a>
+      </li>
+     ))}
+    </ul>
+    {data.links.some((l) => l.yearMismatch) && (
+     <ul class="ap-review" aria-label="Revisions pendents">
+      {data.links.filter((l) => l.yearMismatch).map((l) => (
+       <li id={`rev-${l.year}`}><strong>Memòria ANY {l.year}:</strong> l’enllaç original porta a un fitxer que es diu «{fileName(l.href)}», amb l’any {l.fileYear}. Hem mantingut l’etiqueta i l’enllaç tal com estan al web; TRANA ha de confirmar quin any correspon.</li>
+      ))}
+     </ul>
+    )}
+    {note && <p class="ap-note">{note}</p>}
+   </section>
+  ) : (
+   <section class="dc-sec" aria-labelledby="doc-title">
+    <header><h2 id="doc-title">El document</h2><p>Es descarrega des del web de TRANA.</p></header>
+    <ul class="dc-list">
+     <li>
+      <div class="dc-row">
+       <span class="dc-badge" aria-hidden="true">PDF</span>
+       <div>
+        <h3><a href={link.href}>{link.label || post.title}</a></h3>
+        <p>PDF · fitxer {fileName(link.href)}</p>
+       </div>
+       <span class="dc-act" aria-hidden="true">Obre el PDF<svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="m2 2 6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+     </li>
+    </ul>
+    {data.draft && <p class="ap-note">El nom del fitxer indica que és un esborrany de 20/11/2020. Si necessites la versió vigent, demana-la a TRANA.</p>}
+    {!data.draft && <p class="ap-note">Text tal com el publica TRANA. No hem comprovat quina és la versió vigent.</p>}
+   </section>
+  )}
+
+  {others.length > 0 && (
+   <section class="dc-sec" aria-labelledby="others-title">
+    <header><h2 id="others-title">Altres documents de l’associació</h2></header>
+    <ul class="ap-cards ap-cards-3">
+     {others.map((o) => (
+      <li><a href={o.page!.path}><h3>{o.label}</h3><span class="pg-arrow"><span>Obre</span><Arrow /></span></a></li>
+     ))}
+    </ul>
+   </section>
+  )}
+ </div>
+
+ <div class="pg-wrap">
+  <aside class="dc-ask" aria-labelledby="ask-title">
+   <div>
+    <h2 id="ask-title">No trobes el que busques?</h2>
+    <p>Si un enllaç no s’obre o necessites un altre document, escriu-nos.</p>
+   </div>
+   <a class="pill pill-ink" href={mailto(`Document: ${accessible}`)} style="min-height:52px">Escriu-nos</a>
+  </aside>
+ </div>
+</div>

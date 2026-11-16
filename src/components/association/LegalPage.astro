@@ -1,0 +1,54 @@
+---
+// Avís legal i política de privacitat: the legal text is kept whole. Only the reading structure changes:
+// an index of the sections (the bold lead-ins of the original) and readable paragraphs.
+import '../../styles/pages.css';
+import '../../styles/association-pages.css';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import { longDate, type LegalData } from '../../lib/association-pages';
+interface Props { post: WordPressPage; data: LegalData; pages: WordPressPage[] }
+const { post, data } = Astro.props;
+---
+<div class="pg ap">
+ <header class="pg-wrap ap-top">
+  <Breadcrumbs inline items={[{ label: 'L’associació', href: '/acerca-de/' }, { label: 'Informació legal' }]} />
+  <div class="ap-top-grid">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--blue)">Informació legal</p>
+    <h1>{post.title}</h1>
+    <p class="pg-lede">Text íntegre, tal com el publica TRANA. Última modificació al web original: {longDate(post.modified)}.</p>
+   </div>
+   {data.logo && <figure class="ap-logo ap-logo-sm"><img src={data.logo.src} width={data.logo.width} height={data.logo.height} alt={data.logo.alt} /></figure>}
+  </div>
+ </header>
+
+ <div class="pg-wrap ap-legal">
+  <nav class="ap-toc" aria-label="Seccions d’aquesta pàgina">
+   <h2>En aquesta pàgina</h2>
+   <ol>
+    {data.sections.map((s) => <li><a href={`#${s.id}`} data-toc>{s.title}</a></li>)}
+   </ol>
+  </nav>
+  <article class="ap-legal-text">
+   {data.intro.blocks.map((b) => <p set:html={b} />)}
+   {data.sections.map((s) => (
+    <section id={s.id} aria-labelledby={`${s.id}-t`}>
+     <h2 id={`${s.id}-t`}>{s.title}</h2>
+     {s.blocks.map((b) => b.startsWith('<ul') || b.startsWith('<ol') ? <Fragment set:html={b} /> : <p set:html={b} />)}
+    </section>
+   ))}
+  </article>
+ </div>
+ <div class="ap-end"></div>
+</div>
+
+<script>
+ const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc]')];
+ const secs = links.map((a) => document.querySelector<HTMLElement>(a.hash)).filter(Boolean) as HTMLElement[];
+ if ('IntersectionObserver' in window && secs.length) {
+  const io = new IntersectionObserver((es) => {
+   for (const e of es) if (e.isIntersecting) links.forEach((a) => a.setAttribute('aria-current', String(a.hash === `#${e.target.id}`)));
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  secs.forEach((s) => io.observe(s));
+ }
+</script>

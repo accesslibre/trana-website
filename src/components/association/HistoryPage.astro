@@ -1,0 +1,94 @@
+---
+// Història (/historia/): the timeline from the WordPress page, grouped by period. Boards of past years
+// become compact lists of role and name; every word of the source is kept (see buildHistory).
+import '../../styles/pages.css';
+import '../../styles/association-pages.css';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import type { HistoryData, HistoryItem } from '../../lib/association-pages';
+interface Props { post: WordPressPage; data: HistoryData }
+const { post, data } = Astro.props;
+const first = data.years[0].year;
+const last = data.years[data.years.length - 1].year;
+const fmtDate = (t: string) => t;
+---
+<div class="pg ap">
+ <header class="pg-wrap ap-top">
+  <Breadcrumbs inline items={[{ label: 'L’associació', href: '/acerca-de/' }, { label: post.title }]} />
+  <div class="ap-top-grid">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--red)">L’associació</p>
+    <h1>{post.title}</h1>
+    <p class="pg-lede">De {first} a {last}, tal com la recull el web de TRANA: canvis de junta, seus, activitats i acords.</p>
+   </div>
+   <aside class="ap-fact" aria-label="Dades de la pàgina">
+    <strong>{first}</strong>
+    <p>Constitució de l’associació, primera data de la cronologia.</p>
+    <a class="pg-arrow" href="/junta-associacio-tranaem/"><span>Junta actual</span><Arrow /></a>
+   </aside>
+  </div>
+ </header>
+
+ <nav class="as-tabs" aria-label="Períodes de la història">
+  <div class="pg-wrap"><ul>{data.eras.map((e) => <li><a href={`#${e.id}`} data-tab>{e.label}</a></li>)}</ul></div>
+ </nav>
+
+ {data.eras.map((era) => (
+  <section class="pg-wrap as-sec ap-era" id={era.id} aria-labelledby={`${era.id}-title`}>
+   <h2 class="pg-h2" id={`${era.id}-title`}>{era.label}</h2>
+   <ol class="as-time ap-time">
+    {era.years.map((y) => (
+     <li>
+      <span class="yr">{y.year}</span>
+      <span class="dot" aria-hidden="true"></span>
+      <div class="ap-year">
+       <h3 class="vh">{y.year}</h3>
+       {y.blocks.map((b) => {
+        if (b.kind === 'date') return <p class="ap-date">{fmtDate(b.text)}</p>;
+        if (b.kind === 'p') return <p set:html={b.html} />;
+        return (
+         <ul class="ap-events">
+          {b.items.map((it) => (
+           <li>
+            {it.html && <span set:html={it.html} />}
+            {it.board && (
+             <dl class="ap-roster">
+              {it.board.map((m) => <div><dt>{m.role}</dt><dd>{m.name}</dd></div>)}
+             </dl>
+            )}
+            {it.children && (
+             <ul class="ap-events ap-events-sub">
+              {it.children.map((c: HistoryItem) => (
+               <li>
+                {c.html && <span set:html={c.html} />}
+                {c.board && <dl class="ap-roster">{c.board.map((m) => <div><dt>{m.role}</dt><dd>{m.name}</dd></div>)}</dl>}
+                {c.children && <ul class="ap-events ap-events-sub">{c.children.map((d: HistoryItem) => <li><span set:html={d.html} /></li>)}</ul>}
+               </li>
+              ))}
+             </ul>
+            )}
+           </li>
+          ))}
+         </ul>
+        );
+       })}
+      </div>
+     </li>
+    ))}
+   </ol>
+  </section>
+ ))}
+ <div class="ap-end"></div>
+</div>
+
+<script>
+ const tabs = [...document.querySelectorAll<HTMLAnchorElement>('[data-tab]')];
+ const targets = tabs.map((a) => document.querySelector<HTMLElement>(a.hash)).filter(Boolean) as HTMLElement[];
+ if ('IntersectionObserver' in window && targets.length) {
+  const io = new IntersectionObserver((entries) => {
+   for (const e of entries) if (e.isIntersecting) tabs.forEach((a) => a.setAttribute('aria-current', String(a.hash === `#${e.target.id}`)));
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  targets.forEach((t) => io.observe(t));
+ }
+</script>

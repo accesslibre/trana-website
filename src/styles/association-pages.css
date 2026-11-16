@@ -1,0 +1,124 @@
+/* Association, documents and contact pages (Claude B). Scoped to .ap; reuses the approved .pg system. */
+.ap-top{padding-block:12px 0}
+.ap-top-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:24px 56px;align-items:center;padding-block:24px 48px}
+.ap-top-narrow{grid-template-columns:minmax(0,1fr)}
+.ap-top h1,.ap-doc-top h1{font-size:clamp(36px,4.4vw,56px);line-height:1.08;margin-bottom:16px}
+.ap .ap-h1-long{font-size:clamp(30px,3.6vw,46px);max-width:24em}
+.ap-logo{background:var(--sun-soft);border-radius:24px;padding:28px;display:grid;place-items:center;margin:0}
+.ap-logo img{display:block;max-width:100%;height:auto}
+.ap-logo-sm{padding:18px;max-width:220px;justify-self:end}
+.ap-figure-sm{justify-self:end;margin:0}
+.ap-figure-sm img{display:block;width:100%;max-width:240px;height:auto;border-radius:20px;background:#fff}
+.ap-fact{background:var(--sun-soft);border-radius:18px;padding:24px}
+.ap-fact strong{display:block;font:700 56px/1 Poppins,sans-serif}
+.ap-fact p{font-size:16.5px;margin-top:8px}
+.ap-sec{padding-block:56px 0}
+.ap-end{height:80px}
+.ap-small{font-size:15.5px;color:var(--muted)}
+.ap-note{margin-top:20px;padding:16px 20px;background:var(--sun-soft);border-radius:14px;font-size:17px}
+/* Qui som */
+.ap-purposes{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr);gap:40px 64px;align-items:start}
+.ap-purposes-head{position:sticky;top:calc(var(--pg-stick,82px) + 24px)}
+.ap-purposes-head p{margin-top:16px;font-size:19px;line-height:1.6}
+.ap-purpose-list{list-style:none;padding:0;margin:0;display:grid;gap:24px}
+.ap-purpose-list>li{display:grid;grid-template-columns:56px minmax(0,1fr);gap:20px;border-top:6px solid var(--c);padding-top:20px}
+.ap-purpose-list>li:nth-child(1){--c:var(--orange)}.ap-purpose-list>li:nth-child(2){--c:var(--blue)}.ap-purpose-list>li:nth-child(3){--c:var(--green)}
+.ap-num{font:700 40px/1 Poppins,sans-serif}
+.ap-purpose-list p{font-size:19px;line-height:1.65}
+.ap-sub{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:12px}
+.ap-sub li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;font-size:18px;line-height:1.6}
+.ap-marker{font:700 16px/1.8 Poppins,sans-serif}
+/* Cards */
+.ap-cards{list-style:none;padding:0;margin:28px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.ap-cards-3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.ap-cards a{display:flex;flex-direction:column;gap:8px;height:100%;padding:22px 22px 18px;border-radius:18px;background:var(--c,var(--sky));text-decoration:none}
+.ap-cards li:nth-child(5n+1){--c:var(--sky)}.ap-cards li:nth-child(5n+2){--c:var(--lilac)}.ap-cards li:nth-child(5n+3){--c:var(--rose)}.ap-cards li:nth-child(5n+4){--c:var(--mint)}.ap-cards li:nth-child(5n+5){--c:var(--sun-soft)}
+.ap-cards a:hover{box-shadow:inset 0 0 0 3px var(--ink)}
+.ap-cards h3{font-size:21px}.ap-cards p{font-size:17px}.ap-cards .pg-arrow{margin-top:auto}
+/* Junta */
+.ap-board-grid{margin-top:32px}
+/* Història */
+.ap-time{margin-top:32px}
+.ap-year>*+*{margin-top:12px}
+.ap-year p{font-size:17.5px;line-height:1.6;max-width:44em}
+.ap-date{font:600 15px/1.4 Poppins,sans-serif;color:var(--muted)}
+.ap-events{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.ap-events>li{position:relative;padding-left:20px;font-size:17.5px;line-height:1.6;max-width:44em}
+.ap-events>li::before{content:'';position:absolute;left:0;top:.7em;width:8px;height:8px;border-radius:50%;background:var(--blue)}
+.ap-events-sub{margin-top:8px}
+.ap-roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(230px,100%),1fr));gap:8px 24px;margin:12px 0 4px;padding:16px 20px;background:var(--sun-soft);border-radius:14px}
+.ap-roster div{display:flex;flex-direction:column}
+.ap-roster dt{font:600 13.5px/1.3 Poppins,sans-serif;color:var(--muted)}
+.ap-roster dd{margin:0;font-size:16.5px;line-height:1.35;overflow-wrap:anywhere}
+.ap-roster dt{overflow-wrap:anywhere}
+.ap-roster{min-width:0}
+/* Documents */
+.ap-doc-top{background:var(--mint)}
+.ap-doc-top-inner{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr);gap:24px 56px;align-items:center;padding-block:28px 52px}
+.ap-doc-cta{margin-top:24px}
+.ap-doc-cover{justify-self:end;margin:0;background:#fff;border-radius:20px;padding:16px;max-width:300px;box-shadow:0 10px 30px #17273626}
+.ap-doc-cover img{display:block;width:100%;height:auto;border-radius:10px}
+.ap-doc-body{padding-block:56px 40px}
+.ap-flag{font-style:normal;font-weight:700;color:#8a1c14}
+.ap-review{list-style:none;padding:16px 20px;margin:20px 0 0;border-left:6px solid var(--orange);background:var(--sun-soft);border-radius:0 14px 14px 0;font-size:16.5px}
+/* Avís legal */
+.ap-legal{display:grid;grid-template-columns:260px minmax(0,1fr);gap:48px;padding-block:40px 24px;align-items:start}
+.ap-toc{position:sticky;top:calc(var(--pg-stick,82px) + 24px);border-left:4px solid var(--line);padding-left:20px}
+.ap-toc h2{font:600 16px/1.3 Poppins,sans-serif;margin-bottom:12px}
+.ap-toc ol{list-style:none;padding:0;margin:0;display:grid;gap:2px}
+.ap-toc a{display:block;padding:8px 10px;border-radius:8px;text-decoration:none;font-size:16px;line-height:1.35}
+.ap-toc a[aria-current=true]{background:var(--ink);color:#fff}
+.ap-legal-text{max-width:46em}
+.ap-legal-text section+section{margin-top:44px}
+.ap-legal-text h2{font-size:clamp(22px,2.2vw,28px);margin-bottom:14px}
+.ap-legal-text p,.ap-legal-text li{font-size:18px;line-height:1.7}
+.ap-legal-text p+p{margin-top:14px}
+.ap-legal-text ul{padding-left:22px}
+/* Contacte */
+.ap-sources{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:0;border-top:2px solid var(--ink)}
+.ap-sources li{display:grid;grid-template-columns:minmax(0,.5fr) minmax(0,1fr);gap:8px 24px;padding:16px 4px;border-bottom:1px solid var(--line);font-size:17.5px}
+.ap-gone{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:32px;border:3px dashed #aab2c0;border-radius:24px;padding:36px;background:#f6f7f9}
+.ap-gone h2{font-size:26px;margin-bottom:12px}
+.ap-gone p{font-size:18px}.ap-gone p+p{margin-top:12px}
+.ap-exits{list-style:none;padding:0;margin:0;display:grid;gap:12px;align-content:start}
+.ap-exits a{display:flex;flex-direction:column;gap:2px;padding:16px 20px;background:#fff;border-radius:14px;text-decoration:none;font:700 19px/1.3 Poppins,sans-serif}
+.ap-exits a:hover{box-shadow:inset 0 0 0 2px var(--ink)}
+.ap-exits small{font:600 14.5px/1.3 'Atkinson Hyperlegible',sans-serif;color:var(--muted)}
+/* Alta soci */
+.ap-join-top{background:var(--mint)}
+.ap-join-body{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:48px;padding-block:48px 24px;align-items:start}
+.ap-join-main>*+*{margin-top:36px}
+.ap-notice{background:var(--sun-soft);border:2px solid var(--sun);border-radius:20px;padding:28px 32px}
+.ap-notice h2{font-size:26px;margin-bottom:10px}
+.ap-notice p{font-size:18px}.ap-notice p+p{margin-top:12px}
+.ap-join-contact{list-style:none;padding:0;margin:20px 0 0}
+.ap-join-contact li a{--c:#fff}
+.ap-chips{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 0}
+.ap-chips li{padding:10px 18px;border-radius:999px;background:var(--sky);font:600 16px/1.3 Poppins,sans-serif}
+.ap-details{border:2px solid var(--line);border-radius:16px}
+.ap-details summary{cursor:pointer;padding:16px 22px;font:600 18px/1.4 Poppins,sans-serif;min-height:52px}
+.ap-details ul{padding:0 22px 8px 42px}
+.ap-details .ap-small{padding:0 22px 16px}
+.ap-legal-block{padding:0 22px 22px;font-size:17px;line-height:1.7}
+.ap-join-aside{position:sticky;top:calc(var(--pg-stick,82px) + 24px);background:var(--ink);color:#fff;border-radius:24px;padding:28px}
+.pg .ap-join-aside h2{color:#fff;font-size:20px}
+.ap-join-aside a,.ap-join-aside .ap-small{color:#fff}
+.ap-fee{font:700 56px/1 Poppins,sans-serif}
+.ap-fee-label{font-size:17px;margin-bottom:12px}
+@media(max-width:959px){
+ .ap-top-grid,.ap-doc-top-inner,.ap-purposes,.ap-legal,.ap-join-body,.ap-gone{grid-template-columns:minmax(0,1fr)}
+ .ap-logo-sm,.ap-figure-sm,.ap-doc-cover{justify-self:start}
+ .ap-purposes-head,.ap-toc,.ap-join-aside{position:static}
+ .ap-purpose-list>li{grid-template-columns:40px minmax(0,1fr);gap:12px}
+ .ap-sources li{grid-template-columns:minmax(0,1fr)}
+ .ap-years{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .ap-gone{padding:24px 20px}
+}
+
+/* Contact card: no decorative circle behind the text (contrast could not be verified automatically). */
+.ap .ct-card::after{display:none}
+.ap-time,.ap-year,.ap-events>li,.ap-legal-text,.ap-legal-block{overflow-wrap:anywhere}
+.ap img{max-width:100%;height:auto}
+
+.ap-legal-fig{margin:20px 0}
+.ap-legal-fig img,.ap-legal-text p img{display:block;max-width:220px;height:auto}

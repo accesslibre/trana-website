@@ -1,0 +1,44 @@
+---
+// Entry point for the eleven association, documents and contact routes. The catch-all page passes the
+// WordPress page, every page and post, and the migration status; this picks the composition for the route.
+// If a builder cannot reproduce the whole source text it returns null and the generic ArticlePage is used,
+// so an editorial change in WordPress never loses content.
+import type { WordPressPage, WordPressPost } from '../../lib/wordpress/index';
+import type { PageMigration } from '../../pages/_migration';
+import {
+  associationKind, buildAbout, buildBoard, buildHistory, buildDocument, buildLegal, buildContact, buildJoin, buildNewsletter,
+} from '../../lib/association-pages';
+import ArticlePage from '../pages/ArticlePage.astro';
+import AboutPage from './AboutPage.astro';
+import BoardPage from './BoardPage.astro';
+import HistoryPage from './HistoryPage.astro';
+import DocumentPage from './DocumentPage.astro';
+import LegalPage from './LegalPage.astro';
+import ContactPage from './ContactPage.astro';
+import ContactArchivePage from './ContactArchivePage.astro';
+import JoinPendingPage from './JoinPendingPage.astro';
+import NewsletterPendingPage from './NewsletterPendingPage.astro';
+
+interface Props { post: WordPressPage; pages: WordPressPage[]; posts: WordPressPost[]; migration?: PageMigration }
+const { post, pages, migration } = Astro.props;
+const kind = associationKind(post.slug);
+const about = kind === 'about' ? buildAbout(post) : null;
+const board = kind === 'board' ? buildBoard(post) : null;
+const history = kind === 'history' ? buildHistory(post) : null;
+const document = kind === 'document' ? buildDocument(post) : null;
+const legal = kind === 'legal' ? buildLegal(post) : null;
+const contact = kind === 'contact' ? buildContact(post) : null;
+const join = kind === 'join' ? buildJoin(post) : null;
+const newsletter = kind === 'newsletter' ? buildNewsletter(post) : null;
+const siblings = pages.filter((p) => p.id !== post.id);
+---
+{kind === 'about' && about ? <AboutPage post={post} data={about} pages={siblings} />
+: kind === 'board' && board ? <BoardPage post={post} data={board} />
+: kind === 'history' && history ? <HistoryPage post={post} data={history} />
+: kind === 'document' && document ? <DocumentPage post={post} data={document} pages={siblings} note={migration?.reason} />
+: kind === 'legal' && legal ? <LegalPage post={post} data={legal} pages={siblings} />
+: kind === 'contact' && contact ? <ContactPage post={post} data={contact} />
+: kind === 'contact-archive' ? <ContactArchivePage post={post} reason={migration?.reason} />
+: kind === 'join' && join ? <JoinPendingPage post={post} data={join} reason={migration?.reason} />
+: kind === 'newsletter' && newsletter ? <NewsletterPendingPage post={post} data={newsletter} reason={migration?.reason} />
+: <ArticlePage post={migration?.status === 'pendent' ? { ...post, html: '', excerpt: '', image: undefined } : post} related={[]} kind="page" pendingReason={migration?.reason} resources={migration?.resources} />}

@@ -1,0 +1,51 @@
+---
+// Junta (/junta-associacio-tranaem/): members and the note about the election, from the WordPress page.
+import '../../styles/pages.css';
+import '../../styles/association-pages.css';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import type { BoardData } from '../../lib/association-pages';
+interface Props { post: WordPressPage; data: BoardData }
+const { post, data } = Astro.props;
+const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+---
+<div class="pg ap">
+ <header class="pg-wrap ap-top">
+  <Breadcrumbs inline items={[{ label: 'L’associació', href: '/acerca-de/' }, { label: post.title }]} />
+  <div class="ap-top-grid">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--blue)">L’associació</p>
+    <h1>{post.title}</h1>
+    <p class="pg-lede">{data.note}</p>
+   </div>
+   {data.image && (
+    <figure class="ap-figure-sm">
+     <img src={data.image.src} width={data.image.width} height={data.image.height} alt={data.image.alt} />
+    </figure>
+   )}
+  </div>
+ </header>
+
+ <section class="pg-wrap ap-sec" aria-labelledby="membres-title">
+  <h2 class="pg-h2" id="membres-title">{data.label}</h2>
+  <ul class="as-board ap-board-grid">
+   {data.members.map((m) => (
+    <li>
+     <span class="vv-mono" aria-hidden="true">{initials(m.name)}</span>
+     <span><small>{m.role}</small><strong>{m.name}</strong></span>
+    </li>
+   ))}
+  </ul>
+ </section>
+
+ <section class="pg-wrap ap-sec" aria-labelledby="altres-title">
+  <h2 class="pg-h2" id="altres-title">Continua llegint</h2>
+  <ul class="ap-cards">
+   <li><a href="/historia/"><h3>Juntes anteriors</h3><p>La història de l’associació recull els canvis de junta des de 1993.</p><span class="pg-arrow"><span>Llegeix la història</span><Arrow /></span></a></li>
+   <li><a href="/acerca-de/"><h3>Qui som</h3><p>El nom complet i les finalitats de l’associació.</p><span class="pg-arrow"><span>Obre</span><Arrow /></span></a></li>
+   <li><a href="/estatuts/"><h3>Estatuts</h3><p>El document que regula l’associació.</p><span class="pg-arrow"><span>Obre</span><Arrow /></span></a></li>
+  </ul>
+ </section>
+ <div class="ap-end"></div>
+</div>

@@ -1,0 +1,50 @@
+---
+// /alta-al-butlleti-de-noticies/: the original page embedded a subscription form (WPForms) that is not
+// available here. No form, no demo confirmation, no data collected. We explain it and offer contact.
+import '../../styles/pages.css';
+import '../../styles/association-pages.css';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import { CONTACT, mailto, type NewsletterData } from '../../lib/association-pages';
+interface Props { post: WordPressPage; data: NewsletterData; reason?: string }
+const { post, data, reason } = Astro.props;
+---
+<div class="pg ap">
+ <header class="pg-wrap ap-top">
+  <Breadcrumbs inline items={[{ label: 'Notícies', href: '/noticies/' }, { label: post.title }]} />
+  <div class="ap-top-grid">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--blue)">Notícies</p>
+    <h1>{post.title}</h1>
+    <p class="pg-lede">Aquesta pàgina era un formulari de subscripció. De moment no està disponible en aquesta versió del web.</p>
+   </div>
+   {data.image && (
+    <figure class="ap-figure-sm ap-mail">
+     <img src={data.image.src} width={data.image.width} height={data.image.height} alt={data.image.alt} />
+    </figure>
+   )}
+  </div>
+ </header>
+
+ <section class="pg-wrap ap-sec" aria-labelledby="estat-title">
+  <div class="ap-notice" role="note">
+   <h2 id="estat-title">La subscripció encara no està disponible</h2>
+   <p>{reason ?? 'La subscripció al butlletí encara no està disponible en aquesta versió del web. Aquí no es recullen ni s’envien dades.'}</p>
+   <p class="ap-doc-cta">
+    <a class="pill pill-ink" href={mailto('Butlletí de TRANA')} style="min-height:52px">Escriu-nos sobre el butlletí</a>
+   </p>
+   <p class="ap-small">{CONTACT.email} · {CONTACT.phone}. L’enllaç només porta l’assumpte; no cal que enviïs dades des d’aquesta pàgina.</p>
+  </div>
+ </section>
+
+ <section class="pg-wrap ap-sec" aria-labelledby="mentre-title">
+  <h2 class="pg-h2" id="mentre-title">Mentrestant</h2>
+  <ul class="ap-cards ap-cards-3">
+   <li><a href="/noticies/"><h3>Notícies</h3><p>Les últimes notícies publicades pel web de TRANA.</p><span class="pg-arrow"><span>Llegeix-les</span><Arrow /></span></a></li>
+   <li><a href="/contactans/"><h3>Contacta’ns</h3><p>Telèfon, correu i adreça de l’associació.</p><span class="pg-arrow"><span>Obre</span><Arrow /></span></a></li>
+   <li><a href="https://www.youtube.com/channel/UCn-SCjKNvcF3Azw3ZjPTlIA/videos"><h3>YouTube</h3><p>El canal de vídeos de TRANA.</p><span class="pg-arrow"><span>Obre el canal</span><Arrow /></span></a></li>
+  </ul>
+ </section>
+ <div class="ap-end"></div>
+</div>

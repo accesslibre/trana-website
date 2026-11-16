@@ -1,0 +1,72 @@
+---
+// Qui som (/acerca-de/): full name and purposes of the association, from the WordPress page.
+import '../../styles/pages.css';
+import '../../styles/association-pages.css';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import type { AboutData } from '../../lib/association-pages';
+import { DOC_LINKS } from '../../lib/association-pages';
+interface Props { post: WordPressPage; data: AboutData; pages: WordPressPage[] }
+const { post, data, pages } = Astro.props;
+const more = [
+  { slug: 'historia', label: 'Història', text: 'Des de la constitució el 1993, any a any.' },
+  { slug: 'junta-associacio-tranaem', label: 'Junta directiva', text: 'Les persones que formen la junta actual.' },
+  ...DOC_LINKS.filter((d) => d.slug !== 'avis-legal-i-politica-de-privacitat').map((d) => ({ slug: d.slug, label: d.label, text: 'Document publicat al web de TRANA.' })),
+].map((m) => ({ ...m, page: pages.find((p) => p.slug === m.slug) })).filter((m) => m.page);
+---
+<div class="pg ap">
+ <header class="pg-wrap ap-top">
+  <Breadcrumbs inline items={[{ label: 'L’associació' }, { label: post.title }]} />
+  <div class="ap-top-grid">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--orange)">L’associació</p>
+    <h1>{post.title}</h1>
+    <p class="pg-lede">{data.fullName}</p>
+   </div>
+   {data.logo && (
+    <figure class="ap-logo">
+     <img src={data.logo.src} width={data.logo.width} height={data.logo.height} alt={data.logo.alt} fetchpriority="high" />
+    </figure>
+   )}
+  </div>
+ </header>
+
+ <section class="pg-wrap ap-sec ap-purposes" aria-labelledby="finalitats-title">
+  <div class="ap-purposes-head">
+   <h2 class="pg-h2" id="finalitats-title">{data.label.charAt(0).toUpperCase() + data.label.slice(1).toLowerCase()}</h2>
+   <p set:html={data.intro} />
+  </div>
+  <ol class="ap-purpose-list">
+   {data.purposes.map((p, i) => (
+    <li>
+     <span class="ap-num" aria-hidden="true">{i + 1}</span>
+     <div>
+      <p set:html={p.html} />
+      {p.sub.length > 0 && (
+       <ol class="ap-sub" type="a">
+        {p.sub.map((s) => <li><span class="ap-marker" aria-hidden="true">{s.marker}</span><span set:html={s.html} /></li>)}
+       </ol>
+      )}
+     </div>
+    </li>
+   ))}
+  </ol>
+ </section>
+
+ <section class="pg-wrap ap-sec" aria-labelledby="mes-title">
+  <h2 class="pg-h2" id="mes-title">Més sobre l’associació</h2>
+  <ul class="ap-cards">
+   {more.map((m) => (
+    <li>
+     <a href={m.page!.path}>
+      <h3>{m.label}</h3>
+      <p>{m.text}</p>
+      <span class="pg-arrow"><span>Obre</span><Arrow /></span>
+     </a>
+    </li>
+   ))}
+  </ul>
+ </section>
+ <div class="ap-end"></div>
+</div>

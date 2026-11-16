@@ -1,0 +1,73 @@
+---
+// /alta-soci/: the original page held a membership form that is not available in this version of the site.
+// There is NO form here and nothing is sent. We keep the real information of the page (annual fee, member
+// types, the data-protection notice) and offer the real ways to get in touch.
+import '../../styles/pages.css';
+import '../../styles/association-pages.css';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import { CONTACT, mailto, type JoinData } from '../../lib/association-pages';
+interface Props { post: WordPressPage; data: JoinData | null; reason?: string }
+const { post, data, reason } = Astro.props;
+const title = data?.title ?? post.title;
+const fields = (data?.formFields ?? []).filter((f) => !/^(privacitat|tipus de soci)$/iu.test(f));
+---
+<div class="pg ap">
+ <header class="jn-top ap-join-top">
+  <Breadcrumbs items={[{ label: 'Col·labora' }, { label: post.title }]} />
+  <div class="pg-wrap jn-top-inner">
+   <p class="pg-eyebrow" style="--dot:var(--green)">Col·labora</p>
+   <h1 class="ap-h1-long">{title}</h1>
+  </div>
+ </header>
+
+ <div class="pg-wrap ap-join-body">
+  <div class="ap-join-main">
+   <div class="ap-notice" role="note">
+    <h2>El formulari d’alta encara no està disponible</h2>
+    <p>{reason ?? 'El formulari d’alta encara no està disponible en aquesta versió del web. Aquí no es recullen ni s’envien dades.'}</p>
+    <p>Per fer-te soci, contacta amb TRANA:</p>
+    <ul class="ct-big ap-join-contact">
+     <li><a href={CONTACT.phoneHref}><span class="ic"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 3h3l1.5 4-2 1.2a10 10 0 0 0 4.3 4.3l1.2-2 4 1.5v3a2 2 0 0 1-2 2A12 12 0 0 1 3 5a2 2 0 0 1 2-2Z" stroke="#172736" stroke-width="1.8" stroke-linejoin="round"/></svg></span><span><small>Telèfon</small>{CONTACT.phone}</span></a></li>
+     <li><a href={mailto('Alta de soci')}><span class="ic"><svg width="28" height="28" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2" stroke="#172736" stroke-width="1.8"/><path d="m3 6 7 5 7-5" stroke="#172736" stroke-width="1.8" stroke-linejoin="round"/></svg></span><span><small>Correu electrònic</small>{CONTACT.email}</span></a></li>
+    </ul>
+    <p class="ap-small">L’enllaç del correu només porta l’assumpte «Alta de soci». No cal que ens enviïs dades per aquesta pàgina.</p>
+   </div>
+
+   {data && data.memberTypes.length > 0 && (
+    <section class="ap-sec" aria-labelledby="tipus-title">
+     <h2 class="pg-h2" id="tipus-title">Tipus de soci</h2>
+     <p>El formulari original oferia aquestes opcions.</p>
+     <ul class="ap-chips">{data.memberTypes.map((t) => <li>{t}</li>)}</ul>
+    </section>
+   )}
+
+   {fields.length > 0 && (
+    <details class="ap-details">
+     <summary>Dades que demanava el formulari original</summary>
+     <ul>{fields.map((f) => <li>{f}</li>)}{data?.consent && <li>Consentiment: «{data.consent}»</li>}</ul>
+     <p class="ap-small">Només és una llista informativa: aquí no hi ha cap camp per omplir.</p>
+    </details>
+   )}
+
+   {data?.privacyHtml && (
+    <details class="ap-details ap-legal-details">
+     <summary>Protecció de dades: text original del formulari</summary>
+     <div class="ap-legal-block" set:html={data.privacyHtml} />
+     <p class="ap-small ap-legal-link">El formulari original enllaçava la política de privacitat completa: <a href="/avis-legal-i-politica-de-privacitat/">Avís legal i política de privacitat</a>.</p>
+    </details>
+   )}
+  </div>
+
+  <aside class="ap-join-aside" aria-labelledby="quota-title">
+   <h2 id="quota-title">Quota</h2>
+   {data?.fee ? <p class="ap-fee">{data.fee.replace(/^quota anual\s*:\s*/iu, '')}</p> : null}
+   <p class="ap-fee-label">anuals</p>
+   {data?.feeNote && <p>{data.feeNote.charAt(0).toUpperCase() + data.feeNote.slice(1)}</p>}
+   <p class="ap-small">Quota publicada al web de TRANA. Confirma-ho amb l’associació.</p>
+   <a class="pg-arrow" href="/contactans/"><span>Totes les dades de contacte</span><Arrow /></a>
+  </aside>
+ </div>
+ <div class="ap-end"></div>
+</div>
