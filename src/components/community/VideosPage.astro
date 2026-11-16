@@ -1,0 +1,53 @@
+---
+// Recovered videos as cards linking to YouTube. No player or tracking embed is loaded.
+import '../../styles/pages.css';
+import '../../styles/community-pages.css';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import { formatDate, type Videos } from '../../lib/community-pages';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+import Notice from './Notice.astro';
+
+interface Props { post: WordPressPage; data: Videos; note?: string }
+const { post, data, note } = Astro.props;
+---
+<div class="pg cm">
+ <header class="cm-hero cm-video-hero cm-hero-solo">
+  <Breadcrumbs items={[{ label: post.title }]} />
+  <div class="pg-wrap cm-hero-inner">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--red)">Multimèdia</p>
+    <h1>{post.title}</h1>
+    <p class="pg-lede">Vídeos recuperats de la pàgina original (última modificació: <time datetime={post.modified.slice(0, 10)}>{formatDate(post.modified)}</time>). S’obren a YouTube en una pestanya nova; en aquesta pàgina no carreguem cap reproductor extern.</p>
+   </div>
+  </div>
+ </header>
+
+ <section class="pg-wrap cm-sec" aria-labelledby="vid-title">
+  <div class="cm-sec-head">
+   <h2 class="pg-h2" id="vid-title">Els vídeos</h2>
+   <p>En aquesta pàgina no hi ha transcripció dels vídeos.</p>
+  </div>
+  {note && <Notice class="cm-notice-body" title="Pàgina parcial"><p>{note}</p></Notice>}
+  <ul class="cm-videos">
+   {data.videos.map((v) => (
+    <li class="cm-video">
+     <div class="cm-poster-tile" aria-hidden="true"><span class="cm-play"><svg width="30" height="30" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></span></div>
+     <div>
+      <h3>{v.title}</h3>
+      <p>Vídeo a YouTube</p>
+      <a class="pg-arrow" href={v.href} target="_blank" rel="noopener noreferrer"><span>Mira «{v.title}» a YouTube <span class="vh">(pestanya nova)</span></span><Arrow /></a>
+     </div>
+    </li>
+   ))}
+  </ul>
+  {data.channel && (
+   <aside class="cm-channel" aria-labelledby="chan-title">
+    {data.channel.image && <img src={data.channel.image.src} alt="" width={data.channel.image.width} height={data.channel.image.height} loading="lazy" decoding="async" />}
+    <div><h2 id="chan-title">Més contingut al nostre canal</h2><p>El canal de TRANA a YouTube.</p></div>
+    <a class="pill pill-ink" href={data.channel.href} target="_blank" rel="noopener noreferrer" style="min-height:52px">Obre el canal<span class="vh"> (pestanya nova)</span></a>
+   </aside>
+  )}
+ </section>
+ <div class="pg-wrap cm-more"></div>
+</div>

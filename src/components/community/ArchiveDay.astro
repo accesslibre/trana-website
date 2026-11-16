@@ -1,0 +1,46 @@
+---
+// One-day programme of 2021 (dia-internacional-2021), as a timeline.
+import '../../styles/pages.css';
+import '../../styles/community-pages.css';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import type { DayEvent } from '../../lib/community-pages';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+
+interface Props { post: WordPressPage; events: DayEvent[]; date?: { label: string; iso?: string }; agendaPath?: string; links: { href: string; label: string; text: string }[] }
+const { post, events, date, agendaPath, links } = Astro.props;
+---
+<div class="pg cm">
+ <header class="cm-hero cm-arch-hero cm-hero-solo">
+  <Breadcrumbs items={[...(agendaPath ? [{ label: 'Actualitat (arxiu)', href: agendaPath }] : []), { label: post.title }]} />
+  <div class="pg-wrap cm-hero-inner">
+   <div>
+    <span class="cm-chip">Arxiu 2021</span>
+    <h1>{post.title}</h1>
+    {date && <p class="pg-lede">Data indicada a l’índex d’Actualitat: <time datetime={date.iso}>{date.label}</time>.</p>}
+   </div>
+  </div>
+ </header>
+
+ <section class="pg-wrap cm-sec" aria-labelledby="day-title">
+  <div class="cm-sec-head"><h2 class="pg-h2" id="day-title">Programa del dia</h2></div>
+  <ol class="cm-timeline">
+   {events.map((e) => (
+    <li class="cm-event">
+     {e.time ? <span class="cm-time">{e.time}</span> : <span aria-hidden="true"></span>}
+     <div class="cm-event-card">
+      <h3>{e.title}</h3>
+      {e.images.length > 0 && <div class="cm-event-pics">{e.images.map((img) => <img src={img.src} alt={img.alt} width={img.width} height={img.height} loading="lazy" decoding="async" />)}</div>}
+     </div>
+    </li>
+   ))}
+  </ol>
+ </section>
+
+ <section class="pg-wrap cm-more" aria-labelledby="day-more">
+  <h2 class="pg-h2" id="day-more">Continua</h2>
+  <ul class="cm-exits">
+   {links.map((e) => <li><a class="cm-exit" href={e.href}><strong>{e.label}<Arrow /></strong><span>{e.text}</span></a></li>)}
+  </ul>
+ </section>
+</div>

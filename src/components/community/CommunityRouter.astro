@@ -1,0 +1,66 @@
+---
+// Entry point for the 14 activities, experiences and multimedia pages. Falls back to the generic
+// ArticlePage whenever the WordPress structure no longer matches what a builder expects.
+import type { WordPressPage, WordPressPost } from '../../lib/wordpress/index';
+import type { PageMigration } from '../../pages/_migration';
+import {
+  buildAgenda, buildAnnouncement, buildCampaign, buildDay, buildProgramme, buildVideos, buildVoice, buildVoices,
+  routeLinks, VOICE_SLUGS,
+} from '../../lib/community-pages';
+import ArticlePage from '../pages/ArticlePage.astro';
+import VoicesIndex from './VoicesIndex.astro';
+import VoiceAuthor from './VoiceAuthor.astro';
+import ProgrammePage from './ProgrammePage.astro';
+import ArchiveAgenda from './ArchiveAgenda.astro';
+import ArchiveDay from './ArchiveDay.astro';
+import Announcement from './Announcement.astro';
+import CampaignPage from './CampaignPage.astro';
+import VideosPage from './VideosPage.astro';
+import TechnicalExit from './TechnicalExit.astro';
+
+interface Props { post: WordPressPage; pages: WordPressPage[]; posts: WordPressPost[]; migration?: PageMigration }
+const { post, pages, posts, migration } = Astro.props;
+const slug = post.slug;
+const pathOf = (s: string) => pages.find((p) => p.slug === s)?.path;
+const html = post.html;
+const note = migration?.reason;
+const archiveLinks = routeLinks(pages, [
+  { slug: 'actualidats', label: 'Actualitat (arxiu 2021)', text: 'El calendari d’activitats del web antic.' },
+  { slug: 'activitats-2', label: 'Activitats', text: 'El programa d’activitats publicat.' },
+  { slug: 'contactans', label: 'Contacte', text: 'Telèfon, correu i adreça de TRANA.' },
+  { slug: 'que-es-lem', label: 'Què és l’EM?', text: 'Informació sobre l’esclerosi múltiple.' },
+]).filter((l) => l.href !== post.path);
+
+let view: 'tech' | 'voices' | 'author' | 'programme' | 'agenda' | 'day' | 'announcement' | 'campaign' | 'videos' | 'fallback' = 'fallback';
+let voices = buildVoices(pages, posts);
+const voice = (VOICE_SLUGS as readonly string[]).includes(slug) ? buildVoice(post, pages, posts, voices.findIndex((v) => v.slug === slug)) : null;
+const programme = slug === 'activitats-2' ? buildProgramme(html) : null;
+const agendaPage = pages.find((p) => p.slug === 'actualidats');
+const agenda = slug === 'actualidats' ? buildAgenda(html, pages) : null;
+const day = slug === 'dia-internacional-2021' ? buildDay(html) : null;
+const dayDate = day && agendaPage ? buildAgenda(agendaPage.html, pages)?.find((e) => e.href === post.path) : undefined;
+const announcement = slug === 'borrador-automatico' ? buildAnnouncement(html) : null;
+const campaign = slug === 'envia-un-sms-al-601' ? buildCampaign(html, migration?.resources) : null;
+const videos = slug === 'youtube' ? buildVideos(html, migration?.resources) : null;
+const technical = (slug === 'imatges' || slug === 'trana-home' || slug === 'slide-portada') && (migration?.status === 'pendent' || !html.trim());
+
+if (technical) view = 'tech';
+else if (slug === 'opinio' && voices.length) view = 'voices';
+else if (voice && voices.length) { view = 'author'; if (!voices.some((v) => v.slug === slug)) voices = [...voices, voice]; }
+else if (programme) view = 'programme';
+else if (agenda) view = 'agenda';
+else if (day) view = 'day';
+else if (announcement) view = 'announcement';
+else if (campaign) view = 'campaign';
+else if (videos) view = 'videos';
+---
+{view === 'tech' ? <TechnicalExit post={post} pages={pages} slug={slug as 'imatges' | 'trana-home' | 'slide-portada'} reason={note} />
+: view === 'voices' ? <VoicesIndex post={post} voices={voices} note={note} />
+: view === 'author' ? <VoiceAuthor voice={voice!} voices={voices} indexPath={pathOf('opinio')} />
+: view === 'programme' ? <ProgrammePage post={post} items={programme!} note={note} links={archiveLinks} />
+: view === 'agenda' ? <ArchiveAgenda post={post} entries={agenda!} note={note} links={archiveLinks.filter((l) => l.href !== pathOf('actualidats'))} />
+: view === 'day' ? <ArchiveDay post={post} events={day!} date={dayDate ? { label: dayDate.dateLabel, iso: dayDate.iso } : undefined} agendaPath={pathOf('actualidats')} links={archiveLinks} />
+: view === 'announcement' ? <Announcement post={post} data={announcement!} note={note} links={archiveLinks} />
+: view === 'campaign' ? <CampaignPage post={post} data={campaign!} note={note} videosPath={pathOf('youtube')} />
+: view === 'videos' ? <VideosPage post={post} data={videos!} note={note} />
+: <ArticlePage post={migration?.status === 'pendent' ? { ...post, html: '', excerpt: '', image: undefined } : post} related={[]} kind="page" pendingReason={note} resources={migration?.resources} />}

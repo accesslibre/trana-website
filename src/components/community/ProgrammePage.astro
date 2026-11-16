@@ -1,0 +1,74 @@
+---
+// Weekly activities programme as published on the old site (archive, schedule unconfirmed).
+import '../../styles/pages.css';
+import '../../styles/community-pages.css';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import { contact, formatDate, type ProgrammeItem } from '../../lib/community-pages';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+import Notice from './Notice.astro';
+
+interface Props { post: WordPressPage; items: ProgrammeItem[]; note?: string; links: { href: string; label: string; text: string }[] }
+const { post, items, note, links } = Astro.props;
+const groups: { day?: string; items: ProgrammeItem[] }[] = [];
+for (const item of items) {
+  const group = groups.find((g) => g.day === item.day);
+  if (group) group.items.push(item); else groups.push({ day: item.day, items: [item] });
+}
+groups.sort((a, b) => Number(!a.day) - Number(!b.day));
+const hero = items.find((i) => i.image);
+---
+<div class="pg cm">
+ <header class="cm-hero cm-prog-hero">
+  <Breadcrumbs items={[{ label: post.title }]} />
+  <div class="pg-wrap cm-hero-inner">
+   <div>
+    <p class="pg-eyebrow" style="--dot:#8b5cca">Programa d’activitats</p>
+    <h1>{post.title}</h1>
+    <p class="pg-lede">Els tallers i serveis que el web de TRANA publicava en aquest programa, tal com constaven a l’original.</p>
+    <p class="cm-meta"><span>Última modificació al web antic: <time datetime={post.modified.slice(0, 10)}>{formatDate(post.modified)}</time></span></p>
+   </div>
+   {hero?.image && <figure class="cm-frame"><img src={hero.image.src} alt={hero.image.alt} width={hero.image.width} height={hero.image.height} fetchpriority="high" /></figure>}
+  </div>
+ </header>
+
+ <div class="pg-wrap">
+  <Notice title="Horaris pendents de confirmar" class="cm-notice-body" >
+   <p>{note ?? 'Els horaris es conserven tal com es van publicar.'} Truca al <a href={contact.phoneHref}>{contact.phone}</a> o escriu a <a href={`mailto:${contact.email}`}>{contact.email}</a> abans de venir.</p>
+  </Notice>
+ </div>
+
+ <section class="pg-wrap cm-sec" aria-labelledby="prog-title">
+  <div class="cm-sec-head"><h2 class="pg-h2" id="prog-title">El programa publicat</h2></div>
+  {groups.map((g) => (
+   <div class="cm-day">
+    <div class="cm-day-head">
+     <h3>{g.day ?? 'Sense dia ni horari publicat'}</h3>
+     {!g.day && <p>El programa original no indica quan es fa.</p>}
+    </div>
+    <ul class="cm-cards">
+     {g.items.map((item) => (
+      <li class="cm-card">
+       {item.image ? <img src={item.image.src} alt={item.image.alt} width={item.image.width} height={item.image.height} loading="lazy" decoding="async" /> : <div class="none" aria-hidden="true">·</div>}
+       <div>
+        {item.hours && <p class="cm-when">{item.hours}{item.note ? ` · ${item.note}` : ''}</p>}
+        <h4>{item.title}</h4>
+       </div>
+      </li>
+     ))}
+    </ul>
+   </div>
+  ))}
+ </section>
+
+ <section class="pg-wrap cm-more" aria-labelledby="prog-more">
+  <h2 class="pg-h2" id="prog-more">Més informació</h2>
+  <ul class="cm-exits">
+   {links.map((e) => <li><a class="cm-exit" href={e.href}><strong>{e.label}<Arrow /></strong><span>{e.text}</span></a></li>)}
+  </ul>
+  <p class="cm-contact">
+   <a class="pill pill-ink" href={contact.phoneHref} style="min-height:52px">Truca al {contact.phone}</a>
+   <a class="pg-arrow" href={`mailto:${contact.email}`}><span>Escriu a {contact.email}</span><Arrow /></a>
+  </p>
+ </section>
+</div>

@@ -1,0 +1,38 @@
+---
+// Old announcement (borrador-automatico). Archive, not a current activity.
+import '../../styles/pages.css';
+import '../../styles/community-pages.css';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import { contact, formatDate, type CommunityImage } from '../../lib/community-pages';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+import Notice from './Notice.astro';
+
+interface Props { post: WordPressPage; data: { text: string; image?: CommunityImage }; note?: string; links: { href: string; label: string; text: string }[] }
+const { post, data, note, links } = Astro.props;
+---
+<div class="pg cm">
+ <header class="cm-hero cm-mint">
+  <Breadcrumbs items={[{ label: post.title }]} />
+  <div class="pg-wrap cm-ann">
+   <div>
+    <span class="cm-chip">Anunci d’arxiu · {post.modified.slice(0, 4)}</span>
+    <h1>{post.title}</h1>
+    <blockquote>{data.text}</blockquote>
+    <p class="cm-meta">Anunci actualitzat per última vegada el <time datetime={post.modified.slice(0, 10)}>{formatDate(post.modified)}</time>.</p>
+   </div>
+   {data.image && <figure class="cm-ann-photo"><img src={data.image.src} alt={data.image.alt} width={data.image.width} height={data.image.height} fetchpriority="high" /></figure>}
+  </div>
+ </header>
+
+ <div class="pg-wrap">
+  <Notice title="No és una activitat confirmada" class="cm-notice-body"><p>{note ?? 'Aquest anunci és d’arxiu.'} «Molt aviat» fa referència a la data de l’anunci. Per saber què es fa ara, consulta amb TRANA: <a href={contact.phoneHref}>{contact.phone}</a> o <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p></Notice>
+ </div>
+
+ <section class="pg-wrap cm-more" aria-labelledby="ann-more">
+  <h2 class="pg-h2" id="ann-more">Què pots consultar</h2>
+  <ul class="cm-exits">
+   {links.map((e) => <li><a class="cm-exit" href={e.href}><strong>{e.label}<Arrow /></strong><span>{e.text}</span></a></li>)}
+  </ul>
+ </section>
+</div>

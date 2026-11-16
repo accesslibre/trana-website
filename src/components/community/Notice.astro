@@ -1,0 +1,9 @@
+---
+// Honest status box for archive or partial content. Content goes in the default slot.
+interface Props { title: string; class?: string }
+const { title, class: extra } = Astro.props;
+---
+<aside class:list={['cm-notice', extra]} aria-label={title}>
+ <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2"/><path d="M12 11v5.5M12 7.5v.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+ <div><strong>{title}</strong><slot /></div>
+</aside>

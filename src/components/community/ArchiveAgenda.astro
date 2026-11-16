@@ -1,0 +1,54 @@
+---
+// Old agenda index (2021). Kept as an archive; it is not merged with current news.
+import '../../styles/pages.css';
+import '../../styles/community-pages.css';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import { formatDate, type AgendaEntry } from '../../lib/community-pages';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+import Notice from './Notice.astro';
+
+interface Props { post: WordPressPage; entries: AgendaEntry[]; note?: string; links: { href: string; label: string; text: string }[] }
+const { post, entries, note, links } = Astro.props;
+---
+<div class="pg cm">
+ <header class="cm-hero cm-arch-hero cm-hero-solo">
+  <Breadcrumbs items={[{ label: post.title }]} />
+  <div class="pg-wrap cm-hero-inner">
+   <div>
+    <span class="cm-chip">Arxiu 2021</span>
+    <h1>{post.title}</h1>
+    <p class="pg-lede">Calendari d’activitats del web antic de TRANA. Última modificació: <time datetime={post.modified.slice(0, 10)}>{formatDate(post.modified)}</time>.</p>
+   </div>
+  </div>
+ </header>
+
+ <div class="pg-wrap">
+  <Notice title="Índex d’arxiu" class="cm-notice-body"><p>{note ?? 'Aquest índex és d’arxiu.'} Només conserva {entries.length === 1 ? 'una activitat' : `${entries.length} activitats`}. Per a les notícies actuals, consulta la secció de notícies.</p></Notice>
+ </div>
+
+ <section class="pg-wrap cm-sec" aria-labelledby="agenda-title">
+  <div class="cm-sec-head"><h2 class="pg-h2" id="agenda-title">Activitats de l’arxiu</h2></div>
+  <ol class="cm-agenda">
+   {entries.map((e) => (
+    <li class="cm-entry">
+     <p class="cm-date"><small>Data</small>{e.iso ? <time datetime={e.iso}>{e.dateLabel}</time> : e.dateLabel}</p>
+     <div class="cm-entry-card">
+      {e.image && <img src={e.image.src} alt={e.image.alt} width={e.image.width} height={e.image.height} loading="lazy" decoding="async" />}
+      <div>
+       <h3>{e.title}</h3>
+       <a class="pg-arrow" href={e.href}><span>{e.internal ? 'Veure el programa' : 'Obre l’original'}</span><Arrow /></a>
+      </div>
+     </div>
+    </li>
+   ))}
+  </ol>
+ </section>
+
+ <section class="pg-wrap cm-more" aria-labelledby="agenda-more">
+  <h2 class="pg-h2" id="agenda-more">Què pots consultar ara</h2>
+  <ul class="cm-exits">
+   {links.map((e) => <li><a class="cm-exit" href={e.href}><strong>{e.label}<Arrow /></strong><span>{e.text}</span></a></li>)}
+  </ul>
+ </section>
+</div>

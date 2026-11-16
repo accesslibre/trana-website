@@ -1,0 +1,89 @@
+---
+// Experiences index: every author page with their real texts, newest text featured.
+import '../../styles/pages.css';
+import '../../styles/community-pages.css';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import { plainText } from '../../lib/wordpress/index';
+import { formatDate, latestStory, voiceSpan, type Voice } from '../../lib/community-pages';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+import HelpStrip from '../pages/HelpStrip.astro';
+import Notice from './Notice.astro';
+
+interface Props { post: WordPressPage; voices: Voice[]; note?: string }
+const { post, voices, note } = Astro.props;
+const lede = plainText(post.html);
+const latest = latestStory(voices);
+const shown = 4;
+const count = (n: number) => `${n} ${n === 1 ? 'text' : 'textos'}`;
+---
+<div class="pg cm">
+ <header class="cm-hero cm-voices-hero">
+  <Breadcrumbs items={[{ label: post.title }]} />
+  <div class="pg-wrap cm-hero-inner">
+   <div>
+    <p class="pg-eyebrow" style="--dot:var(--red)">En primera persona</p>
+    <h1>{post.title}</h1>
+    {lede && <p class="pg-lede">{lede}</p>}
+    <ul class="cm-jump" aria-label="Salta a una veu">
+     {voices.map((v) => <li><a href={`#veu-${v.slug}`}><span class={`cm-mono ${v.colour}`} aria-hidden="true">{v.initials}</span>{v.name}</a></li>)}
+    </ul>
+   </div>
+   {latest && (
+    <article class="cm-feature" aria-labelledby="latest-title">
+     <p class="cm-kicker">Última vivència publicada · <time datetime={latest.story.date}>{formatDate(latest.story.date!)}</time></p>
+     <h2 id="latest-title"><a href={latest.story.href}>{latest.story.title}</a></h2>
+     {latest.story.excerpt && <p>{latest.story.excerpt}</p>}
+     <footer>
+      <span class={`cm-mono ${latest.voice.colour}`} aria-hidden="true">{latest.voice.initials}</span>
+      <div><strong>{latest.voice.name}</strong><span>{count(latest.voice.stories.length)}</span></div>
+     </footer>
+     <a class="pg-arrow" href={latest.story.href}><span>Llegeix el text</span><Arrow /></a>
+    </article>
+   )}
+  </div>
+ </header>
+
+ <section class="pg-wrap cm-voices" aria-labelledby="voices-title">
+  <div class="cm-sec-head">
+   <h2 class="pg-h2" id="voices-title">Les veus</h2>
+   <p>Cada autor té la seva pàgina. Aquest índex es forma a partir de les pàgines de cada autor.</p>
+  </div>
+  {note && <Notice class="cm-notice-body" title="Índex parcial"><p>{note}</p></Notice>}
+  {voices.map((v) => {
+   const first = v.stories.slice(0, shown);
+   const rest = v.stories.slice(shown);
+   return (
+    <article class="cm-voice" id={`veu-${v.slug}`} aria-labelledby={`voice-${v.slug}`}>
+     <div class="cm-who">
+      <span class={`cm-mono ${v.colour}`} aria-hidden="true">{v.initials}</span>
+      <div>
+       <h3 id={`voice-${v.slug}`}><a href={v.path}>{v.name}</a></h3>
+       <p>{[v.series && `Sèrie «${v.series}»`, count(v.stories.length), voiceSpan(v)].filter(Boolean).join(' · ')}</p>
+      </div>
+     </div>
+     <div>
+      <ol class="cm-list">
+       {first.map((s) => <li><a href={s.href}><span>{s.title}</span>{s.date && <time datetime={s.date.slice(0, 10)}>{formatDate(s.date)}</time>}</a></li>)}
+      </ol>
+      {rest.length > 0 && (
+       <details class="cm-fold">
+        <summary><span>Mostra {rest.length === 1 ? 'un text més' : `${rest.length} textos més`}</span></summary>
+        <ol class="cm-list" start={shown + 1} style={`counter-reset:t ${shown}`}>
+         {rest.map((s) => <li><a href={s.href}><span>{s.title}</span>{s.date && <time datetime={s.date.slice(0, 10)}>{formatDate(s.date)}</time>}</a></li>)}
+        </ol>
+       </details>
+      )}
+      <p style="margin-top:10px"><a class="pg-arrow" href={v.path}><span>Tots els textos de {v.name}</span><Arrow /></a></p>
+     </div>
+    </article>
+   );
+  })}
+  <aside class="cm-care" aria-label="Una nota de TRANA">
+   <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path fill="#ef4337" d="M12 21C5 16.5 2 12.5 2 8.8 2 6.1 4.1 4 6.7 4c1.9 0 3.7 1 5.3 3 1.6-2 3.4-3 5.3-3C19.9 4 22 6.1 22 8.8c0 3.7-3 7.7-10 12.2z"/></svg>
+   <div><p>Les vivències expliquen l’experiència de qui les escriu. No substitueixen el consell del teu equip mèdic.</p></div>
+  </aside>
+ </section>
+
+ <HelpStrip title="Parla amb nosaltres" text="Si et reconeixes en aquests textos o vols consultar-nos alguna cosa, truca’ns o escriu-nos." />
+</div>

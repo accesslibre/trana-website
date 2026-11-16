@@ -1,0 +1,50 @@
+---
+// SMS 601 campaign of 2021. Archive only: validity is pending confirmation, so no call to action to send an SMS.
+import '../../styles/pages.css';
+import '../../styles/community-pages.css';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import { contact, type Campaign } from '../../lib/community-pages';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+import Notice from './Notice.astro';
+
+interface Props { post: WordPressPage; data: Campaign; note?: string; videosPath?: string }
+const { post, data, note, videosPath } = Astro.props;
+const poster = data.images.find((i) => /\/trana[-.]/u.test(i.src)) ?? data.images[0];
+const logo = data.images.find((i) => i !== poster);
+---
+<div class="pg cm">
+ <header class="cm-hero cm-camp-hero">
+  <Breadcrumbs items={[{ label: post.title }]} />
+  <div class="pg-wrap cm-hero-inner">
+   <div>
+    <span class="cm-chip">Campanya de 2021 · arxiu</span>
+    <h1>{post.title}</h1>
+    <p class="cm-lead-quote" set:html={data.lead} />
+   </div>
+   {poster && <figure class="cm-poster"><img src={poster.src} alt={poster.alt} width={poster.width} height={poster.height} fetchpriority="high" /></figure>}
+  </div>
+ </header>
+
+ <div class="pg-wrap">
+  <Notice title="Vigència pendent de confirmar" class="cm-notice-body">
+   <p>{note ?? 'La vigència d’aquesta campanya està pendent de confirmar amb TRANA.'} Abans de fer res, consulta-ho a <a href={contact.phoneHref}>{contact.phone}</a> o <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
+  </Notice>
+ </div>
+
+ <div class="pg-wrap cm-camp-body">
+  <section aria-labelledby="camp-project">
+   <h2 id="camp-project">El projecte</h2>
+   {data.detail ? <p set:html={data.detail} /> : <p>Consulta l’original per conèixer el projecte.</p>}
+   {logo && <img class="cm-logo" src={logo.src} alt={logo.alt} width={logo.width} height={logo.height} loading="lazy" decoding="async" />}
+  </section>
+  <aside class="cm-media" aria-labelledby="camp-video">
+   <h2 id="camp-video">Vídeo de la campanya</h2>
+   {data.video
+    ? <><p>El vídeo original s’obre com a fitxer en una pestanya nova. En aquesta pàgina no hi ha transcripció.</p><a class="pill" href={data.video.url} target="_blank" rel="noopener noreferrer">Obre el vídeo (MP4)<span class="vh"> · pestanya nova</span></a></>
+    : <p>El vídeo original encara no està disponible en aquesta versió.</p>}
+   {videosPath && <p style="margin-top:14px"><a class="pg-arrow" style="color:#fff" href={videosPath}><span>Més vídeos de TRANA</span><Arrow /></a></p>}
+  </aside>
+ </div>
+ <div class="pg-wrap cm-more"><p><a class="pg-arrow" href={post.url}><span>Consulta la pàgina original</span><Arrow /></a></p></div>
+</div>

@@ -1,0 +1,53 @@
+---
+// Clear, honest exit for old technical records with no recoverable content (imatges, trana-home, slide-portada).
+import '../../styles/pages.css';
+import '../../styles/community-pages.css';
+import type { WordPressPage } from '../../lib/wordpress/index';
+import { TECHNICAL, contact, formatDate, routeLinks } from '../../lib/community-pages';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+
+interface Props { post: WordPressPage; pages: WordPressPage[]; slug: 'imatges' | 'trana-home' | 'slide-portada'; reason?: string }
+const { post, pages, slug, reason } = Astro.props;
+const copy = TECHNICAL[slug];
+const exits = routeLinks(pages, copy.exits);
+---
+<div class="pg cm">
+ <header class="cm-hero cm-tech-hero">
+  <Breadcrumbs items={[{ label: post.title }]} />
+  <div class="pg-wrap cm-hero-inner">
+   <div>
+    <p class="pg-eyebrow" style="--dot:#8b5cca">{copy.eyebrow}</p>
+    <h1>{post.title}</h1>
+    <p class="pg-lede">{copy.lead}</p>
+   </div>
+   <div class="cm-tech-card">
+    <h2>Estat d’aquest registre</h2>
+    <dl>
+     <div><dt>Què era</dt><dd>{copy.what}</dd></div>
+     <div><dt>Última modificació al web antic</dt><dd><time datetime={post.modified.slice(0, 10)}>{formatDate(post.modified)}</time></dd></div>
+     <div><dt>Estat a aquesta versió</dt><dd>Contingut pendent de recuperar{reason ? `. ${reason}` : ''}</dd></div>
+    </dl>
+   </div>
+  </div>
+ </header>
+
+ <section class="pg-wrap cm-tech-why" aria-labelledby="tech-why">
+  <h2 class="pg-h2" id="tech-why">Per què no hi ha res més aquí</h2>
+  <p>{copy.why}</p>
+  <p class="cm-source"><a href={post.url}>Consulta el registre original al web antic de TRANA</a></p>
+ </section>
+
+ <section class="pg-wrap cm-more" aria-labelledby="tech-exits">
+  <h2 class="pg-h2" id="tech-exits">Què pots fer ara</h2>
+  <ul class="cm-exits">
+   {exits.map((e) => (
+    <li><a class="cm-exit" href={e.href}><strong>{e.label}<Arrow /></strong><span>{e.text}</span></a></li>
+   ))}
+  </ul>
+  <p class="cm-contact">
+   <a class="pill pill-ink" href={contact.phoneHref} style="min-height:52px">Truca al {contact.phone}</a>
+   <a class="pg-arrow" href={`mailto:${contact.email}`}><span>Escriu a {contact.email}</span><Arrow /></a>
+  </p>
+ </section>
+</div>

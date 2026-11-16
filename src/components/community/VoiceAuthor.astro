@@ -1,0 +1,76 @@
+---
+// One author: their real texts as dated, attributed entries.
+import '../../styles/pages.css';
+import '../../styles/community-pages.css';
+import { formatDate, voiceSpan, type Voice } from '../../lib/community-pages';
+import Breadcrumbs from '../pages/Breadcrumbs.astro';
+import Arrow from '../pages/Arrow.astro';
+
+interface Props { voice: Voice; voices: Voice[]; indexPath?: string }
+const { voice, voices, indexPath } = Astro.props;
+const others = voices.filter((v) => v.slug !== voice.slug);
+// A featured image used by more than two texts is generic: it would repeat down the whole list.
+const uses = new Map<string, number>();
+for (const s of voice.stories) if (s.image) uses.set(s.image.src, (uses.get(s.image.src) ?? 0) + 1);
+const n = voice.stories.length;
+const span = voiceSpan(voice);
+---
+<div class="pg cm">
+ <header class="cm-hero cm-author-hero cm-hero-solo">
+  <Breadcrumbs items={[...(indexPath ? [{ label: 'Vivències', href: indexPath }] : []), { label: voice.name }]} />
+  <div class="pg-wrap cm-hero-inner">
+   <div>
+    <div class="cm-author-head">
+     <span class={`cm-mono lg ${voice.colour}`} aria-hidden="true">{voice.initials}</span>
+     <div>
+      <p class="pg-eyebrow" style="--dot:var(--red)">Vivències</p>
+      <h1>{voice.name}</h1>
+     </div>
+    </div>
+    <ul class="cm-meta">
+     <li>{n} {n === 1 ? 'text' : 'textos'}</li>
+     {span && <li>{span}</li>}
+     {voice.series && <li>Sèrie «{voice.series}»</li>}
+    </ul>
+   </div>
+  </div>
+ </header>
+
+ <section class="pg-wrap cm-sec" aria-labelledby="texts-title">
+  <div class="cm-sec-head">
+   <h2 class="pg-h2" id="texts-title">Els textos</h2>
+   <p>Cada títol porta al text complet.</p>
+  </div>
+  <ol class="cm-texts">
+   {voice.stories.map((s) => (
+    <li class="cm-text">
+     <span class="n" aria-hidden="true">{s.n}</span>
+     <div>
+      <p class="when">
+       {s.chapter && <span class="tag">{s.chapter}</span>}
+       {s.date && <time datetime={s.date.slice(0, 10)}>{formatDate(s.date)}</time>}
+       {s.minutes && <span>Lectura de {s.minutes} {s.minutes === 1 ? 'minut' : 'minuts'}</span>}
+       {s.kind === 'page' && <span class="tag">Pàgina d’informació</span>}
+       {s.kind === 'external' && <span class="tag">Web original</span>}
+      </p>
+      <h3><a href={s.href}>{s.title}</a></h3>
+      {s.excerpt && <p class="ex">{s.excerpt}</p>}
+     </div>
+     {s.image && (uses.get(s.image.src) ?? 0) <= 2 && <figure><img src={s.image.src} alt="" width={s.image.width} height={s.image.height} loading="lazy" decoding="async" /></figure>}
+    </li>
+   ))}
+  </ol>
+ </section>
+
+ <nav class="pg-wrap cm-more" aria-labelledby="others-title">
+  <h2 class="pg-h2" id="others-title">Altres veus</h2>
+  <ul class="cm-others">
+   {others.map((v) => <li><a href={v.path}><span class={`cm-mono ${v.colour}`} aria-hidden="true">{v.initials}</span><span>{v.name}<br /><small>{v.stories.length} {v.stories.length === 1 ? 'text' : 'textos'}</small></span></a></li>)}
+  </ul>
+  <aside class="cm-care" aria-label="Una nota de TRANA">
+   <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path fill="#ef4337" d="M12 21C5 16.5 2 12.5 2 8.8 2 6.1 4.1 4 6.7 4c1.9 0 3.7 1 5.3 3 1.6-2 3.4-3 5.3-3C19.9 4 22 6.1 22 8.8c0 3.7-3 7.7-10 12.2z"/></svg>
+   <div><p>Les vivències expliquen l’experiència de qui les escriu. No substitueixen el consell del teu equip mèdic.</p></div>
+  </aside>
+  {indexPath && <p style="margin-top:24px"><a class="pg-arrow" href={indexPath}><span>Totes les vivències</span><Arrow /></a></p>}
+ </nav>
+</div>
